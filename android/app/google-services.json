@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "830437057159",
+    "project_id": "goparent-e474c",
+    "storage_bucket": "goparent-e474c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:830437057159:android:568a6d5d92f21bc1e24e22",
+        "android_client_info": {
+          "package_name": "com.example.goparent"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBycQRxfgYAEa3NS7CHoIcjv7IfKD4QcaM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
