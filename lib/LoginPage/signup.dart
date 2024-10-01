@@ -1,49 +1,50 @@
-// ignore_for_file: prefer_const_constructors, sort_child_properties_last
-
 import 'package:flutter/material.dart';
-import 'package:go_parent/LoginPage/signup.dart';
+import 'package:go_parent/LoginPage/login.dart';
 import 'package:go_parent/Screen/HomeScree.dart';
 import 'package:go_parent/Widgets/text_field.dart';
 import 'package:go_parent/Widgets/text_field.dart';
 import 'package:go_parent/Widgets/button.dart';
-import 'package:go_parent/authentication/auth.dart';
 import 'package:go_parent/Widgets/snackbar.dart';
+import 'package:go_parent/authentication/auth.dart';
 
-class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+class Signup extends StatefulWidget {
+  const Signup({super.key});
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  State<Signup> createState() => _SignupState();
 }
 
-class _LoginPageState extends State<LoginPage> {
-
-   final TextEditingController emailController = TextEditingController();
+class _SignupState extends State<Signup> {
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   bool isLoading = false;
 
 
-    @override
+ @override
   void dispose() {
     super.dispose();
     emailController.dispose();
     passwordController.dispose();
+    nameController.dispose();
   }
 
-// email and passowrd auth part
-  void loginUser() async {
+  void signupUser() async {
+    // set is loading to true.
     setState(() {
       isLoading = true;
     });
     // signup user using our authmethod
-    String res = await AuthMethod().loginUser(
-        email: emailController.text, password: passwordController.text);
-
+    String res = await AuthMethod().signupUser(
+        email: emailController.text,
+        password: passwordController.text,
+        name: nameController.text);
+    // if string return is success, user has been creaded and navigate to next screen other witse show error.
     if (res == "success") {
       setState(() {
         isLoading = false;
       });
-      //navigate to the home screen
+      //navigate to the next screen
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(
           builder: (context) => const Homescreen(),
@@ -60,13 +61,12 @@ class _LoginPageState extends State<LoginPage> {
 
 
 
-  
 
 
   @override
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
-    return Scaffold(
+     return Scaffold(
       resizeToAvoidBottomInset : false,
 
 
@@ -88,17 +88,19 @@ class _LoginPageState extends State<LoginPage> {
             SizedBox(
               width: double.infinity,
               height: height / 2.7,
-              child: Image.asset('images/login.jpg'),
+              child: Image.asset('images/signup1.jpeg'),
             ),
 
-            TextFieldInput(
+              TextFieldInput(
                 icon: Icons.person,
+                textEditingController: nameController,
+                hintText: 'Enter your name',
+                textInputType: TextInputType.text),
+            TextFieldInput(
+                icon: Icons.email,
                 textEditingController: emailController,
                 hintText: 'Enter your email',
                 textInputType: TextInputType.text),
-
-                
-
             TextFieldInput(
               icon: Icons.lock,
               textEditingController: passwordController,
@@ -106,25 +108,18 @@ class _LoginPageState extends State<LoginPage> {
               textInputType: TextInputType.text,
               isPass: true,
             ),
-
-             //  we call our forgot password below the login in button
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 35),
-              child: Align(
-                alignment: Alignment.centerRight,
-                child: Text("Forgot Password", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.blue),),),
-            ),
             
-            MyButtons(onTap: loginUser, text: "login"),
+            MyButtons(onTap: signupUser, text: "Sign Up"),
             SizedBox(height: height/15),
            Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text("Dont Have an account?"),
+              Text("Already have an account?"),
               GestureDetector(onTap: (){
-              Navigator.push(context, MaterialPageRoute(builder: (context) => Signup()));
+               Navigator.push(context, MaterialPageRoute(builder: (context) => LoginPage()));
+
                 
-              },child: Text("Sign Up", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),),)
+              },child: Text("Log In", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),),)
             ],
            )
             
@@ -135,4 +130,4 @@ class _LoginPageState extends State<LoginPage> {
       )),
     );
   }
-}// login pageu i
+}
