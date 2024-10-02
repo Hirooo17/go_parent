@@ -82,10 +82,11 @@ class _SignupState extends State<Signup> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 SizedBox(
-                  width: MediaQuery.of(context).size.width *
-                      0.4, // 90% of the screen width
+                  width: MediaQuery.of(context).size.width > 600
+                      ? MediaQuery.of(context).size.width * 0.4 // Desktop
+                      : MediaQuery.of(context).size.width * 0.9, // 90% of the screen width
                   height: MediaQuery.of(context).size.height /
-                      2, // A proportion of screen height
+                      2.5, // A proportion of screen height
                   child: Image.asset(
                     'images/signup1.jpeg',
                     fit: BoxFit.cover, // Scale the image to cover the container

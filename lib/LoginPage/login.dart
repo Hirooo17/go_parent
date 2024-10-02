@@ -75,7 +75,7 @@ class _LoginPageState extends State<LoginPage> {
       body: SafeArea(
           child: Row(
         children: [
-          if(!Responsive.isMobile(context))
+          if (!Responsive.isMobile(context))
             Expanded(
                 flex: Responsive.isTablet(context) ? 2 : 1,
                 child: Container(
@@ -86,12 +86,18 @@ class _LoginPageState extends State<LoginPage> {
             flex: 3,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
-              
               children: [
                 SizedBox(
-                  width: double.infinity,
-                  height: height / 2.7,
-                  child: Image.asset('images/login.jpg'),
+                  width: MediaQuery.of(context).size.width > 600
+                      ? MediaQuery.of(context).size.width * 0.4 // Desktop
+                      : MediaQuery.of(context).size.width * 0.9, 
+                      
+                  height: MediaQuery.of(context).size.height /
+                      2, // A proportion of screen height
+                  child: Image.asset(
+                    'images/login.jpg',
+                    fit: BoxFit.cover, // Scale the image to cover the container
+                  ),
                 ),
 
                 SizedBox(
@@ -133,7 +139,10 @@ class _LoginPageState extends State<LoginPage> {
                 ),
 
                 // bypass added for debugging purposes
-                SizedBox(child: MyButtons(onTap: byPass, text: "login"), width: mobileSize,),
+                SizedBox(
+                  child: MyButtons(onTap: byPass, text: "login"),
+                  width: mobileSize,
+                ),
                 SizedBox(height: height / 15),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
