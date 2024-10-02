@@ -59,6 +59,15 @@ class _LoginPageState extends State<LoginPage> {
   }
 
 
+void byPass() {
+  // You don't need setState here, as Navigator.push does not require it
+  Navigator.push(
+    context,
+    MaterialPageRoute(builder: (context) => Homescreen()),
+  );
+}
+
+
 
   
 
@@ -115,7 +124,9 @@ class _LoginPageState extends State<LoginPage> {
                 child: Text("Forgot Password", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.blue),),),
             ),
             
-            MyButtons(onTap: loginUser, text: "login"),
+
+            // bypass added for debugging purposes
+            MyButtons(onTap: byPass, text: "login"),
             SizedBox(height: height/15),
            Row(
             mainAxisAlignment: MainAxisAlignment.center,
