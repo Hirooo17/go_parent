@@ -8,6 +8,7 @@ import 'package:go_parent/Widgets/text_field.dart';
 import 'package:go_parent/Widgets/button.dart';
 import 'package:go_parent/authentication/auth.dart';
 import 'package:go_parent/Widgets/snackbar.dart';
+import 'package:go_parent/Widgets/responsive.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -20,6 +21,7 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   bool isLoading = false;
+
 
   @override
   void dispose() {
@@ -87,6 +89,8 @@ class _LoginPageState extends State<LoginPage> {
                 hintText: 'Enter your email',
                 textInputType: TextInputType.text),
 
+                
+
             TextFieldInput(
               icon: Icons.lock,
               textEditingController: passwordController,
@@ -95,42 +99,30 @@ class _LoginPageState extends State<LoginPage> {
               isPass: true,
             ),
 
-            //  we call our forgot password below the login in button
+             //  we call our forgot password below the login in button
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 35),
               child: Align(
                 alignment: Alignment.centerRight,
-                child: Text(
-                  "Forgot Password",
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16,
-                      color: Colors.blue),
-                ),
-              ),
+                child: Text("Forgot Password", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.blue),),),
             ),
+            
 
             // bypass added for debugging purposes
             MyButtons(onTap: byPass, text: "login"),
-             MyButtons(onTap: byPass, text: "offline mode"),
-            SizedBox(height: height / 15),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text("Dont Have an account?"),
-                GestureDetector(
-                  onTap: () {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => Signup()));
-                  },
-                  child: Text(
-                    "Sign Up",
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                  ),
-                )
-              ],
-            )
-
+            SizedBox(height: height/15),
+           Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text("Dont Have an account?"),
+              GestureDetector(onTap: (){
+              Navigator.push(context, MaterialPageRoute(builder: (context) => Signup()));
+                
+              },child: Text("Sign Up", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),),)
+            ],
+           )
+            
+            
             //text field
           ],
         ),
