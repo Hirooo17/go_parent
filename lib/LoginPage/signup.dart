@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:go_parent/LoginPage/login.dart';
 import 'package:go_parent/Screen/HomeScree.dart';
 import 'package:go_parent/Widgets/text_field.dart';
-import 'package:go_parent/Widgets/text_field.dart';
 import 'package:go_parent/Widgets/button.dart';
 import 'package:go_parent/Widgets/snackbar.dart';
 import 'package:go_parent/authentication/auth.dart';

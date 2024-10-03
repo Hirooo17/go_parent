@@ -40,6 +40,7 @@ dependencies:
   cloud_firestore: ^5.4.3
   get: ^4.6.6
   flutter_helper_utils: ^6.6.0
+  rive: ^0.13.14
   
   
 

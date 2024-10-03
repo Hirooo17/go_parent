@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors, sort_child_properties_last
+// ignore_for_file: prefer_const_constructors, sort_child_properties_last, duplicate_import
 
 import 'package:flutter/material.dart';
 import 'package:go_parent/LoginPage/signup.dart';
@@ -17,13 +17,11 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-
-   final TextEditingController emailController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   bool isLoading = false;
 
-
-    @override
+  @override
   void dispose() {
     super.dispose();
     emailController.dispose();
@@ -58,36 +56,19 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
-
-void byPass() {
-  // You don't need setState here, as Navigator.push does not require it
-  Navigator.push(
-    context,
-    MaterialPageRoute(builder: (context) => Homescreen()),
-  );
-}
-
-
-
-  
-
+  void byPass() {
+    // You don't need setState here, as Navigator.push does not require it
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => Homescreen()),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
     return Scaffold(
-      resizeToAvoidBottomInset : false,
-
-
-
-
-
-
-
-
-
-
-      
+      resizeToAvoidBottomInset: false,
       backgroundColor: Colors.white,
       body: SafeArea(
           child: SizedBox(
@@ -106,8 +87,6 @@ void byPass() {
                 hintText: 'Enter your email',
                 textInputType: TextInputType.text),
 
-                
-
             TextFieldInput(
               icon: Icons.lock,
               textEditingController: passwordController,
@@ -116,30 +95,42 @@ void byPass() {
               isPass: true,
             ),
 
-             //  we call our forgot password below the login in button
+            //  we call our forgot password below the login in button
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 35),
               child: Align(
                 alignment: Alignment.centerRight,
-                child: Text("Forgot Password", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.blue),),),
+                child: Text(
+                  "Forgot Password",
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                      color: Colors.blue),
+                ),
+              ),
             ),
-            
 
             // bypass added for debugging purposes
             MyButtons(onTap: byPass, text: "login"),
-            SizedBox(height: height/15),
-           Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text("Dont Have an account?"),
-              GestureDetector(onTap: (){
-              Navigator.push(context, MaterialPageRoute(builder: (context) => Signup()));
-                
-              },child: Text("Sign Up", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),),)
-            ],
-           )
-            
-            
+             MyButtons(onTap: byPass, text: "offline mode"),
+            SizedBox(height: height / 15),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text("Dont Have an account?"),
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => Signup()));
+                  },
+                  child: Text(
+                    "Sign Up",
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                  ),
+                )
+              ],
+            )
+
             //text field
           ],
         ),

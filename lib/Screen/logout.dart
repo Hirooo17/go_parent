@@ -1,7 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:go_parent/LoginPage/login.dart';
 import 'package:go_parent/Widgets/button.dart';
 import 'package:go_parent/authentication/auth.dart';
@@ -14,7 +11,6 @@ class Logout extends StatefulWidget {
 }
 
 class _LogoutState extends State<Logout> {
-
   final AuthMethod _authMethod = AuthMethod(); // Instantiate AuthMethod
   @override
   Widget build(BuildContext context) {
@@ -28,7 +24,7 @@ class _LogoutState extends State<Logout> {
                 onTap: () async {
                   // Logout using Firebase auth services
                   await _authMethod.signOut();
-          
+
                   // Navigate to the login page after logout
                   Navigator.of(context).pushReplacement(
                     MaterialPageRoute(

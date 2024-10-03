@@ -1,9 +1,7 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:go_parent/LoginPage/login.dart';
 import 'package:go_parent/Screen/logout.dart';
-import 'package:go_parent/Widgets/button.dart';
+import 'package:go_parent/Widgets/side_menu.dart';
 import 'package:go_parent/authentication/auth.dart';
 
 class Homescreen extends StatefulWidget {
@@ -14,68 +12,56 @@ class Homescreen extends StatefulWidget {
 }
 
 class _HomescreenState extends State<Homescreen> {
-  final AuthMethod _authMethod = AuthMethod(); // Instantiate AuthMethod
+  final MyDrawer drawer = MyDrawer();
 
   @override
   Widget build(BuildContext context) {
-
     final cont = Get.put(NavigationController());
-    final darkmode = thelperfunction.isdarkmode(context);
-  
-
 
     return Scaffold(
+      // bottom navigation bar
       bottomNavigationBar: Obx(
         () => NavigationBar(
-          height: 80,
-          elevation: 0,
-          selectedIndex: cont.selectedIndex.value,
-          //backgroundColor: darkmode? Colors.black : Colors.white,
-          //indicatorColor: darkmode? Colors.white.withOpacity(0.1) : Colors.black.withOpacity(1),
-        
-          onDestinationSelected: (index) => cont.selectedIndex.value = index,
-          destinations: [
-          NavigationDestination(icon: Icon(Icons.home), label: "home"),
-          NavigationDestination(icon: Icon(Icons.task), label: "home"),
-          NavigationDestination(icon: Icon(Icons.settings), label: "home"),
-          NavigationDestination(icon: Icon(Icons.person_2_rounded), label: "home"),
-          ]
-          ),
+            height: 80,
+            elevation: 0,
+            selectedIndex: cont.selectedIndex.value,
+            onDestinationSelected: (index) => cont.selectedIndex.value = index,
+            destinations: [
+              NavigationDestination(icon: Icon(Icons.home), label: "home"),
+              NavigationDestination(icon: Icon(Icons.task), label: "home"),
+              NavigationDestination(icon: Icon(Icons.settings), label: "home"),
+              NavigationDestination(
+                  icon: Icon(Icons.person_2_rounded), label: "home"),
+            ]),
       ),
-    
-      
 
       // appbar
       appBar: AppBar(title: Text("Home")),
-
+      //Drawer
+      drawer: drawer.Drawerr("sa"),
 
       //obx
-     body: Obx(()=> cont.screens[cont.selectedIndex.value]),
-
-
-
-      
+      body: Obx(() => cont.screens[cont.selectedIndex.value]),
     );
-
-
-
-
-   
   }
-
-
-  
 }
-// screen navigator
-class NavigationController extends  GetxController{
-  final Rx<int> selectedIndex = 0.obs;
 
+// screen navigator
+class NavigationController extends GetxController {
+  final Rx<int> selectedIndex = 0.obs;
 
   final screens = [
     const Logout(),
-    Container(color: Colors.blue,),
-    Container(color: Colors.yellow,),
-    Container(color: Colors.red,)];
+    Container(
+      color: Colors.blue,
+    ),
+    Container(
+      color: Colors.yellow,
+    ),
+    Container(
+      color: Colors.red,
+    )
+  ];
 }
 
 class thelperfunction {
