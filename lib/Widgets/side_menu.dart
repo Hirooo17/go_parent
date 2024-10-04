@@ -1,81 +1,57 @@
 import 'package:flutter/material.dart';
+import 'package:go_parent/Screen/settings.dart';
 
-class SideMenu extends StatefulWidget {
+class SideMenu extends StatelessWidget {
   const SideMenu({super.key});
 
   @override
-  State<SideMenu> createState() => _SideMenuState();
-}
-
-class _SideMenuState extends State<SideMenu> {
-  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.blue,
-      appBar: AppBar(
-        title: Text("home"),
-      ),
-      drawer: Drawerr(),
-    );
-  }
-
-  Drawer Drawerr() {
     return Drawer(
       child: ListView(
+        padding: EdgeInsets.zero,
         children: [
+          UserAccountsDrawerHeader(
+            accountName: Text("Tristana"),
+            accountEmail: Text("I love Cannons"),
+            currentAccountPicture: CircleAvatar(
+              child: ClipOval(
+                child: Image.asset('images/tristana.png'),
+              ),
+            ),
+            decoration: BoxDecoration(
+              color: Colors.lightBlueAccent,
+              image: DecorationImage(
+                image: AssetImage('images/tristanaa.jpg'),
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
           ListTile(
-            title: Text("roar"),
+            leading: Icon(Icons.home),
+            title: Text("Home"),
             onTap: () {},
-          )
-        ],
-      ),
-    );
-  }
-}
-
-class MyDrawer {
-  Drawer Drawerr(String title) {
-    return Drawer(
-      child: ListView(
-        children: [
+          ),
           ListTile(
-            title: Text(title),
+            leading: Icon(Icons.settings),
+            title: Text("Settings"),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const Settings()),
+              );
+            },
+          ),
+          ListTile(
+            leading: Icon(Icons.logout),
+            title: Text("Logout"),
+            onTap: () {},
+          ),
+          ListTile(
+            leading: Icon(Icons.notification_add_rounded),
+            title: Text("Notifications"),
             onTap: () {},
           ),
         ],
-      ),
-    );
-  }
-}
-
-class InfoCard extends StatelessWidget {
-  const InfoCard({
-    super.key,
-    required this.name,
-    required this.profession,
-  });
-
-  final String name, profession;
-
-  @override
-  Widget build(BuildContext context) {
-    return ListTile(
-      leading: CircleAvatar(
-        backgroundColor: Colors.white24,
-        child: Icon(
-          Icons.person,
-          color: Colors.white,
-        ),
-      ),
-
-      // name
-      title: Text(
-        name,
-        style: TextStyle(color: Colors.white),
-      ),
-      subtitle: Text(
-        profession,
-        style: TextStyle(color: Colors.white),
       ),
     );
   }

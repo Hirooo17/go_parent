@@ -10,6 +10,10 @@ class Settings extends StatefulWidget {
 class _SettingsState extends State<Settings> {
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return Scaffold(
+     appBar: AppBar(
+      title: Text("settings"),
+     ),
+    );
   }
 }
