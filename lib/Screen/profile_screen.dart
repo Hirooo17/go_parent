@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:go_parent/LoginPage/login.dart';
+import 'package:go_parent/LoginPage/login_screen.dart';
 import 'package:go_parent/Widgets/button.dart';
 import 'package:go_parent/authentication/auth.dart';
 
 class Logout extends StatefulWidget {
   const Logout({super.key});
+  static String id = 'profile_screen';
 
   @override
   State<Logout> createState() => _LogoutState();

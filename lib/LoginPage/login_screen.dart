@@ -1,17 +1,16 @@
 // ignore_for_file: prefer_const_constructors, sort_child_properties_last, duplicate_import
 
 import 'package:flutter/material.dart';
-import 'package:go_parent/LoginPage/signup.dart';
-import 'package:go_parent/Screen/HomeScree.dart';
-import 'package:go_parent/Widgets/text_field.dart';
-import 'package:go_parent/Widgets/text_field.dart';
-import 'package:go_parent/Widgets/button.dart';
-import 'package:go_parent/authentication/auth.dart';
+import 'package:go_parent/LoginPage/signup_screen.dart';
+import 'package:go_parent/Screen/home_screen.dart';
+import 'package:go_parent/Widgets/RoundedButton.dart';
 import 'package:go_parent/Widgets/snackbar.dart';
-import 'package:go_parent/Widgets/responsive.dart';
+import 'package:go_parent/Widgets/text_field.dart';
+import 'package:go_parent/authentication/auth.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
+  static String id = 'login_screen';
 
   @override
   State<LoginPage> createState() => _LoginPageState();
@@ -21,7 +20,6 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   bool isLoading = false;
-
 
   @override
   void dispose() {
@@ -89,8 +87,6 @@ class _LoginPageState extends State<LoginPage> {
                 hintText: 'Enter your email',
                 textInputType: TextInputType.text),
 
-                
-
             TextFieldInput(
               icon: Icons.lock,
               textEditingController: passwordController,
@@ -99,34 +95,48 @@ class _LoginPageState extends State<LoginPage> {
               isPass: true,
             ),
 
-             //  we call our forgot password below the login in button
+            //  we call our forgot password below the login in button
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 35),
               child: Align(
                 alignment: Alignment.centerRight,
-                child: Text("Forgot Password", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.blue),),),
+                child: Text(
+                  "Forgot Password",
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                      color: Colors.blue),
+                ),
+              ),
             ),
-            
 
             // bypass added for debugging purposes
-            MyButtons(onTap: byPass, text: "login"),
-            SizedBox(height: height/15),
-           Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text("Dont Have an account?"),
-              GestureDetector(onTap: (){
-              Navigator.push(context, MaterialPageRoute(builder: (context) => Signup()));
-                
-              },child: Text("Sign Up", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),),)
-            ],
-           )
-            
-            
+            RoundedButton(
+                title: "LOGIN",
+                color: Colors.lightBlueAccent,
+                onPressed: byPass),
+            SizedBox(height: height / 15),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text("Dont Have an account?"),
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => Signup()));
+                  },
+                  child: Text(
+                    "Sign Up",
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                  ),
+                )
+              ],
+            )
+
             //text field
           ],
         ),
       )),
     );
   }
-}// login pageu i
+} // login pageu i

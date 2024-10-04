@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:go_parent/Screen/logout.dart';
+import 'package:go_parent/Screen/profile_screen.dart';
 import 'package:go_parent/Widgets/side_menu.dart';
-import 'package:go_parent/authentication/auth.dart';
 
 class Homescreen extends StatefulWidget {
   const Homescreen({super.key});
+  static String id = 'home_screen';
 
   @override
   State<Homescreen> createState() => _HomescreenState();
