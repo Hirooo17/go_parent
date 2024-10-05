@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 class MyButtons extends StatelessWidget {
   final VoidCallback onTap;
   final String text;
+
   const MyButtons({
     super.key,
     required this.onTap,
@@ -21,7 +22,7 @@ class MyButtons extends StatelessWidget {
           decoration: const ShapeDecoration(
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.all(
-                  Radius.circular(30),
+                  Radius.circular(31),
                 ),
               ),
               color: Colors.blue),

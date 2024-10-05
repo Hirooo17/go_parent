@@ -1,12 +1,13 @@
-// ignore: file_names
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:go_parent/Screen/logout.dart';
-import 'package:go_parent/Screen/settings.dart';
+
+import 'package:go_parent/Screen/profile_screen.dart';
 import 'package:go_parent/Widgets/side_menu.dart';
-//import 'package:go_parent/authentication/auth.dart';
+import 'package:go_parent/authentication/auth.dart';
 
 class Homescreen extends StatefulWidget {
+  static var id;
+
   const Homescreen({super.key});
 
   @override
@@ -14,17 +15,11 @@ class Homescreen extends StatefulWidget {
 }
 
 class _HomescreenState extends State<Homescreen> {
-  
-   // Index to track the selected drawer item
-  
+ 
 
   @override
   Widget build(BuildContext context) {
     final cont = Get.put(NavigationController());
-   
-
-  // Function to update the selected index
- 
 
     return Scaffold(
       // bottom navigation bar
@@ -45,12 +40,11 @@ class _HomescreenState extends State<Homescreen> {
 
       // appbar
       appBar: AppBar(title: Text("Home")),
-       // Drawer
-     drawer: SideMenu(),
+      //Drawer
+      drawer: Drawer(),
 
       //obx
       body: Obx(() => cont.screens[cont.selectedIndex.value]),
-      
     );
   }
 }
@@ -58,10 +52,12 @@ class _HomescreenState extends State<Homescreen> {
 // screen navigator
 class NavigationController extends GetxController {
   final Rx<int> selectedIndex = 0.obs;
- final Rx<int> selectedDrawerIndex = 0.obs;  // Index for drawer navigation
+
   final screens = [
     const Logout(),
-    const Settings(),
+    Container(
+      color: Colors.blue,
+    ),
     Container(
       color: Colors.yellow,
     ),
@@ -69,15 +65,6 @@ class NavigationController extends GetxController {
       color: Colors.red,
     )
   ];
-final List<Widget> drawerScreens = [
-    Container(
-      color: Colors.yellow,
-    ),
-    const Logout(), 
-   
-  ];
-
-  
 }
 
 class thelperfunction {

@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:go_parent/LoginPage/login.dart';
-import 'package:go_parent/Screen/HomeScree.dart';
-import 'package:go_parent/Widgets/text_field.dart';
+import 'package:go_parent/LoginPage/login_screen.dart';
+import 'package:go_parent/Screen/home_screen.dart';
 import 'package:go_parent/Widgets/button.dart';
-import 'package:go_parent/Widgets/snackbar.dart';
-import 'package:go_parent/authentication/auth.dart';
 import 'package:go_parent/Widgets/responsive.dart';
+import 'package:go_parent/Widgets/snackbar.dart';
+import 'package:go_parent/Widgets/text_field.dart';
+import 'package:go_parent/authentication/auth.dart';
 
 class Signup extends StatefulWidget {
   const Signup({super.key});
+  static String id = 'signup_screen';
 
   @override
   State<Signup> createState() => _SignupState();
@@ -83,7 +84,8 @@ class _SignupState extends State<Signup> {
                 SizedBox(
                   width: MediaQuery.of(context).size.width > 600
                       ? MediaQuery.of(context).size.width * 0.4 // Desktop
-                      : MediaQuery.of(context).size.width * 0.9, // 90% of the screen width
+                      : MediaQuery.of(context).size.width *
+                          0.9, // 90% of the screen width
                   height: MediaQuery.of(context).size.height /
                       2.5, // A proportion of screen height
                   child: Image.asset(
