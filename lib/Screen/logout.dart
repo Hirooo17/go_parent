@@ -18,7 +18,7 @@ class _LogoutState extends State<Logout> {
       body: Center(
         child: Container(
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.end,
             children: [
               MyButtons(
                 onTap: () async {

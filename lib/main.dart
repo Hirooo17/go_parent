@@ -2,12 +2,14 @@
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:go_parent/LoginPage/login.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:go_parent/Screen/HomeScree.dart';
 import 'package:go_parent/Widgets/side_menu.dart';
 import 'firebase_options.dart';
 void main() async {
+  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(statusBarColor: Colors.lightBlue));
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,

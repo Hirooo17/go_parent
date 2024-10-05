@@ -1,9 +1,10 @@
+// ignore: file_names
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:go_parent/Screen/logout.dart';
 import 'package:go_parent/Screen/settings.dart';
 import 'package:go_parent/Widgets/side_menu.dart';
-import 'package:go_parent/authentication/auth.dart';
+//import 'package:go_parent/authentication/auth.dart';
 
 class Homescreen extends StatefulWidget {
   const Homescreen({super.key});
@@ -71,9 +72,9 @@ class NavigationController extends GetxController {
 final List<Widget> drawerScreens = [
     Container(
       color: Colors.yellow,
-    ),// Profile screen
-    const Logout(), // Logout screen
-    // Add more drawer-specific screens here
+    ),
+    const Logout(), 
+   
   ];
 
   
