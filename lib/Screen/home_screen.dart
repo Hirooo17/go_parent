@@ -3,10 +3,10 @@ import 'package:get/get.dart';
 
 import 'package:go_parent/Screen/profile_screen.dart';
 import 'package:go_parent/Widgets/side_menu.dart';
-import 'package:go_parent/authentication/auth.dart';
+
 
 class Homescreen extends StatefulWidget {
-  static var id;
+  static String id = 'home_screen';
 
   const Homescreen({super.key});
 
@@ -41,7 +41,7 @@ class _HomescreenState extends State<Homescreen> {
       // appbar
       appBar: AppBar(title: Text("Home")),
       //Drawer
-      drawer: Drawer(),
+      drawer: SideMenu(),
 
       //obx
       body: Obx(() => cont.screens[cont.selectedIndex.value]),
