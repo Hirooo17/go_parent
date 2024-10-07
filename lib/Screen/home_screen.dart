@@ -1,6 +1,9 @@
+// ignore_for_file: camel_case_types, unused_import
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:go_parent/Screen/mission_screen.dart';
 
 import 'package:go_parent/Screen/profile_screen.dart';
 import 'package:go_parent/Widgets/side_menu.dart';
@@ -58,7 +61,7 @@ class NavigationController extends GetxController {
 
   final screens = [
     const Logout(),
-     MissionScreen(),
+    MissionScreen(),
     Container(
       color: Colors.yellow,
     ),

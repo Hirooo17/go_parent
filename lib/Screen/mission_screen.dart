@@ -14,105 +14,157 @@ class _MissionScreenState extends State<MissionScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        title: Center(child: Text("Missions")),
-      ),
-      body: ListView(
-        padding: EdgeInsets.all(10),
-        children: [
-          // First mission
-          Card(
-            elevation: 4,
-            margin: EdgeInsets.symmetric(vertical: 10),
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  ListTile(
-                    leading: Icon(
-                      _isMissionCompleted[0]
-                          ? Icons.check_circle
-                          : Icons.check_circle_outline,
-                      color:
-                          _isMissionCompleted[0] ? Colors.green : Colors.grey,
-                    ),
-                    title: Text('Read with your child'),
-                    subtitle: Text('Spend 20 minutes reading together'),
-                    trailing: Text('Reward: 50 points'),
-                  ),
-                  SizedBox(height: 10),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      //Text('Mission Progress:$progress' ),
-                      SizedBox(height: 5),
-                      // LinearProgressIndicator(value: progress),
-                    ],
-                  ),
-                  SizedBox(height: 10),
-                  ElevatedButton(
-                    onPressed: () {
-                      setState(() {
-                        _isMissionCompleted[0] = !_isMissionCompleted[0];
-                      });
-                    },
-                    child: Text('Complete Mission'),
-                  ),
-                ],
-              ),
-            ),
+    return DefaultTabController(
+      length: 4,
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        appBar: AppBar(
+          title: Center(child: Text("Missions")),
+          bottom: TabBar(
+            tabs: [
+              Tab(text: "Daily Routines"),
+              Tab(text: "Learning Activities"),
+              Tab(text: "Outdoor Play"),
+              Tab(text: "Sample"),
+            ],
           ),
-
-          // Second mission
-          Card(
-            elevation: 4,
-            margin: EdgeInsets.symmetric(vertical: 10),
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  ListTile(
-                    leading: Icon(
-                      _isMissionCompleted2[0]
-                          ? Icons.check_circle
-                          : Icons.check_circle_outline,
-                      color:
-                          _isMissionCompleted2[0] ? Colors.green : Colors.grey,
+          automaticallyImplyLeading: false,
+        ),
+        body: TabBarView(
+          children: [
+            // Daily Routines tab
+            ListView(
+              padding: EdgeInsets.all(10),
+              children: [
+                // First mission
+                Card(
+                  elevation: 4,
+                  margin: EdgeInsets.symmetric(vertical: 10),
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        ListTile(
+                          leading: Icon(
+                            _isMissionCompleted[0]
+                                ? Icons.check_circle
+                                : Icons.check_circle_outline,
+                            color: _isMissionCompleted[0]
+                                ? Colors.green
+                                : Colors.grey,
+                          ),
+                          title: Text('Read with your child'),
+                          subtitle: Text('Spend 20 minutes reading together'),
+                          trailing: Text('Reward: 50 points'),
+                        ),
+                        SizedBox(height: 10),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                           // Text('Mission Progress: ${progress.toString()}%'),
+                           // SizedBox(height: 5),
+                            //LinearProgressIndicator(
+                             // value: progress,
+                             // backgroundColor: Colors.grey,
+                              //valueColor: AlwaysStoppedAnimation(Colors.blue),
+                            //),
+                          ],
+                        ),
+                        SizedBox(height: 10),
+                        ElevatedButton(
+                          onPressed: () {
+                            setState(() {
+                              _isMissionCompleted[0] = !_isMissionCompleted[0];
+                            });
+                          },
+                          child: Text('Complete Mission'),
+                        ),
+                      ],
                     ),
-                    title: Text('Go for a walk with your child'),
-                    subtitle: Text('Walk for 30 minutes'),
-                    trailing: Text('Reward: 75 points'),
                   ),
-                  SizedBox(height: 10),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // Text('Mission Progress: 20%'),
-                      SizedBox(height: 5),
+                ),
 
-                      // LinearProgressIndicator(value: 0.2),
-                    ],
+                // Second mission
+                Card(
+                  elevation: 4,
+                  margin: EdgeInsets.symmetric(vertical: 10),
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        ListTile(
+                          leading: Icon(
+                            _isMissionCompleted2[0]
+                                ? Icons.check_circle
+                                : Icons.check_circle_outline,
+                            color: _isMissionCompleted2[0]
+                                ? Colors.green
+                                : Colors.grey,
+                          ),
+                          title: Text('Go for a walk with your child'),
+                          subtitle: Text('Walk for 30 minutes'),
+                          trailing: Text('Reward: 75 points'),
+                        ),
+                        SizedBox(height: 10),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                             Text('Mission Progress:$progress'),
+                            SizedBox(height: 5),
+
+                            LinearProgressIndicator(value: progress),
+                          ],
+                        ),
+                        SizedBox(height: 10),
+                        ElevatedButton(
+                          onPressed: () {
+                            setState(() {
+                              _isMissionCompleted2[0] =
+                                  !_isMissionCompleted2[0];
+                            if(progress <= 101){
+                                progress+=100;
+                            }
+                            else{
+                              progress +=0;
+                            }
+
+                            });
+                          },
+                          child: Text('Complete Mission'),
+                        ),
+                      ],
+                    ),
                   ),
-                  SizedBox(height: 10),
-                  ElevatedButton(
-                    onPressed: () {
-                      setState(() {
-                        _isMissionCompleted2[0] = !_isMissionCompleted2[0];
-                      });
-                    },
-                    child: Text('Complete Mission'),
-                  ),
-                ],
-              ),
+                ),
+              ],
             ),
-          ),
 
-          // Add more missions in the same format if needed
-        ],
+            // Learning Activities tab
+            ListView(
+              padding: EdgeInsets.all(10),
+              children: [
+                // Add missions for Learning Activities tab
+              ],
+            ),
+
+            // Outdoor Play tab
+            ListView(
+              padding: EdgeInsets.all(10),
+              children: [
+                // Add missions for Outdoor Play tab
+              ],
+            ),
+
+            ListView(
+              padding: EdgeInsets.all(10),
+              children: [
+                // Add missions for Outdoor Play tab
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
