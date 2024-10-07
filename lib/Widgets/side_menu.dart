@@ -42,6 +42,8 @@ class SideMenu extends StatelessWidget {
                 );
               },
             ),
+            Spacer(),
+            Divider(),
             ListTile(
               leading: Icon(Icons.logout),
               title: Text("Logout"),

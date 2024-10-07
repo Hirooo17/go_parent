@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:go_parent/Screen/mission_screen.dart';
 
 import 'package:go_parent/Screen/profile_screen.dart';
 import 'package:go_parent/Widgets/side_menu.dart';
-
 
 class Homescreen extends StatefulWidget {
   static String id = 'home_screen';
@@ -15,8 +15,6 @@ class Homescreen extends StatefulWidget {
 }
 
 class _HomescreenState extends State<Homescreen> {
- 
-
   @override
   Widget build(BuildContext context) {
     final cont = Get.put(NavigationController());
@@ -30,21 +28,26 @@ class _HomescreenState extends State<Homescreen> {
             selectedIndex: cont.selectedIndex.value,
             onDestinationSelected: (index) => cont.selectedIndex.value = index,
             destinations: [
-              NavigationDestination(icon: Icon(Icons.home), label: "home"),
-              NavigationDestination(icon: Icon(Icons.task), label: "home"),
+              NavigationDestination(icon: Icon(Icons.home), label: "Home"),
+              NavigationDestination(icon: Icon(Icons.task_rounded), label: "Missions"),
               NavigationDestination(icon: Icon(Icons.settings), label: "home"),
               NavigationDestination(
                   icon: Icon(Icons.person_2_rounded), label: "home"),
             ]),
       ),
 
-      // appbar
+      // appbar+
       appBar: AppBar(title: Text("Home")),
       //Drawer
       drawer: SideMenu(),
 
       //obx
-      body: Obx(() => cont.screens[cont.selectedIndex.value]),
+       body: Obx(() {
+        return IndexedStack(
+          index: cont.selectedIndex.value, // Maintain the selected index
+          children: cont.screens, // The screens to display
+        );
+      }),
     );
   }
 }
@@ -55,9 +58,7 @@ class NavigationController extends GetxController {
 
   final screens = [
     const Logout(),
-    Container(
-      color: Colors.blue,
-    ),
+     MissionScreen(),
     Container(
       color: Colors.yellow,
     ),
