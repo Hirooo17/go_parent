@@ -1,20 +1,20 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:go_parent/Screen/mission_screen.dart';
 
 import 'package:go_parent/Screen/profile_screen.dart';
 import 'package:go_parent/Widgets/side_menu.dart';
 
 class Homescreen extends StatefulWidget {
-  static String id = 'home_screen';
-
   const Homescreen({super.key});
-
+  static String id = 'home_screen';
   @override
   State<Homescreen> createState() => _HomescreenState();
 }
 
 class _HomescreenState extends State<Homescreen> {
+ 
+
   @override
   Widget build(BuildContext context) {
     final cont = Get.put(NavigationController());

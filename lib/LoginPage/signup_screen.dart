@@ -1,16 +1,14 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_parent/LoginPage/login_screen.dart';
 import 'package:go_parent/Screen/home_screen.dart';
-import 'package:go_parent/Widgets/button.dart';
+import 'package:go_parent/Widgets/RoundedButton.dart';
 import 'package:go_parent/Widgets/responsive.dart';
-import 'package:go_parent/Widgets/snackbar.dart';
 import 'package:go_parent/Widgets/text_field.dart';
-import 'package:go_parent/authentication/auth.dart';
 
 class Signup extends StatefulWidget {
   const Signup({super.key});
   static String id = 'signup_screen';
-
   @override
   State<Signup> createState() => _SignupState();
 }
@@ -19,45 +17,83 @@ class _SignupState extends State<Signup> {
   final TextEditingController nameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-  bool isLoading = false;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
   final double mobileSize = 700;
+  bool isLoading = false;
 
   @override
   void dispose() {
-    super.dispose();
+    nameController.dispose();
     emailController.dispose();
     passwordController.dispose();
-    nameController.dispose();
+    super.dispose();
   }
 
-  void signupUser() async {
-    // set is loading to true.
+  void signUpUser() async {
     setState(() {
       isLoading = true;
     });
-    // signup user using our authmethod
-    String res = await AuthMethod().signupUser(
-        email: emailController.text,
+
+    try {
+      if (emailController.text.isEmpty || passwordController.text.isEmpty) {
+        throw 'Please enter both email and password';
+      }
+
+      UserCredential userCredential =
+          await _auth.createUserWithEmailAndPassword(
+        email: emailController.text.trim(),
         password: passwordController.text,
-        name: nameController.text);
-    // if string return is success, user has been creaded and navigate to next screen other witse show error.
-    if (res == "success") {
-      setState(() {
-        isLoading = false;
-      });
-      //navigate to the next screen
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(
-          builder: (context) => const Homescreen(),
-        ),
       );
-    } else {
+
+      if (userCredential.user != null) {
+        // Optionally update the user's display name
+        await userCredential.user!.updateDisplayName(nameController.text);
+
+        Navigator.pushReplacementNamed(context, Homescreen.id);
+      }
+    } on FirebaseAuthException catch (e) {
+      String errorMessage;
+      switch (e.code) {
+        case 'weak-password':
+          errorMessage = 'The password provided is too weak.';
+          break;
+        case 'email-already-in-use':
+          errorMessage = 'An account already exists for that email.';
+          break;
+        case 'invalid-email':
+          errorMessage = 'The email address is not valid.';
+          break;
+        default:
+          errorMessage = 'An error occurred. Please try again.';
+      }
+      showErrorDialog(errorMessage);
+    } catch (e) {
+      showErrorDialog(e.toString());
+    } finally {
       setState(() {
         isLoading = false;
       });
-      // show error
-      showSnackBar(context, res);
     }
+  }
+
+  void showErrorDialog(String message) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Error'),
+          content: Text(message),
+          actions: <Widget>[
+            TextButton(
+              child: Text('OK'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -115,16 +151,20 @@ class _SignupState extends State<Signup> {
                   child: TextFieldInput(
                     icon: Icons.lock,
                     textEditingController: passwordController,
-                    hintText: 'Enter your passord',
+                    hintText: 'Enter your password',
                     textInputType: TextInputType.text,
                     isPass: true,
                   ),
                 ),
 
                 SizedBox(
-                  width: mobileSize,
-                  child: MyButtons(onTap: signupUser, text: "Sign Up"),
-                ),
+                    width: mobileSize,
+                    child: RoundedButton(
+                        title: 'SIGN IN',
+                        color: Colors.lightBlueAccent,
+                        onPressed: () {
+                          signUpUser();
+                        })),
                 SizedBox(height: height / 15),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
