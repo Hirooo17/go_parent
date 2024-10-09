@@ -16,6 +16,8 @@ dependencies:
   get: ^4.6.6
   flutter_helper_utils: ^6.6.0
   introduction_screen: ^3.1.14
+  smooth_page_indicator: ^1.2.0+3
+  lottie: ^3.1.2
   
 dev_dependencies:
   flutter_test:
