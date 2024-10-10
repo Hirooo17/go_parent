@@ -125,7 +125,7 @@ class _SignupState extends State<Signup> {
                   height: MediaQuery.of(context).size.height /
                       2.5, // A proportion of screen height
                   child: Image.asset(
-                    'images/signup1.jpeg',
+                    'assets/images/signup1.jpeg',
                     fit: BoxFit.cover, // Scale the image to cover the container
                   ),
                 ),

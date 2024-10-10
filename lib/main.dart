@@ -10,11 +10,14 @@ import 'package:go_parent/Screen/home_screen.dart';
 import 'package:go_parent/Screen/introduction_screen.dart';
 import 'package:go_parent/Screen/profile_screen.dart';
 import 'package:go_parent/Widgets/side_menu.dart';
-import 'firebase_options.dart';
+import 'package:go_parent/intro%20screens/welcome_screen.dart';
+
+import 'Database/firebase_options.dart';
+import 'intro screens/splash_screen.dart';
 
 void main() async {
   SystemChrome.setSystemUIOverlayStyle(
-      SystemUiOverlayStyle(statusBarColor: Colors.lightBlue));
+      SystemUiOverlayStyle(statusBarColor: Colors.black));
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
@@ -34,13 +37,14 @@ class MyApp extends StatelessWidget {
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
           useMaterial3: true,
         ),
-        initialRoute: Homescreen.id,
-        routes: {
-          Homescreen.id: (context) => Homescreen(),
-          LoginPage.id: (context) => LoginPage(),
-          Signup.id: (context) => Signup(),
-          Logout.id: (context) => Logout(),
-        }
+        //initialRoute: Signup.id,
+        //routes: {
+        //  Homescreen.id: (context) => Homescreen(),
+         // LoginPage.id: (context) => LoginPage(),
+         // Signup.id: (context) => Signup(),
+         // Logout.id: (context) => Logout(),
+       // },
+        home: IntroductionScreen(),
         // StreamBuilder(stream: FirebaseAuth.instance.authStateChanges(), builder: (context, snapshot){
         //  if (snapshot.hasData){
         //     return Homescreen();

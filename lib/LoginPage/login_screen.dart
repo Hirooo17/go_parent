@@ -78,7 +78,7 @@ class _LoginPageState extends State<LoginPage> {
             SizedBox(
               width: double.infinity,
               height: height / 2.7,
-              child: Image.asset('images/login.jpg'),
+              child: Image.asset('assets/images/login.jpg'),
             ),
 
             TextFieldInput(
@@ -90,7 +90,7 @@ class _LoginPageState extends State<LoginPage> {
             TextFieldInput(
               icon: Icons.lock,
               textEditingController: passwordController,
-              hintText: 'Enter your passord',
+              hintText: 'Enter your password',
               textInputType: TextInputType.text,
               isPass: true,
             ),
