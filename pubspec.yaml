@@ -28,5 +28,10 @@ dev_dependencies:
 flutter:
 
   uses-material-design: true
+  fonts:
+    - family: CodeNewRoman
+      fonts:
+        - asset: assets/fonts/Code New Roman.otf
+
   assets:
-    - images/
+    - assets/images/
