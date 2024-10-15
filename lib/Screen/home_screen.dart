@@ -1,5 +1,9 @@
+// ignore_for_file: avoid_print, camel_case_types
+
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:go_parent/Screen/mission_screen.dart';
 
 import 'package:go_parent/Screen/profile_screen.dart';
 import 'package:go_parent/Widgets/side_menu.dart';
@@ -49,7 +53,8 @@ class _HomescreenState extends State<Homescreen> {
             onDestinationSelected: (index) => cont.selectedIndex.value = index,
             destinations: [
               NavigationDestination(icon: Icon(Icons.home), label: "Home"),
-              NavigationDestination(icon: Icon(Icons.task_rounded), label: "Missions"),
+              NavigationDestination(
+                  icon: Icon(Icons.task_rounded), label: "Missions"),
               NavigationDestination(icon: Icon(Icons.settings), label: "home"),
               NavigationDestination(
                   icon: Icon(Icons.person_2_rounded), label: "home"),
@@ -62,7 +67,7 @@ class _HomescreenState extends State<Homescreen> {
       drawer: SideMenu(),
 
       //obx
-       body: Obx(() {
+      body: Obx(() {
         return IndexedStack(
           index: cont.selectedIndex.value, // Maintain the selected index
           children: cont.screens, // The screens to display

@@ -123,7 +123,8 @@ class _MissionScreenState extends State<MissionScreen> {
                             setState(() {
                               _isMissionCompleted2[0] =
                                   !_isMissionCompleted2[0];
-                            if(progress <= 101){
+                                  
+                            if(progress <= 0){
                                 progress+=100;
                             }
                             else{
