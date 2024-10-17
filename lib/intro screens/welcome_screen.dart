@@ -1,3 +1,5 @@
+// ignore_for_file: use_super_parameters, library_private_types_in_public_api, unused_field, sort_child_properties_last
+
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -7,7 +9,7 @@ import 'package:lottie/lottie.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class WelcomeScreen extends StatefulWidget {
-  WelcomeScreen({Key? key}) : super(key: key);
+  const WelcomeScreen({Key? key}) : super(key: key);
   static String id = 'welcome_screen';
 
   @override

@@ -16,13 +16,13 @@ class SideMenu extends StatelessWidget {
               accountEmail: Text("I love Cannons"),
               currentAccountPicture: CircleAvatar(
                 child: ClipOval(
-                  child: Image.asset('images/tristana.png'),
+                  child: Image.asset('assets/images/tristana.png'),
                 ),
               ),
               decoration: BoxDecoration(
                 color: Colors.lightBlueAccent,
                 image: DecorationImage(
-                  image: AssetImage('images/tristanaa.jpg'),
+                  image: AssetImage('assets/images/tristanaa.jpg'),
                   fit: BoxFit.cover,
                 ),
               ),

@@ -17,7 +17,7 @@ import 'intro screens/splash_screen.dart';
 
 void main() async {
   SystemChrome.setSystemUIOverlayStyle(
-      SystemUiOverlayStyle(statusBarColor: Colors.black));
+      SystemUiOverlayStyle(statusBarColor:Color(0xFFB2DFDB)));
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
@@ -37,14 +37,16 @@ class MyApp extends StatelessWidget {
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
           useMaterial3: true,
         ),
-        //initialRoute: Signup.id,
-        //routes: {
-        //  Homescreen.id: (context) => Homescreen(),
-         // LoginPage.id: (context) => LoginPage(),
-         // Signup.id: (context) => Signup(),
-         // Logout.id: (context) => Logout(),
-       // },
-        home: IntroductionScreen(),
+        initialRoute: WelcomeScreen.id,
+        routes: {
+          SplashScreen.id: (context) => SplashScreen(),
+          WelcomeScreen.id: (context) => WelcomeScreen(),
+          Homescreen.id: (context) => Homescreen(),
+          LoginPage.id: (context) => LoginPage(),
+          Signup.id: (context) => Signup(),
+          Logout.id: (context) => Logout(),
+        },
+       // home: WelcomeScreen(),
         // StreamBuilder(stream: FirebaseAuth.instance.authStateChanges(), builder: (context, snapshot){
         //  if (snapshot.hasData){
         //     return Homescreen();
@@ -55,3 +57,6 @@ class MyApp extends StatelessWidget {
         );
   }
 }
+
+
+

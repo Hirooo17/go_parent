@@ -13,9 +13,11 @@ class _SettingsState extends State<Settings> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: Text("Settings"),
+        title: const Text("Settings"),
+        backgroundColor: Colors.lightGreen[600], // Light green app bar
       ),
-      body: CardSettings(),
+      body: const CardSettings(),
+      backgroundColor: Colors.lightGreen[50], // Soft green background
     );
   }
 }
@@ -28,61 +30,78 @@ class CardSettings extends StatelessWidget {
     return Align(
       alignment: Alignment.topCenter,
       child: Card(
-        
+        color: Colors.lightGreen[100], // Light green card background
+        margin: const EdgeInsets.all(16),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+        elevation: 4,
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const ListTile(//username
-              leading: Icon(Icons.settings),
-              title: Text('Change Username'),
-              subtitle: Text('Press continue'),
+            const SettingsTile(
+              icon: Icons.person,
+              title: 'Change Username',
+              subtitle: 'Press continue to update your username',
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                TextButton(onPressed: () {}, child: Text("Continue")),
-                const SizedBox(width: 8),
-              ],
+            const SettingsTile(
+              icon: Icons.lock,
+              title: 'Change Password',
+              subtitle: 'Ensure a strong password',
             ),
-            const ListTile(//for password
-              leading: Icon(Icons.settings),
-              title: Text('Change Password'),
-              subtitle: Text('Ensure A Strong Password'),
+            const SettingsTile(
+              icon: Icons.notifications,
+              title: 'Notification Settings',
+              subtitle: 'Adjust your notification preferences',
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                TextButton(onPressed: () {}, child: Text("Continue")),
-                const SizedBox(width: 8),
-              ],
-            ),
-            const ListTile(//for password
-              leading: Icon(Icons.settings),
-              title: Text('Change Password'),
-              subtitle: Text('Ensure A Strong Password'),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                TextButton(onPressed: () {}, child: Text("Continue")),
-                const SizedBox(width: 8),
-              ],
-            ),
-            const ListTile(//for password
-              leading: Icon(Icons.settings),
-              title: Text('Change Password'),
-              subtitle: Text('Ensure A Strong Password'),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                TextButton(onPressed: () {}, child: Text("Continue")),
-                const SizedBox(width: 8),
-              ],
+            const SettingsTile(
+              icon: Icons.privacy_tip,
+              title: 'Privacy Settings',
+              subtitle: 'Manage your privacy settings',
             ),
           ],
         ),
       ),
+    );
+  }
+}
+
+class SettingsTile extends StatelessWidget {
+  final IconData icon;
+  final String title;
+  final String subtitle;
+
+  const SettingsTile({
+    super.key,
+    required this.icon,
+    required this.title,
+    required this.subtitle,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        ListTile(
+          leading: Icon(icon, color: Colors.lightGreen[800]),
+          title: Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
+          subtitle: Text(subtitle),
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            TextButton(
+              onPressed: () {},
+              child: const Text("Continue"),
+              style: TextButton.styleFrom(
+                foregroundColor: Colors.lightGreen[800], // Light green button text
+              ),
+            ),
+            const SizedBox(width: 8),
+          ],
+        ),
+        const Divider(height: 1), // Divider between tiles
+      ],
     );
   }
 }
