@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_final_fields
+
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart'; // Add this for image picking
 import 'package:go_parent/Database/sqlite.dart';

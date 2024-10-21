@@ -19,26 +19,34 @@ class _LogoutState extends State<Logout> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: Container(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              MyButtons(
-                onTap: () async {
-                  // Logout using Firebase auth services
-                  await _authMethod.signOut();
-
-                  // Navigate to the login page after logout
-                  Navigator.of(context).pushReplacement(
-                    MaterialPageRoute(
-                      builder: (context) => const LoginPage(),
-                    ),
-                  );
-                },
-                text: "LOGOUT",
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            Expanded(
+              child: Center(
+                child: Text(
+                  'SCREEN UNDER MAINTENANCE, THIS IS A PROFILE SCREEN',
+                  style:
+                      TextStyle(fontSize: 24), // Customize your text style here
+                ),
               ),
-            ],
-          ),
+            ),
+            MyButtons(
+              onTap: () async {
+                // Logout using Firebase auth services
+                await _authMethod.signOut();
+
+                // Navigate to the login page after logout
+                Navigator.of(context).pushReplacement(
+                  MaterialPageRoute(
+                    builder: (context) => const LoginPage(),
+                  ),
+                );
+              },
+              text: "LOGOUT",
+            ),
+             SizedBox(height: 20),
+          ],
         ),
       ),
     );

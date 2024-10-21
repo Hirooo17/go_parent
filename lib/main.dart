@@ -13,11 +13,12 @@ import 'package:go_parent/Widgets/side_menu.dart';
 import 'package:go_parent/intro%20screens/welcome_screen.dart';
 
 import 'Database/firebase_options.dart';
-import 'intro screens/splash_screen.dart';
+
 
 void main() async {
   SystemChrome.setSystemUIOverlayStyle(
-      SystemUiOverlayStyle(statusBarColor:Color(0xFFB2DFDB)));
+    SystemUiOverlayStyle(statusBarColor: Color(0xFFB2DFDB)),
+  );
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
@@ -26,37 +27,44 @@ void main() async {
 }
 
 class MyApp extends StatelessWidget {
+  
   const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
+   
     return MaterialApp(
-        debugShowCheckedModeBanner: false,
-        title: 'GO PARENT',
-        theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-          useMaterial3: true,
-        ),
-        initialRoute: WelcomeScreen.id,
-        routes: {
-          SplashScreen.id: (context) => SplashScreen(),
-          WelcomeScreen.id: (context) => WelcomeScreen(),
-          Homescreen.id: (context) => Homescreen(),
-          LoginPage.id: (context) => LoginPage(),
-          Signup.id: (context) => Signup(),
-          Logout.id: (context) => Logout(),
+      debugShowCheckedModeBanner: false,
+      title: 'GO PARENT',
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        useMaterial3: true,
+      ),
+      home: StreamBuilder<User?>(
+        stream: FirebaseAuth.instance.authStateChanges(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            // Show splash screen while waiting for authentication
+            return WelcomeScreen();
+          } else if (snapshot.hasData) {
+            // User is logged in, show the home screen
+            return LoginPage();
+          } else {
+            // User is not logged in, show the login page
+            return WelcomeScreen(); // You can change this to LoginPage if you prefer
+          }
         },
-       // home: WelcomeScreen(),
-        // StreamBuilder(stream: FirebaseAuth.instance.authStateChanges(), builder: (context, snapshot){
-        //  if (snapshot.hasData){
-        //     return Homescreen();
-        //  }else{
-        //  return LoginPage();
-        //  }
-        //  }),
-        );
+      ),
+      // Uncomment if you want to use named routes
+      /*
+      routes: {
+        SplashScreen.id: (context) => SplashScreen(),
+        WelcomeScreen.id: (context) => WelcomeScreen(),
+        Homescreen.id: (context) => Homescreen(),
+        LoginPage.id: (context) => LoginPage(),
+        Signup.id: (context) => Signup(),
+      },
+      */
+    );
   }
 }
-
-
-

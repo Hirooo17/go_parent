@@ -1,18 +1,31 @@
 import 'package:flutter/material.dart';
+import 'package:go_parent/LoginPage/login_screen.dart';
+import 'package:go_parent/LoginPage/signup_screen.dart';
 import 'package:go_parent/Screen/settings.dart';
+import 'package:go_parent/Widgets/button.dart';
+import 'package:go_parent/authentication/auth.dart';
 
 class SideMenu extends StatelessWidget {
-  const SideMenu({super.key});
+  AuthMethod get _authMethod => AuthMethod();
+  final String username;
+  
+  
+   const SideMenu({
+    super.key,
+    required this.username
+    });
+  
 
   @override
   Widget build(BuildContext context) {
+    
     return SafeArea(
       child: Drawer(
         child: ListView(
           padding: EdgeInsets.zero,
           children: [
             UserAccountsDrawerHeader(
-              accountName: Text("Tristana"),
+              accountName: Text(username),
               accountEmail: Text("I love Cannons"),
               currentAccountPicture: CircleAvatar(
                 child: ClipOval(
@@ -54,8 +67,26 @@ class SideMenu extends StatelessWidget {
               title: Text("Notifications"),
               onTap: () {},
             ),
+            SizedBox(height:300),
+            MyButtons(
+              onTap: () async {
+                // Logout using Firebase auth services
+                await _authMethod.signOut();
+
+                // Navigate to the login page after logout
+                Navigator.of(context).pushReplacement(
+                  MaterialPageRoute(
+                    builder: (context) => const LoginPage(),
+                  ),
+                );
+              },
+              text: "LOGOUT",
+            ),
           ],
+          
+
         ),
+        
       ),
     );
   }

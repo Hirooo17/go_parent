@@ -6,14 +6,23 @@ import 'package:go_parent/Screen/profile_screen.dart';
 import 'package:go_parent/Widgets/side_menu.dart';
 
 class Homescreen extends StatefulWidget {
-  const Homescreen({super.key});
+    final String username;
+
+
+  
+  const Homescreen({
+    super.key,
+    required this.username
+  });
   static String id = 'home_screen';
+ 
 
   @override
   State<Homescreen> createState() => _HomescreenState();
 }
 
 class _HomescreenState extends State<Homescreen> {
+  
   final FirebaseAuth _auth = FirebaseAuth.instance;
   User? loggedInUser;
   
@@ -64,7 +73,7 @@ class _HomescreenState extends State<Homescreen> {
       appBar: AppBar(title: Text("Home")),
 
       // Drawer
-      drawer: SideMenu(),
+      drawer: SideMenu(username: widget.username),
 
       // Body
       body: Obx(() {

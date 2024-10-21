@@ -150,7 +150,11 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                   children: [
                     ElevatedButton(
                       onPressed: () {
-                        Navigator.pushNamed(context, Signup.id);
+                        Navigator.of(context).pushReplacement(
+                          MaterialPageRoute(
+                            builder: (context) => Signup()
+                          ),
+                        );
                       },
                       child: const Text('SIGN UP FOR FREE'),
                       style: ElevatedButton.styleFrom(
@@ -165,7 +169,11 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                     const SizedBox(height: 20),
                     TextButton(
                       onPressed: () {
-                        Navigator.pushNamed(context, LoginPage.id);
+                        Navigator.of(context).pushReplacement(
+                          MaterialPageRoute(
+                            builder: (context) =>LoginPage()
+                          ),
+                        );
                       },
                       child: const Text('SIGN IN'),
                       style: TextButton.styleFrom(

@@ -1,0 +1,11 @@
+{
+    "configurations": [
+        {
+            "name": "go_parent (Flutter M2007J20CG)",
+            "program": "lib/main.dart",
+            "deviceId": "6f0f3dda",
+            "request": "launch",
+            "type": "dart"
+        }
+    ]
+}

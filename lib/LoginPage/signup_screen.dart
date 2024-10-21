@@ -51,7 +51,7 @@ class _SignupState extends State<Signup> {
         // Optionally update the user's display name
         await userCredential.user!.updateDisplayName(nameController.text);
 
-        Navigator.pushReplacementNamed(context, Homescreen.id);
+        Navigator.pushReplacementNamed(context, LoginPage.id);
       }
     } on FirebaseAuthException catch (e) {
       String errorMessage;
@@ -135,6 +135,7 @@ class _SignupState extends State<Signup> {
                 SizedBox(
                   width: mobileSize,
                   child: TextFieldInput(
+                    
                       icon: Icons.person,
                       textEditingController: nameController,
                       hintText: 'Enter your name',
