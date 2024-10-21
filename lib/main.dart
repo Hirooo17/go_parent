@@ -5,13 +5,12 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_parent/LoginPage/login_screen.dart';
-import 'package:go_parent/LoginPage/signup_screen.dart';
+import 'package:go_parent/LoginPage/SignupPage/signup_screen.dart';
 import 'package:go_parent/Screen/home_screen.dart';
 import 'package:go_parent/Screen/introduction_screen.dart';
 import 'package:go_parent/Screen/profile_screen.dart';
 import 'package:go_parent/Widgets/side_menu.dart';
 import 'package:go_parent/intro%20screens/welcome_screen.dart';
-
 import 'Database/firebase_options.dart';
 import 'intro screens/splash_screen.dart';
 

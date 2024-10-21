@@ -2,7 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:get/get_navigation/src/extension_navigation.dart';
-import 'package:go_parent/LoginPage/signup_screen.dart';
+import 'package:go_parent/LoginPage/SignupPage/signup_screen.dart';
 import 'package:go_parent/intro%20screens/intro_screens_1.dart';
 import 'package:go_parent/intro%20screens/intro_screens_2.dart';
 import 'package:go_parent/intro%20screens/intro_screens_3.dart';
