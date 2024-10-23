@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
 
-
 class VerificationCountdown extends StatefulWidget {
   const VerificationCountdown({super.key});
 
@@ -65,6 +64,4 @@ class _VerificationCountdown extends State<VerificationCountdown> {
                 ),
               ),);
   }
-
-  
 }
