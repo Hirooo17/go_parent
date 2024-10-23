@@ -4,13 +4,12 @@ import 'package:flutter/services.dart';
 import 'package:go_parent/LoginPage/SignupPage/calculate_age.dart';
 import 'package:go_parent/LoginPage/SignupPage/verification_countdown.dart';
 import 'package:go_parent/LoginPage/login_screen.dart';
-import 'package:go_parent/Screen/home_screen.dart';
 import 'package:go_parent/Widgets/text_field.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:go_parent/Widgets/floating_label_textfield.dart';
+import 'package:go_parent/LoginPage/SignupPage/signup_brain.dart';
 
 class Signup extends StatefulWidget {
-
   const Signup({super.key});
   static String id = 'signup_screen';
 
@@ -36,6 +35,8 @@ class _SignupState extends State<Signup> {
 
   final PageController _pageController = PageController();
   int currentSlide = 0;
+
+  SignupBrain signupBrain = SignupBrain();
 
   @override
   void dispose() {
@@ -84,8 +85,17 @@ class _SignupState extends State<Signup> {
     }
   }
 
+  void formOneHandler() {
+
+
+    if (signupBrain.passwordChecker(
+        passwordController,confirmPasswordController, context)) {
+      nextForm();
+    }
+  }
+
   @override
-    Widget build(BuildContext context) {
+  Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
 
     return Scaffold(
@@ -95,7 +105,7 @@ class _SignupState extends State<Signup> {
         child: Center(
           child: ConstrainedBox(
             constraints: BoxConstraints(
-              maxWidth: 900,
+              maxWidth: 600,
               minWidth: 400,
             ),
             child: Column(
@@ -167,7 +177,7 @@ class _SignupState extends State<Signup> {
                                   color: Color(0xFF009688),
                                   borderRadius: BorderRadius.circular(30.0),
                                   child: MaterialButton(
-                                    onPressed: nextForm,
+                                    onPressed: formOneHandler,
                                     minWidth: mobileSize * .4,
                                     height: 50.0,
                                     child: Text(
