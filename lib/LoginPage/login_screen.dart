@@ -127,7 +127,7 @@ class _LoginPageState extends State<LoginPage> {
                 RoundedButton(
                     title: "LOGIN",
                     color: Colors.lightBlueAccent,
-                    onPressed: loginUser),
+                    onPressed: byPass),
 
                 SizedBox(height: height / 15), // Add space before sign up
 
