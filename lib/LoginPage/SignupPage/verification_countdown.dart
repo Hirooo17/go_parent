@@ -48,7 +48,7 @@ class _VerificationCountdown extends State<VerificationCountdown> {
     return Center(child: _secondsLeft > 0
             ? Text(
                 '$_secondsLeft seconds left',
-                style: TextStyle(fontSize: 30),
+                style: TextStyle(fontSize: 16),
               )
             : GestureDetector(
                 onTap: () {
@@ -57,8 +57,8 @@ class _VerificationCountdown extends State<VerificationCountdown> {
                 child: Text(
                   'Resend',
                   style: TextStyle(
-                    fontSize: 30,
-                    color: Colors.blue,
+                    fontSize: 16,
+                    color: Colors.black45,
                     decoration: TextDecoration.underline,
                   ),
                 ),

@@ -86,10 +86,9 @@ class _SignupState extends State<Signup> {
   }
 
   void formOneHandler() {
-
-
-    if (signupBrain.passwordChecker(
-        passwordController,confirmPasswordController, context)) {
+    if (signupBrain.emailChecker(emailController, context) &&
+        signupBrain.passwordChecker(
+            passwordController, confirmPasswordController, context)) {
       nextForm();
     }
   }
@@ -198,53 +197,68 @@ class _SignupState extends State<Signup> {
                             padding: const EdgeInsets.all(42),
                             child: SingleChildScrollView(
                               child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
                                   Column(
                                     crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                                        CrossAxisAlignment.center,
                                     children: [
-                                      Text(
-                                        "Now Let's Make you a \nGoParent Member.",
-                                        style: TextStyle(
-                                          fontSize: 24,
-                                          fontWeight: FontWeight.bold,
-                                          fontFamily: 'CodeNewRoman',
-                                        ),
-                                      ),
-                                      SizedBox(height: 10),
-                                      Text(
-                                        "We've sent a code to",
-                                        style: TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.normal,
-                                        ),
-                                      ),
-                                      Row(
-                                        children: [
-                                          Text(
-                                            "changeTo@UserEmailVariable.",
-                                            style: TextStyle(
-                                              fontSize: 16,
-                                              fontFamily: 'CodeNewRoman',
-                                            ),
+                                         Text(
+                                          "Now Let's Make you a",
+                                          style: TextStyle(
+                                            fontSize: 24,
+                                            fontWeight: FontWeight.bold,
+                                            fontFamily: 'CodeNewRoman',
                                           ),
-                                          GestureDetector(
-                                            onTap: previousForm,
-                                            child: Text(
-                                              "Edit",
+                                        ),
+                                        Text(
+                                          "GoParent Member.",
+                                          style: TextStyle(
+                                            fontSize: 24,
+                                            fontWeight: FontWeight.bold,
+                                            fontFamily: 'CodeNewRoman',
+                                          ),
+                                        ),
+                                      SizedBox(height: 60),
+                                  
+                                        
+                                         Align(
+                                          alignment: Alignment.centerLeft,
+                                           child: Text(
+                                              "We've sent a code to",
                                               style: TextStyle(
-                                                decoration:
-                                                    TextDecoration.underline,
                                                 fontSize: 16,
-                                                fontFamily: 'CodeNewRoman',
-                                                color: Colors.black45,
+                                                fontWeight: FontWeight.normal,
                                               ),
                                             ),
-                                          )
-                                        ],
-                                      ),
-                                      SizedBox(height: 10),
+                                         ),
+                                       
+                                          Row(
+                                          mainAxisAlignment: MainAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                emailController.text,
+                                                style: TextStyle(
+                                                  fontSize: 16,
+                                                  fontFamily: 'CodeNewRoman',
+                                                ),
+                                              ),
+                                              GestureDetector(
+                                                onTap: previousForm,
+                                                child: Text(
+                                                  "Edit",
+                                                  style: TextStyle(
+                                                    decoration:
+                                                        TextDecoration.underline,
+                                                    fontSize: 16,
+                                                    fontFamily: 'CodeNewRoman',
+                                                    color: Colors.black45,
+                                                  ),
+                                                ),
+                                              )
+                                            ],
+                                          ),
+                                      SizedBox(height: 20),
                                     ],
                                   ),
                                   Column(
@@ -289,7 +303,11 @@ class _SignupState extends State<Signup> {
                                       SizedBox(height: 10),
                                       Align(
                                         alignment: Alignment.topRight,
-                                        child: VerificationCountdown(),
+                                        child: Container
+                                        (
+                                          height: 20,
+                                          width: 60,
+                                          child: VerificationCountdown(),),
                                       ),
                                       SizedBox(height: 60),
                                     ],
@@ -369,23 +387,38 @@ class _SignupState extends State<Signup> {
                                       CalculateAge(),
                                     ],
                                   ),
-                                  SizedBox(height: 90),
+                                  SizedBox(height: 60),
                                   TextButton(
                                     style: TextButton.styleFrom(
                                       foregroundColor: Colors.white,
                                       backgroundColor: Colors.teal,
-                                      minimumSize: Size(1000, 45),
+                                      minimumSize: Size(1000, 55),
                                       shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.zero,
+                                        borderRadius: BorderRadius.circular(9),
                                       ),
                                     ),
                                     onPressed: () {
                                       //implement
                                     },
-                                    child: Text('SIGN IN'),
+                                    child: Text('SIGN IN', style: TextStyle(fontSize: 18),),
                                   ),
                                   SizedBox(height: 90),
+
+                                Row(
+                                  
+                                  children: [ 
+
+                                    SizedBox(width: 60,),
+                                    Expanded(child: Text("We are dedicated to protecting your privacy.", style:TextStyle(fontSize: 14))),
+
+                                Expanded(child: Text('The data you provide will be used exclusively to enable the app to perform its intended functions and will not be shared or used for any other purpose.', style: TextStyle(fontSize:14),))
+                                 
+                                 
+                                  ],
+                                ),
+                               
                                 ],
+
                               ),
                             ),
                           ),
