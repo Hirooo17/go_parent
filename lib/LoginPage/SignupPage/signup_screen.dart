@@ -407,11 +407,10 @@ class _SignupState extends State<Signup> {
                                 Row(
                                   
                                   children: [ 
-
-                                    SizedBox(width: 60,),
-                                    Expanded(child: Text("We are dedicated to protecting your privacy.", style:TextStyle(fontSize: 14))),
-
-                                Expanded(child: Text('The data you provide will be used exclusively to enable the app to perform its intended functions and will not be shared or used for any other purpose.', style: TextStyle(fontSize:14),))
+                                    SizedBox(width: 60),
+                                    Container(
+                                      width: 380,
+                                      child: Text("We are dedicated to protecting your privacy. \nThe data you provide will be used exclusively to enable the app to perform its intended functions and will not be shared or used for any other purpose.\n\n-GoParent Team", style:TextStyle(fontSize: 14, fontStyle: FontStyle.italic))),
                                  
                                  
                                   ],
