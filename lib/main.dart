@@ -11,7 +11,10 @@ import 'package:go_parent/Screen/introduction_screen.dart';
 import 'package:go_parent/Screen/profile_screen.dart';
 import 'package:go_parent/Widgets/side_menu.dart';
 import 'package:go_parent/intro%20screens/welcome_screen.dart';
+
+import 'Database/package:go_parent/intro%20screens/welcome_screen.dart';
 //import 'Database/firebase_options.dart';
+
 import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'intro screens/splash_screen.dart';
 
@@ -39,33 +42,44 @@ void main() async {
 }
 
 class MyApp extends StatelessWidget {
+  
   const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
+   
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'GO PARENT',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.teal),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      initialRoute: Signup.id,
+      home: StreamBuilder<User?>(
+        stream: FirebaseAuth.instance.authStateChanges(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            // Show splash screen while waiting for authentication
+            return WelcomeScreen();
+          } else if (snapshot.hasData) {
+            // User is logged in, show the home screen
+            return LoginPage();
+          } else {
+            // User is not logged in, show the login page
+            return WelcomeScreen(); // You can change this to LoginPage if you prefer
+          }
+        },
+      ),
+      // Uncomment if you want to use named routes
+      /*
       routes: {
         SplashScreen.id: (context) => SplashScreen(),
         WelcomeScreen.id: (context) => WelcomeScreen(),
         Homescreen.id: (context) => Homescreen(),
         LoginPage.id: (context) => LoginPage(),
         Signup.id: (context) => Signup(),
-        Logout.id: (context) => Logout(),
       },
-      // StreamBuilder(stream: FirebaseAuth.instance.authStateChanges(), builder: (context, snapshot){
-      //  if (snapshot.hasData){
-      //     return Homescreen();
-      //  }else{
-      //  return LoginPage();
-      //  }
-      //  }),
+      */
     );
   }
 }

@@ -13,7 +13,7 @@ class TextFieldInput extends StatefulWidget {
     this.isPass = false,
     required this.hintText,
     this.icon,
-    required this.textInputType,
+    required this.textInputType, 
   });
 
   @override
