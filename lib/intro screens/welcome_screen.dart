@@ -1,15 +1,13 @@
-// ignore_for_file: use_super_parameters, library_private_types_in_public_api, unused_field, sort_child_properties_last
-
 import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:go_parent/LoginPage/login_screen.dart';
-import 'package:go_parent/LoginPage/signup_screen.dart';
+import 'package:go_parent/LoginPage/SignupPage/signup_screen.dart';
 import 'package:lottie/lottie.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class WelcomeScreen extends StatefulWidget {
-  const WelcomeScreen({Key? key}) : super(key: key);
+  WelcomeScreen({Key? key}) : super(key: key);
   static String id = 'welcome_screen';
 
   @override
@@ -150,11 +148,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                   children: [
                     ElevatedButton(
                       onPressed: () {
-                        Navigator.of(context).pushReplacement(
-                          MaterialPageRoute(
-                            builder: (context) => Signup()
-                          ),
-                        );
+                        Navigator.pushNamed(context, Signup.id);
                       },
                       child: const Text('SIGN UP FOR FREE'),
                       style: ElevatedButton.styleFrom(
@@ -169,11 +163,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                     const SizedBox(height: 20),
                     TextButton(
                       onPressed: () {
-                        Navigator.of(context).pushReplacement(
-                          MaterialPageRoute(
-                            builder: (context) =>LoginPage()
-                          ),
-                        );
+                        Navigator.pushNamed(context, LoginPage.id);
                       },
                       child: const Text('SIGN IN'),
                       style: TextButton.styleFrom(

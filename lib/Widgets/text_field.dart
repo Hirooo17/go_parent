@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 
-class TextFieldInput extends StatelessWidget {
+class TextFieldInput extends StatefulWidget {
   final TextEditingController textEditingController;
   final bool isPass;
   final String hintText;
   final IconData? icon;
   final TextInputType textInputType;
+
   const TextFieldInput({
     super.key,
     required this.textEditingController,
@@ -16,15 +17,22 @@ class TextFieldInput extends StatelessWidget {
   });
 
   @override
+  _TextFieldInputState createState() => _TextFieldInputState();
+}
+
+class _TextFieldInputState extends State<TextFieldInput> {
+  bool _isPasswordVisible = false;
+
+  @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+      padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 20),
       child: TextField(
         style: const TextStyle(fontSize: 20),
-        controller: textEditingController,
+        controller: widget.textEditingController,
         decoration: InputDecoration(
-          prefixIcon: Icon(icon, color: Colors.black54),
-          hintText: hintText,
+          prefixIcon: Icon(widget.icon, color: Colors.black45),
+          hintText: widget.hintText,
           hintStyle: const TextStyle(color: Colors.black45, fontSize: 18),
           enabledBorder: OutlineInputBorder(
             borderSide: BorderSide.none,
@@ -32,18 +40,33 @@ class TextFieldInput extends StatelessWidget {
           ),
           border: InputBorder.none,
           focusedBorder: OutlineInputBorder(
-            borderSide: const BorderSide(color: Colors.blue, width: 2),
+            borderSide: const BorderSide(color: Colors.teal, width: 2),
             borderRadius: BorderRadius.circular(30),
           ),
           filled: true,
           fillColor: const Color(0xFFedf0f8),
           contentPadding: const EdgeInsets.symmetric(
-            vertical: 15,
+            vertical: 12,
             horizontal: 20,
           ),
+          suffixIcon: widget.isPass
+              ? GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      _isPasswordVisible = !_isPasswordVisible;
+                    });
+                  },
+                  child: Icon(
+                    _isPasswordVisible
+                        ? Icons.visibility
+                        : Icons.visibility_off,
+                    color: Colors.black45,
+                  ),
+                )
+              : null,
         ),
-        keyboardType: textInputType,
-        obscureText: isPass,
+        keyboardType: widget.textInputType,
+        obscureText: widget.isPass && !_isPasswordVisible,
       ),
     );
   }

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:go_parent/LoginPage/signup_screen.dart';
+import 'package:go_parent/LoginPage/SignupPage/signup_screen.dart';
 import 'package:go_parent/Screen/home_screen.dart';
 import 'package:go_parent/Widgets/RoundedButton.dart';
 import 'package:go_parent/Widgets/snackbar.dart';
@@ -78,7 +78,6 @@ class _LoginPageState extends State<LoginPage> {
       backgroundColor: Colors.white,
       resizeToAvoidBottomInset: true, // Let the screen adjust when keyboard shows
       body: SafeArea(
-        
         child: SingleChildScrollView(
           // Ensure it scrolls when the keyboard shows
           child: Padding(
