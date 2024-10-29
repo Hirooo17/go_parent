@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:go_parent/LoginPage/signup_screen.dart';
+import 'package:go_parent/LoginPage/SignupPage/signup_screen.dart';
 import 'package:go_parent/Screen/home_screen.dart';
 import 'package:go_parent/Widgets/RoundedButton.dart';
 import 'package:go_parent/Widgets/snackbar.dart';
@@ -78,6 +78,29 @@ class _LoginPageState extends State<LoginPage> {
       backgroundColor: Colors.white,
       resizeToAvoidBottomInset: true, // Let the screen adjust when keyboard shows
       body: SafeArea(
+          child: SizedBox(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            SizedBox(
+              width: double.infinity,
+              height: height / 2.7,
+              child: Image.asset('assets/images/login.jpg'),
+            ),
+
+            TextFieldInput(
+                icon: Icons.person,
+                textEditingController: emailController,
+                hintText: 'Enter your email',
+                textInputType: TextInputType.text),
+
+            TextFieldInput(
+              icon: Icons.lock,
+              textEditingController: passwordController,
+              hintText: 'Enter your password',
+              textInputType: TextInputType.text,
+              isPass: true,
+            ),
         child: SingleChildScrollView(
           // Ensure it scrolls when the keyboard shows
           child: Padding(
