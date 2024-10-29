@@ -2,6 +2,7 @@
 
 //import 'package:firebase_auth/firebase_auth.dart';
 //import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_parent/LoginPage/login_screen.dart';
@@ -12,7 +13,7 @@ import 'package:go_parent/Screen/profile_screen.dart';
 import 'package:go_parent/Widgets/side_menu.dart';
 import 'package:go_parent/intro%20screens/welcome_screen.dart';
 
-import 'Database/package:go_parent/intro%20screens/welcome_screen.dart';
+
 //import 'Database/firebase_options.dart';
 
 import 'package:bitsdojo_window/bitsdojo_window.dart';
