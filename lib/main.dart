@@ -48,7 +48,7 @@ class MyApp extends StatelessWidget {
             return WelcomeScreen();
           } else if (snapshot.hasData) {
             // User is logged in, show the home screen
-            return LoginPage();
+            return WelcomeScreen();
           } else {
             // User is not logged in, show the login page
             return WelcomeScreen(); // You can change this to LoginPage if you prefer

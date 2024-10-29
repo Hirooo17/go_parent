@@ -1,5 +1,6 @@
 {
     "configurations": [
+        
         {
             "name": "go_parent (Flutter M2007J20CG)",
             "program": "lib/main.dart",

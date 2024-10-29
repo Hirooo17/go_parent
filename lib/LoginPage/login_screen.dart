@@ -78,11 +78,13 @@ class _LoginPageState extends State<LoginPage> {
       backgroundColor: Colors.white,
       resizeToAvoidBottomInset: true, // Let the screen adjust when keyboard shows
       body: SafeArea(
+        
         child: SingleChildScrollView(
           // Ensure it scrolls when the keyboard shows
           child: Padding(
             padding: EdgeInsets.only(bottom: keyboardHeight),
             child: Column(
+              
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 SizedBox(
@@ -127,7 +129,7 @@ class _LoginPageState extends State<LoginPage> {
                 RoundedButton(
                     title: "LOGIN",
                     color: Colors.lightBlueAccent,
-                    onPressed: loginUser),
+                    onPressed: byPass),
 
                 SizedBox(height: height / 15), // Add space before sign up
 
@@ -147,7 +149,7 @@ class _LoginPageState extends State<LoginPage> {
                             fontWeight: FontWeight.bold, fontSize: 16),
                       ),
                     )
-                  ],
+                  ], 
                 )
               ],
             ),
