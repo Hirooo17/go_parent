@@ -25,6 +25,7 @@ dependencies:
   sqflite: ^2.4.0
   image_picker: ^0.8.5+3
   flutter_easy_faq: ^1.0.1
+  email_otp: ^3.0.2
   
 dev_dependencies:
   flutter_test:

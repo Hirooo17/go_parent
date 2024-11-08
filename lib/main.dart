@@ -56,6 +56,8 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
+      
+      /*
       home: StreamBuilder<User?>(
         stream: FirebaseAuth.instance.authStateChanges(),
         builder: (context, snapshot) {
@@ -70,17 +72,17 @@ class MyApp extends StatelessWidget {
             return WelcomeScreen(); // You can change this to LoginPage if you prefer
           }
         },
+
       ),
-      // Uncomment if you want to use named routes
-      /*
+*/
+      initialRoute: Signup.id,
       routes: {
         SplashScreen.id: (context) => SplashScreen(),
         WelcomeScreen.id: (context) => WelcomeScreen(),
-        Homescreen.id: (context) => Homescreen(),
+      //  Homescreen.id: (context) => Homescreen(),
         LoginPage.id: (context) => LoginPage(),
         Signup.id: (context) => Signup(),
       },
-      */
     );
   }
 }

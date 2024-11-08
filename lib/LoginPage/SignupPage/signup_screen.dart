@@ -1,3 +1,4 @@
+import 'package:email_otp/email_otp.dart';
 //import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -85,13 +86,26 @@ class _SignupState extends State<Signup> {
     }
   }
 
-  void formOneHandler() {
-    if (signupBrain.emailChecker(emailController, context) &&
-        signupBrain.passwordChecker(
-            passwordController, confirmPasswordController, context)) {
-      nextForm();
-    }
+void formOneHandler() async {
+  bool otpSent = await EmailOTP.sendOTP(email: emailController.text);
+
+  if (otpSent) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text("OTP has been sent")),
+    );
+  } else {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text("OTP failed to send")),
+    );
+    return; 
   }
+
+  if (signupBrain.emailChecker(emailController, context) &&
+      signupBrain.passwordChecker(
+          passwordController, confirmPasswordController, context)) {
+    nextForm(); 
+  }
+}
 
   @override
   Widget build(BuildContext context) {
@@ -176,7 +190,7 @@ class _SignupState extends State<Signup> {
                                   color: Color(0xFF009688),
                                   borderRadius: BorderRadius.circular(30.0),
                                   child: MaterialButton(
-                                    onPressed: formOneHandler,
+                                    onPressed:  formOneHandler,                                                                                                           
                                     minWidth: mobileSize * .4,
                                     height: 50.0,
                                     child: Text(
