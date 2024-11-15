@@ -34,6 +34,8 @@ class _SignupState extends State<Signup> {
   final double mobileSize = 700;
   bool isLoading = false;
 
+  List<String> otpValues = List.generate(6, (index) => '');
+
   final PageController _pageController = PageController();
   int currentSlide = 0;
 
@@ -86,26 +88,32 @@ class _SignupState extends State<Signup> {
     }
   }
 
-void formOneHandler() async {
-  bool otpSent = await EmailOTP.sendOTP(email: emailController.text);
 
-  if (otpSent) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text("OTP has been sent")),
-    );
-  } else {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text("OTP failed to send")),
-    );
-    return; 
+  void formOneHandler() async {
+    if (signupBrain.emailChecker(emailController, context) && passwordController.text.isNotEmpty &&
+        signupBrain.passwordChecker(passwordController, confirmPasswordController, context)) {
+      return;
+    }
+
+    bool otpSent = await EmailOTP.sendOTP(email: emailController.text);
+
+    if (otpSent) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("OTP has been sent")),
+      );
+      nextForm();
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("OTP failed to send")),
+      );
+      return;
+    }
   }
 
-  if (signupBrain.emailChecker(emailController, context) &&
-      signupBrain.passwordChecker(
-          passwordController, confirmPasswordController, context)) {
-    nextForm(); 
+  void verifyUserRegistration() {
+
   }
-}
+
 
   @override
   Widget build(BuildContext context) {
@@ -190,7 +198,7 @@ void formOneHandler() async {
                                   color: Color(0xFF009688),
                                   borderRadius: BorderRadius.circular(30.0),
                                   child: MaterialButton(
-                                    onPressed:  formOneHandler,                                                                                                           
+                                    onPressed:  formOneHandler,
                                     minWidth: mobileSize * .4,
                                     height: 50.0,
                                     child: Text(
@@ -234,8 +242,8 @@ void formOneHandler() async {
                                           ),
                                         ),
                                       SizedBox(height: 60),
-                                  
-                                        
+
+
                                          Align(
                                           alignment: Alignment.centerLeft,
                                            child: Text(
@@ -246,7 +254,7 @@ void formOneHandler() async {
                                               ),
                                             ),
                                          ),
-                                       
+
                                           Row(
                                           mainAxisAlignment: MainAxisAlignment.start,
                                             children: [
@@ -289,35 +297,34 @@ void formOneHandler() async {
                                       ),
                                       Row(
                                         children: [
-                                          for (int i = 0; i < 5; i++) ...[
+                                          for (int i = 0; i < 6; i++) ...[
                                             Expanded(
                                               child: TextFormField(
                                                 onSaved: (pin) {},
                                                 onChanged: (value) {
                                                   if (value.length == 1) {
-                                                    FocusScope.of(context)
-                                                        .nextFocus();
+                                                    otpValues[i] = value; // Save the value to the list
+                                                    if (i < 5) {
+                                                      FocusScope.of(context).nextFocus();
+                                                    }
                                                   }
                                                 },
                                                 textAlign: TextAlign.center,
-                                                keyboardType:
-                                                    TextInputType.number,
+                                                keyboardType: TextInputType.number,
                                                 inputFormatters: [
-                                                  LengthLimitingTextInputFormatter(
-                                                      1),
-                                                  FilteringTextInputFormatter
-                                                      .digitsOnly,
+                                                  LengthLimitingTextInputFormatter(1),
+                                                  FilteringTextInputFormatter.digitsOnly,
                                                 ],
                                               ),
                                             ),
-                                            if (i < 4) SizedBox(width: 8),
+                                            if (i < 5) SizedBox(width: 8),
                                           ],
                                         ],
                                       ),
                                       SizedBox(height: 10),
                                       Align(
                                         alignment: Alignment.topRight,
-                                        child: Container
+                                        child: SizedBox
                                         (
                                           height: 20,
                                           width: 60,
@@ -412,26 +419,26 @@ void formOneHandler() async {
                                       ),
                                     ),
                                     onPressed: () {
-                                      //implement
+                                      String otp = otpValues.join('');
+                                      EmailOTP.verifyOTP(otp: otp);
                                     },
                                     child: Text('SIGN IN', style: TextStyle(fontSize: 18),),
                                   ),
                                   SizedBox(height: 90),
 
                                 Row(
-                                  
-                                  children: [ 
+
+                                  children: [
                                     SizedBox(width: 60),
-                                    Container(
+                                    SizedBox(
                                       width: 380,
                                       child: Text("We are dedicated to protecting your privacy. \nThe data you provide will be used exclusively to enable the app to perform its intended functions and will not be shared or used for any other purpose.\n\n-GoParent Team", style:TextStyle(fontSize: 14, fontStyle: FontStyle.italic))),
-                                 
-                                 
+
+
                                   ],
                                 ),
-                               
-                                ],
 
+                                ],
                               ),
                             ),
                           ),
@@ -454,6 +461,7 @@ void formOneHandler() async {
                               ),
                             ),
                           ],
+
                         ),
                       ),
                     ],

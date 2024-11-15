@@ -12,15 +12,18 @@ import 'package:go_parent/Screen/introduction_screen.dart';
 import 'package:go_parent/Screen/profile_screen.dart';
 import 'package:go_parent/Widgets/side_menu.dart';
 import 'package:go_parent/intro%20screens/welcome_screen.dart';
-
-
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
+import 'Database/sqlite.dart';
 //import 'Database/firebase_options.dart';
-
 import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'intro screens/splash_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+    // Initialize sqflite_common_ffi for desktop platforms
+  sqfliteFfiInit();
+  databaseFactory = databaseFactoryFfi;
 
   SystemChrome.setSystemUIOverlayStyle(
       SystemUiOverlayStyle(statusBarColor: Colors.black));
@@ -40,15 +43,21 @@ void main() async {
   });
 
   runApp(const MyApp());
+
+  UserModel user = UserModel(
+    useremail: 'test@example.com',
+    userpassword: 'password123',
+  );
+  await insertUser(user);
 }
 
 class MyApp extends StatelessWidget {
-  
+
   const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-   
+
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'GO PARENT',
@@ -56,7 +65,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      
+
       /*
       home: StreamBuilder<User?>(
         stream: FirebaseAuth.instance.authStateChanges(),

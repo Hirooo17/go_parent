@@ -5,6 +5,7 @@ class VerificationCountdown extends StatefulWidget {
   const VerificationCountdown({super.key});
 
   @override
+  // ignore: library_private_types_in_public_api
   _VerificationCountdown createState() => _VerificationCountdown();
 }
 
