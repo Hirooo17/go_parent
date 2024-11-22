@@ -30,28 +30,26 @@ void main() async {
   print("Checking existing tables:");
   await dbService.listTables(); // Check the list of tables
 
-  final db = await dbService.database;
+//   final db = await dbService.database;
 
-  // Initialize the helper
-  final userHelper = UserHelper(db);
+//   // Initialize the helper
+//   final userHelper = UserHelper(db);
 
-  // Insert a new user
-  final user = UserModel(
-  username: 'john_doe',
-  email: 'john@example.com',
-  password: 'hashedpassword123',
-  totalScore: 0,
-  createdAt: DateTime.now(),
-  updatedAt: DateTime.now(),
-  );
-  await userHelper.insertUser(user);
+//   // Insert a new user
+//   final user = UserModel(
+//   username: 'john_doe',
+//   email: 'john@example.com',
+//   password: 'hashedpassword123',
+//   totalScore: 0,
+//   createdAt: DateTime.now(),
+//   updatedAt: DateTime.now(),
+//   );
+//   await userHelper.insertUser(user);
 
-  // Retrieve a user
-  final retrievedUser = await userHelper.getUserById(1);
-  print(retrievedUser?.username);
+//   // Retrieve a user
+//   final retrievedUser = await userHelper.getUserById(1);
+//   print(retrievedUser?.username);
 
-  // Increment user score
-  await userHelper.incrementUserScore(1, 50);
 
 
   // const tableNameToDrop = '';
