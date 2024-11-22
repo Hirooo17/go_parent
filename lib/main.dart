@@ -1,5 +1,5 @@
 // ignore_for_file: unused_import, duplicate_import
-
+//import 'Database/firebase_options.dart';
 //import 'package:firebase_auth/firebase_auth.dart';
 //import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -14,20 +14,56 @@ import 'package:go_parent/Widgets/side_menu.dart';
 import 'package:go_parent/intro%20screens/welcome_screen.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'Database/sqlite.dart';
-//import 'Database/firebase_options.dart';
 import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'intro screens/splash_screen.dart';
+import 'package:go_parent/Database/Models/user_model.dart';
+import 'package:go_parent/Database/sqlite.dart';
+import 'package:go_parent/Database/Helpers/user_helper.dart';
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
 
-    // Initialize sqflite_common_ffi for desktop platforms
+  WidgetsFlutterBinding.ensureInitialized();
+  final dbService = DatabaseService.instance;
   sqfliteFfiInit();
   databaseFactory = databaseFactoryFfi;
 
+  print("Checking existing tables:");
+  await dbService.listTables(); // Check the list of tables
+
+  final db = await dbService.database;
+
+  // Initialize the helper
+  final userHelper = UserHelper(db);
+
+  // Insert a new user
+  final user = UserModel(
+  username: 'john_doe',
+  email: 'john@example.com',
+  password: 'hashedpassword123',
+  totalScore: 0,
+  createdAt: DateTime.now(),
+  updatedAt: DateTime.now(),
+  );
+  await userHelper.insertUser(user);
+
+  // Retrieve a user
+  final retrievedUser = await userHelper.getUserById(1);
+  print(retrievedUser?.username);
+
+  // Increment user score
+  await userHelper.incrementUserScore(1, 50);
+
+
+  // const tableNameToDrop = '';
+  // print("\nDropping table: $tableNameToDrop");
+  // await dbService.dropTable(tableNameToDrop); // Drop the specified table
+
+  // print("\nRe-checking tables after drop:");
+  // await dbService.listTables(); // Check the list of tables again
+
   SystemChrome.setSystemUIOverlayStyle(
       SystemUiOverlayStyle(statusBarColor: Colors.black));
-  WidgetsFlutterBinding.ensureInitialized();
+      WidgetsFlutterBinding.ensureInitialized();
   // await Firebase.initializeApp(
   //   options: DefaultFirebaseOptions.currentPlatform,
   // );
@@ -43,12 +79,6 @@ void main() async {
   });
 
   runApp(const MyApp());
-
-  UserModel user = UserModel(
-    useremail: 'test@example.com',
-    userpassword: 'password123',
-  );
-  await insertUser(user);
 }
 
 class MyApp extends StatelessWidget {
@@ -81,7 +111,6 @@ class MyApp extends StatelessWidget {
             return WelcomeScreen(); // You can change this to LoginPage if you prefer
           }
         },
-
       ),
 */
       initialRoute: Signup.id,

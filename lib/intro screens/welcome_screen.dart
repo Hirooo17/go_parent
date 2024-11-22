@@ -7,7 +7,7 @@ import 'package:lottie/lottie.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class WelcomeScreen extends StatefulWidget {
-  WelcomeScreen({Key? key}) : super(key: key);
+  const WelcomeScreen({super.key});
   static String id = 'welcome_screen';
 
   @override
@@ -150,7 +150,6 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                       onPressed: () {
                         Navigator.pushNamed(context, Signup.id);
                       },
-                      child: const Text('SIGN UP FOR FREE'),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Color(0xFF009688),
                         minimumSize: const Size(double.infinity, 50),
@@ -159,13 +158,13 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                           color: Colors.white,
                         ),
                       ),
+                      child: const Text('SIGN UP FOR FREE'),
                     ),
                     const SizedBox(height: 20),
                     TextButton(
                       onPressed: () {
                         Navigator.pushNamed(context, LoginPage.id);
                       },
-                      child: const Text('SIGN IN'),
                       style: TextButton.styleFrom(
                         foregroundColor: Color(0xFF009688), // Teal text color
                         backgroundColor:
@@ -173,6 +172,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                         minimumSize: const Size(double.infinity, 50),
                         padding: EdgeInsets.zero, // Flat button look
                       ),
+                      child: const Text('SIGN IN'),
                     ),
                   ],
                 ),

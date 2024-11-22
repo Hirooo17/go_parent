@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_easy_faq/flutter_easy_faq.dart';
 
 class Faq extends StatelessWidget {
+  const Faq({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
