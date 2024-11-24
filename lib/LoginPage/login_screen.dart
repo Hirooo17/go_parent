@@ -83,7 +83,7 @@ class _LoginPageState extends State<LoginPage> {
           child: Padding(
             padding: EdgeInsets.only(bottom: keyboardHeight),
             child: Column(
-              
+
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 SizedBox(
@@ -148,7 +148,7 @@ class _LoginPageState extends State<LoginPage> {
                             fontWeight: FontWeight.bold, fontSize: 16),
                       ),
                     )
-                  ], 
+                  ],
                 )
               ],
             ),

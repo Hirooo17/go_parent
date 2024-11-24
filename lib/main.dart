@@ -22,49 +22,12 @@ import 'package:go_parent/Database/Helpers/user_helper.dart';
 
 void main() async {
 
-  WidgetsFlutterBinding.ensureInitialized();
-  final dbService = DatabaseService.instance;
-  sqfliteFfiInit();
-  databaseFactory = databaseFactoryFfi;
-
-  print("Checking existing tables:");
-  await dbService.listTables(); // Check the list of tables
-
-//   final db = await dbService.database;
-
-//   // Initialize the helper
-//   final userHelper = UserHelper(db);
-
-//   // Insert a new user
-//   final user = UserModel(
-//   username: 'john_doe',
-//   email: 'john@example.com',
-//   password: 'hashedpassword123',
-//   totalScore: 0,
-//   createdAt: DateTime.now(),
-//   updatedAt: DateTime.now(),
-//   );
-//   await userHelper.insertUser(user);
-
-//   // Retrieve a user
-//   final retrievedUser = await userHelper.getUserById(1);
-//   print(retrievedUser?.username);
-
-
-
-  // const tableNameToDrop = '';
-  // print("\nDropping table: $tableNameToDrop");
-  // await dbService.dropTable(tableNameToDrop); // Drop the specified table
-
-  // print("\nRe-checking tables after drop:");
-  // await dbService.listTables(); // Check the list of tables again
-
   SystemChrome.setSystemUIOverlayStyle(
       SystemUiOverlayStyle(statusBarColor: Colors.black));
       WidgetsFlutterBinding.ensureInitialized();
-  // await Firebase.initializeApp(
-  //   options: DefaultFirebaseOptions.currentPlatform,
-  // );
+      // await Firebase.initializeApp(
+      //   options: DefaultFirebaseOptions.currentPlatform,
+      // );
 
   doWhenWindowReady(() {
     final win = appWindow;
@@ -76,7 +39,7 @@ void main() async {
     win.show();
   });
 
-  runApp(const MyApp());
+ runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {

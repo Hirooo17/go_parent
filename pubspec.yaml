@@ -27,6 +27,7 @@ dependencies:
   flutter_easy_faq: ^1.0.1
   email_otp: ^3.0.2
   sqflite_common_ffi: ^2.3.4
+  crypto: ^3.0.6
   
 dev_dependencies:
   flutter_test:

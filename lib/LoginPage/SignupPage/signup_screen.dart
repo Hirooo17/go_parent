@@ -1,14 +1,17 @@
-import 'package:email_otp/email_otp.dart';
-//import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
+import 'package:email_otp/email_otp.dart';
+import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:go_parent/LoginPage/SignupPage/calculate_age.dart';
 import 'package:go_parent/LoginPage/SignupPage/verification_countdown.dart';
 import 'package:go_parent/LoginPage/login_screen.dart';
-import 'package:go_parent/Widgets/text_field.dart';
-import 'package:smooth_page_indicator/smooth_page_indicator.dart';
-import 'package:go_parent/Widgets/floating_label_textfield.dart';
 import 'package:go_parent/LoginPage/SignupPage/signup_brain.dart';
+import 'package:go_parent/Widgets/text_field.dart';
+import 'package:go_parent/Widgets/floating_label_textfield.dart';
+import 'package:go_parent/Database/sqlite.dart';
+import 'package:go_parent/Database/Helpers/user_helper.dart';
 
 class Signup extends StatefulWidget {
   const Signup({super.key});
@@ -30,16 +33,44 @@ class _SignupState extends State<Signup> {
   final TextEditingController babyNameController = TextEditingController();
   final TextEditingController babyDateBirthController = TextEditingController();
   final TextEditingController babyGenderController = TextEditingController();
-  //final FirebaseAuth _auth = FirebaseAuth.instance;
+
   final double mobileSize = 700;
   bool isLoading = false;
 
-  List<String> otpValues = List.generate(6, (index) => '');
+  List<String> otpValues = List.filled(6, '');
+
+  List<TextEditingController> otpControllers = List.generate(
+    6,
+    (index) => TextEditingController(),
+  );
+
+  String get compiledOTP => otpControllers.map((c) => c.text).join();
 
   final PageController _pageController = PageController();
   int currentSlide = 0;
 
-  SignupBrain signupBrain = SignupBrain();
+  late SignupBrain signupBrain;
+
+
+  @override
+  void initState() {
+    super.initState();
+
+    WidgetsFlutterBinding.ensureInitialized();
+    _initializeSignupBrain();
+  }
+
+
+  Future<void> _initializeSignupBrain() async {
+    sqfliteFfiInit();
+    databaseFactory = databaseFactoryFfi;
+
+    final dbService = DatabaseService.instance;
+    final db = await dbService.database;
+    final userHelper = UserHelper(db);
+    signupBrain = SignupBrain(userHelper);
+  }
+
 
   @override
   void dispose() {
@@ -47,8 +78,131 @@ class _SignupState extends State<Signup> {
     passwordController.dispose();
     confirmPasswordController.dispose();
     _pageController.dispose();
+
+    for (var controller in otpControllers) {
+      controller.dispose();
+    }
     super.dispose();
   }
+
+Future<bool> verifyOTP() async {
+  String enteredOTP = otpValues.join();
+  bool isValid = await EmailOTP.verifyOTP(
+    otp: enteredOTP,
+  );
+
+  if (!isValid) {
+    Alert(
+      context: context,
+      type: AlertType.error,
+      title: "Invalid OTP",
+      desc: "Please enter the correct OTP code.",
+      buttons: [
+        DialogButton(
+          child: Text(
+            "OK",
+            style: TextStyle(color: Colors.white, fontSize: 20),
+          ),
+          onPressed: () => Navigator.pop(context),
+          width: 120,
+        )
+      ],
+    ).show();
+  }
+
+  return isValid;
+}
+
+Future<void> _registerUser() async {
+  bool isOTPValid = await verifyOTP();
+
+  if (isOTPValid) {
+    final isSignupSuccessful = await signupBrain.signupUser(
+      usernameController: userNameController,
+      emailController: emailController,
+      passwordController: passwordController,
+      context: context,
+    );
+
+    if (isSignupSuccessful) {
+      Navigator.pushNamed(context, 'login_screen');
+    }
+  }
+}
+
+
+  void formOneHandler() async {
+    if (!signupBrain.emailChecker(emailController, context) ||
+        passwordController.text.isEmpty ||
+        !signupBrain.passwordChecker(passwordController, confirmPasswordController, context)) {
+      return;
+    }
+
+    EmailOTP.config(
+      appEmail: "teamgoparent@goparent.com",
+      appName: "GoParent",
+      otpLength: 6,
+      otpType: OTPType.numeric
+    );
+
+    try {
+      bool otpSent = await EmailOTP.sendOTP(email: emailController.text);
+
+      if (otpSent) {
+        Alert(
+          context: context,
+          type: AlertType.success,
+          title: "Email OTP Sent!",
+          desc: "OTP has been sent to your email.",
+          buttons: [
+            DialogButton(
+              onPressed: () {
+                Navigator.pop(context);
+                nextForm();
+              },
+              child: const Text(
+                "OK",
+                style: TextStyle(color: Colors.white, fontSize: 20),
+              ),
+            )
+          ],
+        ).show();
+      } else {
+        Alert(
+          context: context,
+          type: AlertType.error,
+          title: "Error",
+          desc: "Failed to send OTP. Please try again.",
+          buttons: [
+            DialogButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text(
+                "OK",
+                style: TextStyle(color: Colors.white, fontSize: 20),
+              ),
+            )
+          ],
+        ).show();
+      }
+    } catch (e) {
+      Alert(
+        context: context,
+        type: AlertType.error,
+        title: "Error",
+        desc: "An unexpected error occurred. Please try again.",
+        buttons: [
+          DialogButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text(
+              "OK",
+              style: TextStyle(color: Colors.white, fontSize: 20),
+            ),
+          )
+        ],
+      ).show();
+    }
+  }
+
 
   void showErrorDialog(String message) {
     showDialog(
@@ -70,6 +224,7 @@ class _SignupState extends State<Signup> {
     );
   }
 
+
   void previousForm() {
     if (currentSlide > 0) {
       _pageController.previousPage(
@@ -79,6 +234,7 @@ class _SignupState extends State<Signup> {
     }
   }
 
+
   void nextForm() {
     if (currentSlide < 1) {
       _pageController.nextPage(
@@ -86,32 +242,6 @@ class _SignupState extends State<Signup> {
         curve: Curves.easeIn,
       );
     }
-  }
-
-
-  void formOneHandler() async {
-    if (signupBrain.emailChecker(emailController, context) && passwordController.text.isNotEmpty &&
-        signupBrain.passwordChecker(passwordController, confirmPasswordController, context)) {
-      return;
-    }
-
-    bool otpSent = await EmailOTP.sendOTP(email: emailController.text);
-
-    if (otpSent) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("OTP has been sent")),
-      );
-      nextForm();
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("OTP failed to send")),
-      );
-      return;
-    }
-  }
-
-  void verifyUserRegistration() {
-
   }
 
 
@@ -242,8 +372,6 @@ class _SignupState extends State<Signup> {
                                           ),
                                         ),
                                       SizedBox(height: 60),
-
-
                                          Align(
                                           alignment: Alignment.centerLeft,
                                            child: Text(
@@ -254,7 +382,6 @@ class _SignupState extends State<Signup> {
                                               ),
                                             ),
                                          ),
-
                                           Row(
                                           mainAxisAlignment: MainAxisAlignment.start,
                                             children: [
@@ -302,8 +429,10 @@ class _SignupState extends State<Signup> {
                                               child: TextFormField(
                                                 onSaved: (pin) {},
                                                 onChanged: (value) {
-                                                  if (value.length == 1) {
-                                                    otpValues[i] = value; // Save the value to the list
+                                                   if (value.length == 1) {
+                                                    setState(() {
+                                                      otpValues[i] = value;
+                                                    });
                                                     if (i < 5) {
                                                       FocusScope.of(context).nextFocus();
                                                     }
@@ -419,25 +548,11 @@ class _SignupState extends State<Signup> {
                                       ),
                                     ),
                                     onPressed: () {
-                                      String otp = otpValues.join('');
-                                      EmailOTP.verifyOTP(otp: otp);
+                                      _registerUser();
                                     },
                                     child: Text('SIGN IN', style: TextStyle(fontSize: 18),),
                                   ),
                                   SizedBox(height: 90),
-
-                                Row(
-
-                                  children: [
-                                    SizedBox(width: 60),
-                                    SizedBox(
-                                      width: 380,
-                                      child: Text("We are dedicated to protecting your privacy. \nThe data you provide will be used exclusively to enable the app to perform its intended functions and will not be shared or used for any other purpose.\n\n-GoParent Team", style:TextStyle(fontSize: 14, fontStyle: FontStyle.italic))),
-
-
-                                  ],
-                                ),
-
                                 ],
                               ),
                             ),
