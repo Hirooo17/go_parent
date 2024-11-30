@@ -1,10 +1,9 @@
 // ignore_for_file: unused_import, duplicate_import
-//import 'Database/firebase_options.dart';
-//import 'package:firebase_auth/firebase_auth.dart';
-//import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:bitsdojo_window/bitsdojo_window.dart';
+import 'package:go_parent/LoginPage/SignupPage/test000.dart';
 import 'package:go_parent/LoginPage/login_screen.dart';
 import 'package:go_parent/LoginPage/SignupPage/signup_screen.dart';
 import 'package:go_parent/Screen/home_screen.dart';
@@ -14,14 +13,12 @@ import 'package:go_parent/Widgets/side_menu.dart';
 import 'package:go_parent/intro%20screens/welcome_screen.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'Database/sqlite.dart';
-import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'intro screens/splash_screen.dart';
 import 'package:go_parent/Database/Models/user_model.dart';
 import 'package:go_parent/Database/sqlite.dart';
 import 'package:go_parent/Database/Helpers/user_helper.dart';
 
 void main() async {
-
   SystemChrome.setSystemUIOverlayStyle(
       SystemUiOverlayStyle(statusBarColor: Colors.black));
       WidgetsFlutterBinding.ensureInitialized();
@@ -76,9 +73,11 @@ class MyApp extends StatelessWidget {
 */
       initialRoute: Signup.id,
       routes: {
+        //DynamicBabyEntry.id: (context) => DynamicBabyEntry(),
         SplashScreen.id: (context) => SplashScreen(),
         WelcomeScreen.id: (context) => WelcomeScreen(),
       //  Homescreen.id: (context) => Homescreen(),
+
         LoginPage.id: (context) => LoginPage(),
         Signup.id: (context) => Signup(),
       },

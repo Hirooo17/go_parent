@@ -1,20 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:go_parent/Database/Models/user_model.dart';
+import 'package:go_parent/Database/Helpers/user_helper.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:crypto/crypto.dart';
 import 'dart:convert';
-import 'package:go_parent/Database/Models/user_model.dart';
-import 'package:go_parent/Database/Helpers/user_helper.dart';
-import 'package:go_parent/Database/Helpers/baby_helper.dart';
-import 'package:go_parent/Database/Models/baby_model.dart';
 
 class SignupBrain {
   final UserHelper userHelper;
-  final BabyHelper babyHelper;
 
-  SignupBrain(
-    this.userHelper,
-    this.babyHelper
-    );
+  SignupBrain(this.userHelper);
 
   bool emailChecker(TextEditingController email, BuildContext context) {
     String emailCheck = email.text.trim();

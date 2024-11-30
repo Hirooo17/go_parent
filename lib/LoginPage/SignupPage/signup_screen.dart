@@ -31,23 +31,19 @@ class _SignupState extends State<Signup> {
       TextEditingController();
   final TextEditingController userGenderController = TextEditingController();
   final TextEditingController babyNameController = TextEditingController();
-  final TextEditingController babyDateBirthController = TextEditingController();
   final TextEditingController babyGenderController = TextEditingController();
 
   final double mobileSize = 700;
   bool isLoading = false;
-
   List<String> otpValues = List.filled(6, '');
-
   List<TextEditingController> otpControllers = List.generate(
     6,
     (index) => TextEditingController(),
   );
-
   String get compiledOTP => otpControllers.map((c) => c.text).join();
-
   final PageController _pageController = PageController();
   int currentSlide = 0;
+  List<Widget> _babyEntries = [];
 
   late SignupBrain signupBrain;
 
@@ -85,50 +81,51 @@ class _SignupState extends State<Signup> {
     super.dispose();
   }
 
-Future<bool> verifyOTP() async {
-  String enteredOTP = otpValues.join();
-  bool isValid = await EmailOTP.verifyOTP(
-    otp: enteredOTP,
-  );
-
-  if (!isValid) {
-    Alert(
-      context: context,
-      type: AlertType.error,
-      title: "Invalid OTP",
-      desc: "Please enter the correct OTP code.",
-      buttons: [
-        DialogButton(
-          child: Text(
-            "OK",
-            style: TextStyle(color: Colors.white, fontSize: 20),
-          ),
-          onPressed: () => Navigator.pop(context),
-          width: 120,
-        )
-      ],
-    ).show();
-  }
-
-  return isValid;
-}
-
-Future<void> _registerUser() async {
-  bool isOTPValid = await verifyOTP();
-
-  if (isOTPValid) {
-    final isSignupSuccessful = await signupBrain.signupUser(
-      usernameController: userNameController,
-      emailController: emailController,
-      passwordController: passwordController,
-      context: context,
+  Future<bool> verifyOTP() async {
+    String enteredOTP = otpValues.join();
+    bool isValid = await EmailOTP.verifyOTP(
+      otp: enteredOTP,
     );
 
-    if (isSignupSuccessful) {
-      Navigator.pushNamed(context, 'login_screen');
+    if (!isValid) {
+      Alert(
+        context: context,
+        type: AlertType.error,
+        title: "Invalid OTP",
+        desc: "Please enter the correct OTP code.",
+        buttons: [
+          DialogButton(
+            child: Text(
+              "OK",
+              style: TextStyle(color: Colors.white, fontSize: 20),
+            ),
+            onPressed: () => Navigator.pop(context),
+            width: 120,
+          )
+        ],
+      ).show();
+    }
+
+    return isValid;
+  }
+
+
+  Future<void> _registerUser() async {
+    bool isOTPValid = await verifyOTP();
+
+    if (isOTPValid) {
+      final isSignupSuccessful = await signupBrain.signupUser(
+        usernameController: userNameController,
+        emailController: emailController,
+        passwordController: passwordController,
+        context: context,
+      );
+
+      if (isSignupSuccessful) {
+        Navigator.pushNamed(context, 'login_screen');
+      }
     }
   }
-}
 
 
   void formOneHandler() async {
@@ -243,7 +240,6 @@ Future<void> _registerUser() async {
       );
     }
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -535,6 +531,7 @@ Future<void> _registerUser() async {
                                       ),
                                       SizedBox(height: 10),
                                       CalculateAge(),
+                                      SizedBox(height: 20,),
                                     ],
                                   ),
                                   SizedBox(height: 60),
@@ -548,7 +545,8 @@ Future<void> _registerUser() async {
                                       ),
                                     ),
                                     onPressed: () {
-                                      _registerUser();
+                                     _registerUser();
+
                                     },
                                     child: Text('SIGN IN', style: TextStyle(fontSize: 18),),
                                   ),
