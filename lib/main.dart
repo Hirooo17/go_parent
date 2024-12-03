@@ -6,6 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:go_parent/Database/firebase_options.dart';
 import 'package:go_parent/LoginPage/login_screen.dart';
 import 'package:go_parent/LoginPage/SignupPage/signup_screen.dart';
 import 'package:go_parent/Screen/home_screen.dart';
@@ -17,19 +18,20 @@ import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'intro screens/splash_screen.dart';
 
 void main() async {
+  // Ensure Flutter binding is initialized first
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Initialize Firebase with platform-specific options
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
 
   SystemChrome.setSystemUIOverlayStyle(
       SystemUiOverlayStyle(statusBarColor: Colors.black));
-  
-  // Uncomment this when ready to use Firebase
-  // await Firebase.initializeApp(
-  //   options: DefaultFirebaseOptions.currentPlatform,
-  // );
 
   doWhenWindowReady(() {
     final win = appWindow;
-    const desktopSize = Size(1200, 900); 
+    const desktopSize = Size(1200, 900);
     win.alignment = Alignment.center;
     win.size = desktopSize;
     win.minSize = desktopSize;
@@ -56,7 +58,7 @@ class MyApp extends StatelessWidget {
         stream: FirebaseAuth.instance.authStateChanges(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return SplashScreen(); // Update this with the correct screen
+            return WelcomeScreen(); // Update this with the correct screen
           } else if (snapshot.hasData) {
             return WelcomeScreen(); // Update this with the correct screen
           } else {
