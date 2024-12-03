@@ -1,11 +1,13 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:go_parent/Database/Helpers/baby_helper.dart';
+import 'package:intl/intl.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:email_otp/email_otp.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
-import 'package:go_parent/LoginPage/SignupPage/calculate_age.dart';
-import 'package:go_parent/LoginPage/SignupPage/verification_countdown.dart';
 import 'package:go_parent/LoginPage/login_screen.dart';
 import 'package:go_parent/LoginPage/SignupPage/signup_brain.dart';
 import 'package:go_parent/Widgets/text_field.dart';
@@ -32,6 +34,10 @@ class _SignupState extends State<Signup> {
   final TextEditingController userGenderController = TextEditingController();
   final TextEditingController babyNameController = TextEditingController();
   final TextEditingController babyGenderController = TextEditingController();
+  final TextEditingController dobController = TextEditingController();
+  late Timer _timer;
+  int _secondsLeft = 59;
+  DateTime? _selectedDate;
 
   final double mobileSize = 700;
   bool isLoading = false;
@@ -43,19 +49,17 @@ class _SignupState extends State<Signup> {
   String get compiledOTP => otpControllers.map((c) => c.text).join();
   final PageController _pageController = PageController();
   int currentSlide = 0;
-  List<Widget> _babyEntries = [];
 
   late SignupBrain signupBrain;
-
 
   @override
   void initState() {
     super.initState();
 
+    startTimer();
     WidgetsFlutterBinding.ensureInitialized();
     _initializeSignupBrain();
   }
-
 
   Future<void> _initializeSignupBrain() async {
     sqfliteFfiInit();
@@ -64,9 +68,9 @@ class _SignupState extends State<Signup> {
     final dbService = DatabaseService.instance;
     final db = await dbService.database;
     final userHelper = UserHelper(db);
-    signupBrain = SignupBrain(userHelper);
+    final babyHelper = BabyHelper(db);
+    signupBrain = SignupBrain(userHelper, babyHelper);
   }
-
 
   @override
   void dispose() {
@@ -74,6 +78,8 @@ class _SignupState extends State<Signup> {
     passwordController.dispose();
     confirmPasswordController.dispose();
     _pageController.dispose();
+    dobController.dispose();
+    _timer.cancel();
 
     for (var controller in otpControllers) {
       controller.dispose();
@@ -81,12 +87,28 @@ class _SignupState extends State<Signup> {
     super.dispose();
   }
 
+
+    void startTimer() {
+      setState(() {
+        _secondsLeft = 59;
+      });
+
+      _timer = Timer.periodic(Duration(seconds: 1), (timer) {
+        setState(() {
+          if (_secondsLeft > 0) {
+            _secondsLeft--;
+          } else {
+            _timer.cancel();
+          }
+        });
+      });
+    }
+
   Future<bool> verifyOTP() async {
     String enteredOTP = otpValues.join();
     bool isValid = await EmailOTP.verifyOTP(
       otp: enteredOTP,
     );
-
     if (!isValid) {
       Alert(
         context: context,
@@ -105,42 +127,59 @@ class _SignupState extends State<Signup> {
         ],
       ).show();
     }
-
     return isValid;
   }
 
-
   Future<void> _registerUser() async {
     bool isOTPValid = await verifyOTP();
-
     if (isOTPValid) {
       final isSignupSuccessful = await signupBrain.signupUser(
         usernameController: userNameController,
         emailController: emailController,
         passwordController: passwordController,
+        babyNameController: babyNameController,
+        babyDobController: dobController,
+        babyGenderController: babyGenderController,
         context: context,
       );
-
       if (isSignupSuccessful) {
         Navigator.pushNamed(context, 'login_screen');
       }
     }
   }
 
+  Future<void> _selectDate(BuildContext context) async {
+    final now = DateTime.now();
+    final firstDate = DateTime(now.year - 7, now.month, now.day);
+    final lastDate = DateTime(now.year + 100, now.month, now.day);
+    DateTime? pickedDate = await showDatePicker(
+      context: context,
+      initialDate: _selectedDate ?? now,
+      firstDate: firstDate,
+      lastDate: lastDate,
+    );
+
+    if (pickedDate != null && pickedDate != _selectedDate) {
+      setState(() {
+        _selectedDate = pickedDate;
+        dobController.text = DateFormat('yyyy-MM-dd').format(pickedDate);
+      });
+    }
+  }
 
   void formOneHandler() async {
     if (!signupBrain.emailChecker(emailController, context) ||
         passwordController.text.isEmpty ||
-        !signupBrain.passwordChecker(passwordController, confirmPasswordController, context)) {
+        !signupBrain.passwordChecker(
+            passwordController, confirmPasswordController, context)) {
       return;
     }
 
     EmailOTP.config(
-      appEmail: "teamgoparent@goparent.com",
-      appName: "GoParent",
-      otpLength: 6,
-      otpType: OTPType.numeric
-    );
+        appEmail: "teamgoparent@goparent.com",
+        appName: "GoParent",
+        otpLength: 6,
+        otpType: OTPType.numeric);
 
     try {
       bool otpSent = await EmailOTP.sendOTP(email: emailController.text);
@@ -200,7 +239,6 @@ class _SignupState extends State<Signup> {
     }
   }
 
-
   void showErrorDialog(String message) {
     showDialog(
       context: context,
@@ -222,6 +260,71 @@ class _SignupState extends State<Signup> {
   }
 
 
+  void _sendNewVerificationCode() async {
+      EmailOTP.config(
+        appEmail: "teamgoparent@goparent.com",
+        appName: "GoParent",
+        otpLength: 6,
+        otpType: OTPType.numeric);
+
+    try {
+      bool otpSent = await EmailOTP.sendOTP(email: emailController.text);
+
+      if (otpSent) {
+        Alert(
+          context: context,
+          type: AlertType.success,
+          title: "Email OTP Sent!",
+          desc: "OTP has been sent to your email.",
+          buttons: [
+            DialogButton(
+              onPressed: () {
+                Navigator.pop(context);
+                nextForm();
+              },
+              child: const Text(
+                "OK",
+                style: TextStyle(color: Colors.white, fontSize: 20),
+              ),
+            )
+          ],
+        ).show();
+      } else {
+        Alert(
+          context: context,
+          type: AlertType.error,
+          title: "Error",
+          desc: "Failed to send OTP. Please try again.",
+          buttons: [
+            DialogButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text(
+                "OK",
+                style: TextStyle(color: Colors.white, fontSize: 20),
+              ),
+            )
+          ],
+        ).show();
+      }
+    } catch (e) {
+      Alert(
+        context: context,
+        type: AlertType.error,
+        title: "Error",
+        desc: "An unexpected error occurred. Please try again.",
+        buttons: [
+          DialogButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text(
+              "OK",
+              style: TextStyle(color: Colors.white, fontSize: 20),
+            ),
+          )
+        ],
+      ).show();
+    }
+  }
+
   void previousForm() {
     if (currentSlide > 0) {
       _pageController.previousPage(
@@ -230,7 +333,6 @@ class _SignupState extends State<Signup> {
       );
     }
   }
-
 
   void nextForm() {
     if (currentSlide < 1) {
@@ -324,7 +426,7 @@ class _SignupState extends State<Signup> {
                                   color: Color(0xFF009688),
                                   borderRadius: BorderRadius.circular(30.0),
                                   child: MaterialButton(
-                                    onPressed:  formOneHandler,
+                                    onPressed: formOneHandler,
                                     minWidth: mobileSize * .4,
                                     height: 50.0,
                                     child: Text(
@@ -351,58 +453,59 @@ class _SignupState extends State<Signup> {
                                     crossAxisAlignment:
                                         CrossAxisAlignment.center,
                                     children: [
-                                         Text(
-                                          "Now Let's Make you a",
-                                          style: TextStyle(
-                                            fontSize: 24,
-                                            fontWeight: FontWeight.bold,
-                                            fontFamily: 'CodeNewRoman',
-                                          ),
+                                      Text(
+                                        "Now Let's Make you a",
+                                        style: TextStyle(
+                                          fontSize: 24,
+                                          fontWeight: FontWeight.bold,
+                                          fontFamily: 'CodeNewRoman',
                                         ),
-                                        Text(
-                                          "GoParent Member.",
-                                          style: TextStyle(
-                                            fontSize: 24,
-                                            fontWeight: FontWeight.bold,
-                                            fontFamily: 'CodeNewRoman',
-                                          ),
+                                      ),
+                                      Text(
+                                        "GoParent Member.",
+                                        style: TextStyle(
+                                          fontSize: 24,
+                                          fontWeight: FontWeight.bold,
+                                          fontFamily: 'CodeNewRoman',
                                         ),
+                                      ),
                                       SizedBox(height: 60),
-                                         Align(
-                                          alignment: Alignment.centerLeft,
-                                           child: Text(
-                                              "We've sent a code to",
+                                      Align(
+                                        alignment: Alignment.centerLeft,
+                                        child: Text(
+                                          "We've sent a code to",
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.normal,
+                                          ),
+                                        ),
+                                      ),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            emailController.text,
+                                            style: TextStyle(
+                                              fontSize: 16,
+                                              fontFamily: 'CodeNewRoman',
+                                            ),
+                                          ),
+                                          GestureDetector(
+                                            onTap: previousForm,
+                                            child: Text(
+                                              "Edit",
                                               style: TextStyle(
+                                                decoration:
+                                                    TextDecoration.underline,
                                                 fontSize: 16,
-                                                fontWeight: FontWeight.normal,
+                                                fontFamily: 'CodeNewRoman',
+                                                color: Colors.black45,
                                               ),
                                             ),
-                                         ),
-                                          Row(
-                                          mainAxisAlignment: MainAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                emailController.text,
-                                                style: TextStyle(
-                                                  fontSize: 16,
-                                                  fontFamily: 'CodeNewRoman',
-                                                ),
-                                              ),
-                                              GestureDetector(
-                                                onTap: previousForm,
-                                                child: Text(
-                                                  "Edit",
-                                                  style: TextStyle(
-                                                    decoration:
-                                                        TextDecoration.underline,
-                                                    fontSize: 16,
-                                                    fontFamily: 'CodeNewRoman',
-                                                    color: Colors.black45,
-                                                  ),
-                                                ),
-                                              )
-                                            ],
-                                          ),
+                                          )
+                                        ],
+                                      ),
                                       SizedBox(height: 20),
                                     ],
                                   ),
@@ -425,20 +528,24 @@ class _SignupState extends State<Signup> {
                                               child: TextFormField(
                                                 onSaved: (pin) {},
                                                 onChanged: (value) {
-                                                   if (value.length == 1) {
+                                                  if (value.length == 1) {
                                                     setState(() {
                                                       otpValues[i] = value;
                                                     });
                                                     if (i < 5) {
-                                                      FocusScope.of(context).nextFocus();
+                                                      FocusScope.of(context)
+                                                          .nextFocus();
                                                     }
                                                   }
                                                 },
                                                 textAlign: TextAlign.center,
-                                                keyboardType: TextInputType.number,
+                                                keyboardType:
+                                                    TextInputType.number,
                                                 inputFormatters: [
-                                                  LengthLimitingTextInputFormatter(1),
-                                                  FilteringTextInputFormatter.digitsOnly,
+                                                  LengthLimitingTextInputFormatter(
+                                                      1),
+                                                  FilteringTextInputFormatter
+                                                      .digitsOnly,
                                                 ],
                                               ),
                                             ),
@@ -449,11 +556,29 @@ class _SignupState extends State<Signup> {
                                       SizedBox(height: 10),
                                       Align(
                                         alignment: Alignment.topRight,
-                                        child: SizedBox
-                                        (
+                                        child: SizedBox(
                                           height: 20,
-                                          width: 60,
-                                          child: VerificationCountdown(),),
+                                          width: 100,
+                                          child: Center(child: _secondsLeft > 0
+                                          ? Text(
+                                              '$_secondsLeft seconds left',
+                                              style: TextStyle(fontSize: 16),
+                                            )
+                                          : GestureDetector(
+                                              onTap: () {
+                                                _sendNewVerificationCode();
+                                                startTimer();
+                                              },
+                                              child: Text(
+                                                'Resend',
+                                                style: TextStyle(
+                                                  fontSize: 16,
+                                                  color: Colors.black45,
+                                                  decoration: TextDecoration.underline,
+                                                ),
+                                              ),
+                                            ),),
+                                        ),
                                       ),
                                       SizedBox(height: 60),
                                     ],
@@ -470,30 +595,10 @@ class _SignupState extends State<Signup> {
                                           ),
                                         ),
                                       ),
-                                      Row(
-                                        children: [
-                                          Expanded(
-                                            flex: 3,
-                                            child: FloatingLabelTextField(
-                                              hintText: "Name",
-                                              controller: userNameController,
-                                            ),
-                                          ),
-                                          SizedBox(width: 10),
-                                          Expanded(
-                                            flex: 2,
-                                            child: FloatingLabelTextField(
-                                              hintText: "Gender",
-                                              controller: userGenderController,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
                                       SizedBox(height: 10),
                                       FloatingLabelTextField(
-                                        hintText: "Contact Number",
-                                        controller: userContactNumController,
-                                        keyboardType: TextInputType.number,
+                                        hintText: "Name",
+                                        controller: userNameController,
                                       ),
                                       SizedBox(height: 60),
                                     ],
@@ -530,8 +635,51 @@ class _SignupState extends State<Signup> {
                                         ],
                                       ),
                                       SizedBox(height: 10),
-                                      CalculateAge(),
-                                      SizedBox(height: 20,),
+                                      TextFormField(
+                                        controller: dobController,
+                                        decoration: InputDecoration(
+                                          labelText: 'Select Date of Birth',
+                                          hintText: 'Select Baby\'s Birth Date',
+                                          prefixIcon:
+                                              Icon(Icons.calendar_today),
+                                          border: OutlineInputBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(10)),
+                                        ),
+                                        readOnly: true,
+                                        onTap: () => _selectDate(context),
+                                      ),
+                                      SizedBox(
+                                        height: 20,
+                                      ),
+                                      Tooltip(
+                                          message:
+                                              'Dont worry parent! you can add your other children on your profile page inside the app',
+                                          decoration: BoxDecoration(
+                                            color: Colors.purple,
+                                            borderRadius:
+                                                BorderRadius.circular(8),
+                                          ),
+                                          textStyle:
+                                              TextStyle(color: Colors.white),
+                                          child: Row(
+                                            children: [
+                                              Icon(
+                                                Icons.info_outline,
+                                                color: Colors.teal,
+                                              ),
+                                              SizedBox(
+                                                width: 2,
+                                              ),
+                                              Text(
+                                                'Why can I only add my one of my children?',
+                                                style: TextStyle(
+                                                    color: Colors.black45,
+                                                    fontWeight:
+                                                        FontWeight.normal),
+                                              )
+                                            ],
+                                          )),
                                     ],
                                   ),
                                   SizedBox(height: 60),
@@ -545,10 +693,12 @@ class _SignupState extends State<Signup> {
                                       ),
                                     ),
                                     onPressed: () {
-                                     _registerUser();
-
+                                      _registerUser();
                                     },
-                                    child: Text('SIGN IN', style: TextStyle(fontSize: 18),),
+                                    child: Text(
+                                      'SIGN IN',
+                                      style: TextStyle(fontSize: 18),
+                                    ),
                                   ),
                                   SizedBox(height: 90),
                                 ],
@@ -574,7 +724,6 @@ class _SignupState extends State<Signup> {
                               ),
                             ),
                           ],
-
                         ),
                       ),
                     ],
@@ -605,7 +754,6 @@ class _SignupState extends State<Signup> {
                       ],
                     ),
                   ),
-                SizedBox(height: 46),
               ],
             ),
           ),

@@ -36,7 +36,7 @@ void main() async {
     win.show();
   });
 
- runApp(const MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {

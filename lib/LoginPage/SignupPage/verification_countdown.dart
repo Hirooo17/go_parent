@@ -14,7 +14,7 @@ class _VerificationCountdown extends State<VerificationCountdown> {
   int _secondsLeft = 59;
 
 
-   @override
+  @override
   void initState() {
     super.initState();
     startTimer();

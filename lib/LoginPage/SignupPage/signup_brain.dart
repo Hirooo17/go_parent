@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:go_parent/Database/Helpers/baby_helper.dart';
 import 'package:go_parent/Database/Models/user_model.dart';
 import 'package:go_parent/Database/Helpers/user_helper.dart';
+import 'package:go_parent/Database/Models/baby_model.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:crypto/crypto.dart';
 import 'dart:convert';
 
 class SignupBrain {
   final UserHelper userHelper;
+  final BabyHelper babyHelper;
 
-  SignupBrain(this.userHelper);
+  SignupBrain(this.userHelper, this.babyHelper);
 
   bool emailChecker(TextEditingController email, BuildContext context) {
     String emailCheck = email.text.trim();
@@ -57,21 +60,33 @@ class SignupBrain {
       );
       return false;
     }
-
     return true;
+  }
+
+  int calculateAgeInMonths(TextEditingController dobController) {
+    DateTime selectedDate = DateTime.parse(dobController.text);
+    DateTime currentDate = DateTime.now();
+    int months = currentDate.difference(selectedDate).inDays ~/ 30;
+    return months;
   }
 
   Future<bool> signupUser({
     required TextEditingController usernameController,
     required TextEditingController emailController,
     required TextEditingController passwordController,
+    required TextEditingController babyNameController,
+    required TextEditingController babyDobController,
+    required TextEditingController babyGenderController,
     required BuildContext context,
     }) async {
     String username = usernameController.text.trim();
     String email = emailController.text.trim();
     String password = passwordController.text.trim();
+    String babyName = babyNameController.text.trim();
+    String babyDob = babyDobController.text.trim();
+    String babyGender = babyGenderController.text.trim();
 
-    if (username.isEmpty || email.isEmpty || password.isEmpty) {
+    if (username.isEmpty || email.isEmpty || password.isEmpty || babyName.isEmpty || babyDob.isEmpty) {
         _showAlert(
         context: context,
         title: "Empty Fields",
@@ -80,7 +95,7 @@ class SignupBrain {
       return false;
     }
 
-    // Check if email already exists
+
     final existingUsers = await userHelper.getAllUsers();
     if (existingUsers.any((user) => user.email == email)) {
         _showAlert(
@@ -91,10 +106,8 @@ class SignupBrain {
       return false;
     }
 
-    // Hash the password
     String hashedPassword = _hashPassword(password);
 
-    // Create user
     final newUser = UserModel(
       username: username,
       email: email,
@@ -105,7 +118,17 @@ class SignupBrain {
     );
 
     try {
-      await userHelper.insertUser(newUser);
+      int newUserId = await userHelper.insertUser(newUser);
+      int babyAgeInMonths = calculateAgeInMonths(babyDobController);
+
+      final newBaby = BabyModel(
+        userId: newUserId,
+        babyName: babyName,
+        babyAge: babyAgeInMonths,
+        babyGender: babyGender
+      );
+
+      await babyHelper.insertBaby(newBaby);
       return true;
     } catch (e) {
       _showAlert(
