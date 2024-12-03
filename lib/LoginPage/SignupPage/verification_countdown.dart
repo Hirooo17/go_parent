@@ -5,15 +5,16 @@ class VerificationCountdown extends StatefulWidget {
   const VerificationCountdown({super.key});
 
   @override
+  // ignore: library_private_types_in_public_api
   _VerificationCountdown createState() => _VerificationCountdown();
-}
 
+}
 class _VerificationCountdown extends State<VerificationCountdown> {
   late Timer _timer;
-  int _secondsLeft = 59; 
+  int _secondsLeft = 59;
 
 
-   @override
+  @override
   void initState() {
     super.initState();
     startTimer();
@@ -29,7 +30,7 @@ class _VerificationCountdown extends State<VerificationCountdown> {
         if (_secondsLeft > 0) {
           _secondsLeft--;
         } else {
-          _timer.cancel(); 
+          _timer.cancel();
         }
       });
     });

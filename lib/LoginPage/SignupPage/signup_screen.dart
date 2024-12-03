@@ -1,13 +1,19 @@
-//import 'package:firebase_auth/firebase_auth.dart';
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:go_parent/LoginPage/SignupPage/calculate_age.dart';
-import 'package:go_parent/LoginPage/SignupPage/verification_countdown.dart';
-import 'package:go_parent/LoginPage/login_screen.dart';
-import 'package:go_parent/Widgets/text_field.dart';
+import 'package:go_parent/Database/Helpers/baby_helper.dart';
+import 'package:intl/intl.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
+import 'package:email_otp/email_otp.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
-import 'package:go_parent/Widgets/floating_label_textfield.dart';
+import 'package:go_parent/LoginPage/login_screen.dart';
 import 'package:go_parent/LoginPage/SignupPage/signup_brain.dart';
+import 'package:go_parent/Widgets/text_field.dart';
+import 'package:go_parent/Widgets/floating_label_textfield.dart';
+import 'package:go_parent/Database/sqlite.dart';
+import 'package:go_parent/Database/Helpers/user_helper.dart';
 
 class Signup extends StatefulWidget {
   const Signup({super.key});
@@ -27,16 +33,44 @@ class _SignupState extends State<Signup> {
       TextEditingController();
   final TextEditingController userGenderController = TextEditingController();
   final TextEditingController babyNameController = TextEditingController();
-  final TextEditingController babyDateBirthController = TextEditingController();
   final TextEditingController babyGenderController = TextEditingController();
-  //final FirebaseAuth _auth = FirebaseAuth.instance;
+  final TextEditingController dobController = TextEditingController();
+  late Timer _timer;
+  int _secondsLeft = 59;
+  DateTime? _selectedDate;
+
   final double mobileSize = 700;
   bool isLoading = false;
-
+  List<String> otpValues = List.filled(6, '');
+  List<TextEditingController> otpControllers = List.generate(
+    6,
+    (index) => TextEditingController(),
+  );
+  String get compiledOTP => otpControllers.map((c) => c.text).join();
   final PageController _pageController = PageController();
   int currentSlide = 0;
 
-  SignupBrain signupBrain = SignupBrain();
+  late SignupBrain signupBrain;
+
+  @override
+  void initState() {
+    super.initState();
+
+    startTimer();
+    WidgetsFlutterBinding.ensureInitialized();
+    _initializeSignupBrain();
+  }
+
+  Future<void> _initializeSignupBrain() async {
+    sqfliteFfiInit();
+    databaseFactory = databaseFactoryFfi;
+
+    final dbService = DatabaseService.instance;
+    final db = await dbService.database;
+    final userHelper = UserHelper(db);
+    final babyHelper = BabyHelper(db);
+    signupBrain = SignupBrain(userHelper, babyHelper);
+  }
 
   @override
   void dispose() {
@@ -44,7 +78,165 @@ class _SignupState extends State<Signup> {
     passwordController.dispose();
     confirmPasswordController.dispose();
     _pageController.dispose();
+    dobController.dispose();
+    _timer.cancel();
+
+    for (var controller in otpControllers) {
+      controller.dispose();
+    }
     super.dispose();
+  }
+
+
+    void startTimer() {
+      setState(() {
+        _secondsLeft = 59;
+      });
+
+      _timer = Timer.periodic(Duration(seconds: 1), (timer) {
+        setState(() {
+          if (_secondsLeft > 0) {
+            _secondsLeft--;
+          } else {
+            _timer.cancel();
+          }
+        });
+      });
+    }
+
+  Future<bool> verifyOTP() async {
+    String enteredOTP = otpValues.join();
+    bool isValid = await EmailOTP.verifyOTP(
+      otp: enteredOTP,
+    );
+    if (!isValid) {
+      Alert(
+        context: context,
+        type: AlertType.error,
+        title: "Invalid OTP",
+        desc: "Please enter the correct OTP code.",
+        buttons: [
+          DialogButton(
+            child: Text(
+              "OK",
+              style: TextStyle(color: Colors.white, fontSize: 20),
+            ),
+            onPressed: () => Navigator.pop(context),
+            width: 120,
+          )
+        ],
+      ).show();
+    }
+    return isValid;
+  }
+
+  Future<void> _registerUser() async {
+    bool isOTPValid = await verifyOTP();
+    if (isOTPValid) {
+      final isSignupSuccessful = await signupBrain.signupUser(
+        usernameController: userNameController,
+        emailController: emailController,
+        passwordController: passwordController,
+        babyNameController: babyNameController,
+        babyDobController: dobController,
+        babyGenderController: babyGenderController,
+        context: context,
+      );
+      if (isSignupSuccessful) {
+        Navigator.pushNamed(context, 'login_screen');
+      }
+    }
+  }
+
+  Future<void> _selectDate(BuildContext context) async {
+    final now = DateTime.now();
+    final firstDate = DateTime(now.year - 7, now.month, now.day);
+    final lastDate = DateTime(now.year + 100, now.month, now.day);
+    DateTime? pickedDate = await showDatePicker(
+      context: context,
+      initialDate: _selectedDate ?? now,
+      firstDate: firstDate,
+      lastDate: lastDate,
+    );
+
+    if (pickedDate != null && pickedDate != _selectedDate) {
+      setState(() {
+        _selectedDate = pickedDate;
+        dobController.text = DateFormat('yyyy-MM-dd').format(pickedDate);
+      });
+    }
+  }
+
+  void formOneHandler() async {
+    if (!signupBrain.emailChecker(emailController, context) ||
+        passwordController.text.isEmpty ||
+        !signupBrain.passwordChecker(
+            passwordController, confirmPasswordController, context)) {
+      return;
+    }
+
+    EmailOTP.config(
+        appEmail: "teamgoparent@goparent.com",
+        appName: "GoParent",
+        otpLength: 6,
+        otpType: OTPType.numeric);
+
+    try {
+      bool otpSent = await EmailOTP.sendOTP(email: emailController.text);
+
+      if (otpSent) {
+        Alert(
+          context: context,
+          type: AlertType.success,
+          title: "Email OTP Sent!",
+          desc: "OTP has been sent to your email.",
+          buttons: [
+            DialogButton(
+              onPressed: () {
+                Navigator.pop(context);
+                nextForm();
+              },
+              child: const Text(
+                "OK",
+                style: TextStyle(color: Colors.white, fontSize: 20),
+              ),
+            )
+          ],
+        ).show();
+      } else {
+        Alert(
+          context: context,
+          type: AlertType.error,
+          title: "Error",
+          desc: "Failed to send OTP. Please try again.",
+          buttons: [
+            DialogButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text(
+                "OK",
+                style: TextStyle(color: Colors.white, fontSize: 20),
+              ),
+            )
+          ],
+        ).show();
+      }
+    } catch (e) {
+      Alert(
+        context: context,
+        type: AlertType.error,
+        title: "Error",
+        desc: "An unexpected error occurred. Please try again.",
+        buttons: [
+          DialogButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text(
+              "OK",
+              style: TextStyle(color: Colors.white, fontSize: 20),
+            ),
+          )
+        ],
+      ).show();
+    }
   }
 
   void showErrorDialog(String message) {
@@ -67,6 +259,72 @@ class _SignupState extends State<Signup> {
     );
   }
 
+
+  void _sendNewVerificationCode() async {
+      EmailOTP.config(
+        appEmail: "teamgoparent@goparent.com",
+        appName: "GoParent",
+        otpLength: 6,
+        otpType: OTPType.numeric);
+
+    try {
+      bool otpSent = await EmailOTP.sendOTP(email: emailController.text);
+
+      if (otpSent) {
+        Alert(
+          context: context,
+          type: AlertType.success,
+          title: "Email OTP Sent!",
+          desc: "OTP has been sent to your email.",
+          buttons: [
+            DialogButton(
+              onPressed: () {
+                Navigator.pop(context);
+                nextForm();
+              },
+              child: const Text(
+                "OK",
+                style: TextStyle(color: Colors.white, fontSize: 20),
+              ),
+            )
+          ],
+        ).show();
+      } else {
+        Alert(
+          context: context,
+          type: AlertType.error,
+          title: "Error",
+          desc: "Failed to send OTP. Please try again.",
+          buttons: [
+            DialogButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text(
+                "OK",
+                style: TextStyle(color: Colors.white, fontSize: 20),
+              ),
+            )
+          ],
+        ).show();
+      }
+    } catch (e) {
+      Alert(
+        context: context,
+        type: AlertType.error,
+        title: "Error",
+        desc: "An unexpected error occurred. Please try again.",
+        buttons: [
+          DialogButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text(
+              "OK",
+              style: TextStyle(color: Colors.white, fontSize: 20),
+            ),
+          )
+        ],
+      ).show();
+    }
+  }
+
   void previousForm() {
     if (currentSlide > 0) {
       _pageController.previousPage(
@@ -82,14 +340,6 @@ class _SignupState extends State<Signup> {
         duration: Duration(milliseconds: 300),
         curve: Curves.easeIn,
       );
-    }
-  }
-
-  void formOneHandler() {
-    if (signupBrain.emailChecker(emailController, context) &&
-        signupBrain.passwordChecker(
-            passwordController, confirmPasswordController, context)) {
-      nextForm();
     }
   }
 
@@ -273,14 +523,19 @@ class _SignupState extends State<Signup> {
                                       ),
                                       Row(
                                         children: [
-                                          for (int i = 0; i < 5; i++) ...[
+                                          for (int i = 0; i < 6; i++) ...[
                                             Expanded(
                                               child: TextFormField(
                                                 onSaved: (pin) {},
                                                 onChanged: (value) {
                                                   if (value.length == 1) {
-                                                    FocusScope.of(context)
-                                                        .nextFocus();
+                                                    setState(() {
+                                                      otpValues[i] = value;
+                                                    });
+                                                    if (i < 5) {
+                                                      FocusScope.of(context)
+                                                          .nextFocus();
+                                                    }
                                                   }
                                                 },
                                                 textAlign: TextAlign.center,
@@ -294,18 +549,18 @@ class _SignupState extends State<Signup> {
                                                 ],
                                               ),
                                             ),
-                                            if (i < 4) SizedBox(width: 8),
+                                            if (i < 5) SizedBox(width: 8),
                                           ],
                                         ],
                                       ),
                                       SizedBox(height: 10),
                                       Align(
                                         alignment: Alignment.topRight,
-                                        child: Container(
+                                        child: Container
+                                        (
                                           height: 20,
                                           width: 60,
-                                          child: VerificationCountdown(),
-                                        ),
+                                          child: VerificationCountdown(),),
                                       ),
                                       SizedBox(height: 60),
                                     ],
@@ -322,30 +577,10 @@ class _SignupState extends State<Signup> {
                                           ),
                                         ),
                                       ),
-                                      Row(
-                                        children: [
-                                          Expanded(
-                                            flex: 3,
-                                            child: FloatingLabelTextField(
-                                              hintText: "Name",
-                                              controller: userNameController,
-                                            ),
-                                          ),
-                                          SizedBox(width: 10),
-                                          Expanded(
-                                            flex: 2,
-                                            child: FloatingLabelTextField(
-                                              hintText: "Gender",
-                                              controller: userGenderController,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
                                       SizedBox(height: 10),
                                       FloatingLabelTextField(
-                                        hintText: "Contact Number",
-                                        controller: userContactNumController,
-                                        keyboardType: TextInputType.number,
+                                        hintText: "Name",
+                                        controller: userNameController,
                                       ),
                                       SizedBox(height: 60),
                                     ],
@@ -382,7 +617,51 @@ class _SignupState extends State<Signup> {
                                         ],
                                       ),
                                       SizedBox(height: 10),
-                                      CalculateAge(),
+                                      TextFormField(
+                                        controller: dobController,
+                                        decoration: InputDecoration(
+                                          labelText: 'Select Date of Birth',
+                                          hintText: 'Select Baby\'s Birth Date',
+                                          prefixIcon:
+                                              Icon(Icons.calendar_today),
+                                          border: OutlineInputBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(10)),
+                                        ),
+                                        readOnly: true,
+                                        onTap: () => _selectDate(context),
+                                      ),
+                                      SizedBox(
+                                        height: 20,
+                                      ),
+                                      Tooltip(
+                                          message:
+                                              'Dont worry parent! you can add your other children on your profile page inside the app',
+                                          decoration: BoxDecoration(
+                                            color: Colors.purple,
+                                            borderRadius:
+                                                BorderRadius.circular(8),
+                                          ),
+                                          textStyle:
+                                              TextStyle(color: Colors.white),
+                                          child: Row(
+                                            children: [
+                                              Icon(
+                                                Icons.info_outline,
+                                                color: Colors.teal,
+                                              ),
+                                              SizedBox(
+                                                width: 2,
+                                              ),
+                                              Text(
+                                                'Why can I only add my one of my children?',
+                                                style: TextStyle(
+                                                    color: Colors.black45,
+                                                    fontWeight:
+                                                        FontWeight.normal),
+                                              )
+                                            ],
+                                          )),
                                     ],
                                   ),
                                   SizedBox(height: 60),
@@ -396,7 +675,7 @@ class _SignupState extends State<Signup> {
                                       ),
                                     ),
                                     onPressed: () {
-                                      //implement
+                                      _registerUser();
                                     },
                                     child: Text(
                                       'SIGN IN',
@@ -404,20 +683,21 @@ class _SignupState extends State<Signup> {
                                     ),
                                   ),
                                   SizedBox(height: 90),
-                                  Row(
-                                    children: [
-                                      SizedBox(width: 60),
-                                      Container(
-                                          width: 380,
-                                          child: Text(
-                                              "We are dedicated to protecting your privacy. \nThe data you provide will be used exclusively to enable the app to perform its intended functions and will not be shared or used for any other purpose.\n\n-GoParent Team",
-                                              style: TextStyle(
-                                                  fontSize: 14,
-                                                  fontStyle:
-                                                      FontStyle.italic))),
-                                    ],
-                                  ),
+
+                                Row(
+                                  
+                                  children: [ 
+                                    SizedBox(width: 60),
+                                    Container(
+                                      width: 380,
+                                      child: Text("We are dedicated to protecting your privacy. \nThe data you provide will be used exclusively to enable the app to perform its intended functions and will not be shared or used for any other purpose.\n\n-GoParent Team", style:TextStyle(fontSize: 14, fontStyle: FontStyle.italic))),
+                                 
+                                 
+                                  ],
+                                ),
+                               
                                 ],
+
                               ),
                             ),
                           ),
@@ -473,7 +753,6 @@ class _SignupState extends State<Signup> {
                       ],
                     ),
                   ),
-                SizedBox(height: 46),
               ],
             ),
           ),

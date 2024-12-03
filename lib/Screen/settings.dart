@@ -92,10 +92,10 @@ class SettingsTile extends StatelessWidget {
           children: [
             TextButton(
               onPressed: () {},
-              child: const Text("Continue"),
               style: TextButton.styleFrom(
                 foregroundColor: Colors.lightGreen[800], // Light green button text
               ),
+              child: const Text("Continue"),
             ),
             const SizedBox(width: 8),
           ],
