@@ -78,7 +78,7 @@ class SignupBrain {
     required TextEditingController babyDobController,
     required TextEditingController babyGenderController,
     required BuildContext context,
-    }) async {
+  }) async {
     String username = usernameController.text.trim();
     String email = emailController.text.trim();
     String password = passwordController.text.trim();
@@ -86,8 +86,12 @@ class SignupBrain {
     String babyDob = babyDobController.text.trim();
     String babyGender = babyGenderController.text.trim();
 
-    if (username.isEmpty || email.isEmpty || password.isEmpty || babyName.isEmpty || babyDob.isEmpty) {
-        _showAlert(
+    if (username.isEmpty ||
+        email.isEmpty ||
+        password.isEmpty ||
+        babyName.isEmpty ||
+        babyDob.isEmpty) {
+      _showAlert(
         context: context,
         title: "Empty Fields",
         description: "Please fill in all required fields.",
@@ -95,10 +99,9 @@ class SignupBrain {
       return false;
     }
 
-
     final existingUsers = await userHelper.getAllUsers();
     if (existingUsers.any((user) => user.email == email)) {
-        _showAlert(
+      _showAlert(
         context: context,
         title: "Email Already Registered",
         description: "Please use a different email address.",
@@ -122,11 +125,10 @@ class SignupBrain {
       int babyAgeInMonths = calculateAgeInMonths(babyDobController);
 
       final newBaby = BabyModel(
-        userId: newUserId,
-        babyName: babyName,
-        babyAge: babyAgeInMonths,
-        babyGender: babyGender
-      );
+          userId: newUserId,
+          babyName: babyName,
+          babyAge: babyAgeInMonths,
+          babyGender: babyGender);
 
       await babyHelper.insertBaby(newBaby);
       return true;

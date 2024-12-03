@@ -87,22 +87,21 @@ class _SignupState extends State<Signup> {
     super.dispose();
   }
 
+  void startTimer() {
+    setState(() {
+      _secondsLeft = 59;
+    });
 
-    void startTimer() {
+    _timer = Timer.periodic(Duration(seconds: 1), (timer) {
       setState(() {
-        _secondsLeft = 59;
+        if (_secondsLeft > 0) {
+          _secondsLeft--;
+        } else {
+          _timer.cancel();
+        }
       });
-
-      _timer = Timer.periodic(Duration(seconds: 1), (timer) {
-        setState(() {
-          if (_secondsLeft > 0) {
-            _secondsLeft--;
-          } else {
-            _timer.cancel();
-          }
-        });
-      });
-    }
+    });
+  }
 
   Future<bool> verifyOTP() async {
     String enteredOTP = otpValues.join();
@@ -259,9 +258,8 @@ class _SignupState extends State<Signup> {
     );
   }
 
-
   void _sendNewVerificationCode() async {
-      EmailOTP.config(
+    EmailOTP.config(
         appEmail: "teamgoparent@goparent.com",
         appName: "GoParent",
         otpLength: 6,
@@ -556,11 +554,34 @@ class _SignupState extends State<Signup> {
                                       SizedBox(height: 10),
                                       Align(
                                         alignment: Alignment.topRight,
-                                        child: Container
-                                        (
+                                        child: SizedBox(
                                           height: 20,
-                                          width: 60,
-                                          child: VerificationCountdown(),),
+                                          width: 100,
+                                          child: Center(
+                                            child: _secondsLeft > 0
+                                                ? Text(
+                                                    '$_secondsLeft seconds left',
+                                                    style:
+                                                        TextStyle(fontSize: 16),
+                                                  )
+                                                : GestureDetector(
+                                                    onTap: () {
+                                                      _sendNewVerificationCode();
+                                                      startTimer();
+                                                    },
+                                                    child: Text(
+                                                      'Resend',
+                                                      style: TextStyle(
+                                                        fontSize: 16,
+                                                        color: Colors.black45,
+                                                        decoration:
+                                                            TextDecoration
+                                                                .underline,
+                                                      ),
+                                                    ),
+                                                  ),
+                                          ),
+                                        ),
                                       ),
                                       SizedBox(height: 60),
                                     ],
@@ -683,21 +704,7 @@ class _SignupState extends State<Signup> {
                                     ),
                                   ),
                                   SizedBox(height: 90),
-
-                                Row(
-                                  
-                                  children: [ 
-                                    SizedBox(width: 60),
-                                    Container(
-                                      width: 380,
-                                      child: Text("We are dedicated to protecting your privacy. \nThe data you provide will be used exclusively to enable the app to perform its intended functions and will not be shared or used for any other purpose.\n\n-GoParent Team", style:TextStyle(fontSize: 14, fontStyle: FontStyle.italic))),
-                                 
-                                 
-                                  ],
-                                ),
-                               
                                 ],
-
                               ),
                             ),
                           ),

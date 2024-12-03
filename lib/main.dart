@@ -13,10 +13,6 @@ import 'package:go_parent/Screen/introduction_screen.dart';
 import 'package:go_parent/Screen/profile_screen.dart';
 import 'package:go_parent/Widgets/side_menu.dart';
 import 'package:go_parent/intro%20screens/welcome_screen.dart';
-
-
-//import 'Database/firebase_options.dart';
-
 import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'intro screens/splash_screen.dart';
 
@@ -25,14 +21,15 @@ void main() async {
 
   SystemChrome.setSystemUIOverlayStyle(
       SystemUiOverlayStyle(statusBarColor: Colors.black));
-  WidgetsFlutterBinding.ensureInitialized();
+  
+  // Uncomment this when ready to use Firebase
   // await Firebase.initializeApp(
   //   options: DefaultFirebaseOptions.currentPlatform,
   // );
 
   doWhenWindowReady(() {
     final win = appWindow;
-    const desktopSize = Size(1200, 900); //change nyo nalang yung size, arbitrary values lang nilgaay ko
+    const desktopSize = Size(1200, 900); 
     win.alignment = Alignment.center;
     win.size = desktopSize;
     win.minSize = desktopSize;
@@ -44,12 +41,10 @@ void main() async {
 }
 
 class MyApp extends StatelessWidget {
-  
   const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-   
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'GO PARENT',
@@ -57,28 +52,21 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-
-      /*
       home: StreamBuilder<User?>(
         stream: FirebaseAuth.instance.authStateChanges(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return WelcomeScreen();
+            return SplashScreen(); // Update this with the correct screen
           } else if (snapshot.hasData) {
-            return WelcomeScreen();
+            return WelcomeScreen(); // Update this with the correct screen
           } else {
             return WelcomeScreen();
           }
         },
       ),
-      // Uncomment if you want to use named routes
-      /*
       routes: {
-        //DynamicBabyEntry.id: (context) => DynamicBabyEntry(),
         SplashScreen.id: (context) => SplashScreen(),
         WelcomeScreen.id: (context) => WelcomeScreen(),
-      //  Homescreen.id: (context) => Homescreen(),
-
         LoginPage.id: (context) => LoginPage(),
         Signup.id: (context) => Signup(),
       },
