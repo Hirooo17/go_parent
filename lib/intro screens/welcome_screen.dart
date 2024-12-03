@@ -1,3 +1,5 @@
+// ignore_for_file: sort_child_properties_last
+
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -148,7 +150,8 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                   children: [
                     ElevatedButton(
                       onPressed: () {
-                        Navigator.pushNamed(context, Signup.id);
+                        Navigator.push(context,
+                            MaterialPageRoute(builder: (context) => Signup()));
                       },
                       child: const Text('SIGN UP FOR FREE'),
                       style: ElevatedButton.styleFrom(
@@ -162,8 +165,9 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                     ),
                     const SizedBox(height: 20),
                     TextButton(
-                      onPressed: () {
-                        Navigator.pushNamed(context, LoginPage.id);
+                     onPressed: () {
+                        Navigator.push(context,
+                            MaterialPageRoute(builder: (context) => LoginPage()));
                       },
                       child: const Text('SIGN IN'),
                       style: TextButton.styleFrom(

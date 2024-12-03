@@ -1,7 +1,10 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:go_parent/LoginPage/login_screen.dart';
+import 'package:go_parent/Screen/childcare.dart';
+import 'package:go_parent/Screen/view%20profile/viewprofile.dart';
 import 'package:go_parent/Widgets/button.dart';
 import 'package:go_parent/authentication/auth.dart';
 
@@ -29,7 +32,7 @@ class _LogoutState extends State<Logout> {
           children: [
             Text(
               'SCREEN UNDER MAINTENANCE, THIS IS A PROFILE SCREEN',
-              style: TextStyle(fontSize: 24), // Customize your text style here
+              style: TextStyle(fontSize: 24), 
               textAlign: TextAlign.center,
             ),
             SizedBox(height: 20),
@@ -38,12 +41,23 @@ class _LogoutState extends State<Logout> {
               child: GridView.count(
                 crossAxisCount: 2, // Number of columns
                 padding: EdgeInsets.all(16.0),
-                childAspectRatio: (screenWidth / (screenHeight * 0.5)), // Dynamic aspect ratio
+                childAspectRatio: (screenWidth /
+                    (screenHeight * 0.5)), // Dynamic aspect ratio
                 children: [
-                  _buildCard('Card 1', Colors.blue, screenWidth),
-                  _buildCard('Card 2', Colors.green, screenWidth),
-                  _buildCard('Card 3', Colors.orange, screenWidth),
-                  _buildCard('Card 4', Colors.red, screenWidth),
+                  _buildCard('View Profile', Colors.blue, screenWidth, () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => profileviewer()));
+                  }),
+                  _buildCard('Child Care', Colors.green, screenWidth, () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => Childcare()));
+                  }),
+                  _buildCard('Card 3', Colors.orange, screenWidth, () {}),
+                  _buildCard('Card 4', Colors.red, screenWidth, () {}),
                 ],
               ),
             ),
@@ -53,21 +67,25 @@ class _LogoutState extends State<Logout> {
     );
   }
 
-  Widget _buildCard(String title, Color color, double screenWidth) {
-    return Card(
-      color: color,
-      margin: EdgeInsets.all(10.0),
-      elevation: 5,
-      child: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Text(
-            title,
-            style: TextStyle(
-              fontSize: screenWidth * 0.05, // Dynamic font size based on screen width
-              color: Colors.white,
+  Widget _buildCard(
+      String title, Color color, double screenWidth, void Function() onTap) {
+    return GestureDetector(
+      onTap: onTap, // Define the function to be called on tap
+      child: Card(
+        color: color,
+        margin: EdgeInsets.all(10.0),
+        elevation: 5,
+        child: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Text(
+              title,
+              style: TextStyle(
+                fontSize: screenWidth * 0.05,
+                color: Colors.white,
+              ),
+              textAlign: TextAlign.center,
             ),
-            textAlign: TextAlign.center,
           ),
         ),
       ),

@@ -1,9 +1,7 @@
-// ignore_for_file: prefer_final_fields
-
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart'; // Add this for image picking
+import 'package:go_parent/Screen/prototypeMissionGraph.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:go_parent/Database/sqlite.dart';
-import 'package:sqflite/sqflite.dart';
 import 'dart:io';
 
 class MissionScreen extends StatefulWidget {
@@ -22,15 +20,13 @@ class _MissionScreenState extends State<MissionScreen> {
   final List<bool> _isMissionCompleted4 = List.generate(5, (index) => false);
 
   double progress = 0;
-  int totalPoints = 0; // For tracking points
+  int totalPoints = 0;
 
-  // Separate image variables for each mission
   List<XFile?> _images = List.generate(20, (index) => null);
 
-  // Method to pick an image for a specific mission
   Future<void> _pickImageForMission(int missionIndex) async {
     final picker = ImagePicker();
-    final pickedFile = await picker.pickImage(source: ImageSource.camera); // or ImageSource.gallery
+    final pickedFile = await picker.pickImage(source: ImageSource.camera);
     if (pickedFile != null) {
       setState(() {
         _images[missionIndex] = pickedFile;
@@ -43,16 +39,49 @@ class _MissionScreenState extends State<MissionScreen> {
     return DefaultTabController(
       length: 4,
       child: Scaffold(
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.grey[200],
         appBar: AppBar(
-          title: Center(
-              child: Column(
+          elevation: 8,
+          backgroundColor: Colors.teal,
+          title: Column(
             children: [
-              Text("Missions"),
-              Text('Points: $totalPoints', style: TextStyle(fontSize: 14)),
+              // Inside the AppBar or as a separate button on MissionScreen
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => MissionProgressGraph(
+                        missionPoints: [
+                          50,
+                          90,
+                          130,
+                          160,
+                          200
+                        ], // Example points list
+                      ),
+                    ),
+                  );
+                },
+                child: const Text('View Progress Graph'),
+              ),
+
+              const Text(
+                "Missions",
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 24,
+                  color: Colors.white,
+                ),
+              ),
+              Text(
+                'Total Points: $totalPoints',
+                style: const TextStyle(fontSize: 14, color: Colors.white70),
+              ),
             ],
-          )),
-          bottom: TabBar(
+          ),
+          bottom: const TabBar(
+            indicatorColor: Colors.white,
             tabs: [
               Tab(text: "Daily Routines"),
               Tab(text: "Learning Activities"),
@@ -64,53 +93,126 @@ class _MissionScreenState extends State<MissionScreen> {
         ),
         body: TabBarView(
           children: [
-            // Daily Routines tab
             _buildMissionList(
               missions: [
-                {'title': 'Read with your child', 'reward': 50, 'subtitle': 'Spend 20 minutes reading together'},
-                {'title': 'Help your child clean their room', 'reward': 40, 'subtitle': 'Organize toys and clothes'},
-                {'title': 'Teach your child basic hygiene', 'reward': 30, 'subtitle': 'Explain handwashing and brushing teeth'},
-                {'title': 'Prepare a healthy meal together', 'reward': 70, 'subtitle': 'Cook a nutritious meal with your child'},
-                {'title': 'Do laundry together', 'reward': 60, 'subtitle': 'Show how to sort and fold clothes'},
+                {
+                  'title': 'Read with your child',
+                  'reward': 50,
+                  'subtitle': 'Spend 20 minutes reading together'
+                },
+                {
+                  'title': 'Help your child clean their room',
+                  'reward': 40,
+                  'subtitle': 'Organize toys and clothes'
+                },
+                {
+                  'title': 'Teach your child basic hygiene',
+                  'reward': 30,
+                  'subtitle': 'Explain handwashing and brushing teeth'
+                },
+                {
+                  'title': 'Prepare a healthy meal together',
+                  'reward': 70,
+                  'subtitle': 'Cook a nutritious meal with your child'
+                },
+                {
+                  'title': 'Do laundry together',
+                  'reward': 60,
+                  'subtitle': 'Show how to sort and fold clothes'
+                },
               ],
               missionCompleted: _isMissionCompleted,
               imageIndexStart: 0,
             ),
-
-            // Learning Activities tab
             _buildMissionList(
               missions: [
-                {'title': 'Solve a puzzle with your child', 'reward': 80, 'subtitle': 'Complete a puzzle together'},
-                {'title': 'Draw and color a picture', 'reward': 50, 'subtitle': 'Create art with your child'},
-                {'title': 'Teach your child numbers 1-10', 'reward': 60, 'subtitle': 'Help them recognize numbers'},
-                {'title': 'Do a science experiment', 'reward': 90, 'subtitle': 'Perform a safe experiment together'},
-                {'title': 'Teach your child new words', 'reward': 70, 'subtitle': 'Expand vocabulary by learning words'},
+                {
+                  'title': 'Solve a puzzle with your child',
+                  'reward': 80,
+                  'subtitle': 'Complete a puzzle together'
+                },
+                {
+                  'title': 'Draw and color a picture',
+                  'reward': 50,
+                  'subtitle': 'Create art with your child'
+                },
+                {
+                  'title': 'Teach your child numbers 1-10',
+                  'reward': 60,
+                  'subtitle': 'Help them recognize numbers'
+                },
+                {
+                  'title': 'Do a science experiment',
+                  'reward': 90,
+                  'subtitle': 'Perform a safe experiment together'
+                },
+                {
+                  'title': 'Teach your child new words',
+                  'reward': 70,
+                  'subtitle': 'Expand vocabulary by learning words'
+                },
               ],
               missionCompleted: _isMissionCompleted2,
               imageIndexStart: 5,
             ),
-
-            // Outdoor Play tab
             _buildMissionList(
               missions: [
-                {'title': 'Play catch outside', 'reward': 50, 'subtitle': 'Throw and catch a ball for 30 minutes'},
-                {'title': 'Go for a walk in the park', 'reward': 75, 'subtitle': 'Spend 30 minutes walking'},
-                {'title': 'Fly a kite together', 'reward': 60, 'subtitle': 'Fly a kite outdoors'},
-                {'title': 'Ride a bike with your child', 'reward': 80, 'subtitle': 'Spend 40 minutes riding bikes'},
-                {'title': 'Play a sport together', 'reward': 90, 'subtitle': 'Play soccer or basketball'},
+                {
+                  'title': 'Play catch outside',
+                  'reward': 50,
+                  'subtitle': 'Throw and catch a ball for 30 minutes'
+                },
+                {
+                  'title': 'Go for a walk in the park',
+                  'reward': 75,
+                  'subtitle': 'Spend 30 minutes walking'
+                },
+                {
+                  'title': 'Fly a kite together',
+                  'reward': 60,
+                  'subtitle': 'Fly a kite outdoors'
+                },
+                {
+                  'title': 'Ride a bike with your child',
+                  'reward': 80,
+                  'subtitle': 'Spend 40 minutes riding bikes'
+                },
+                {
+                  'title': 'Play a sport together',
+                  'reward': 90,
+                  'subtitle': 'Play soccer or basketball'
+                },
               ],
               missionCompleted: _isMissionCompleted3,
               imageIndexStart: 10,
             ),
-
-            // Sample tab
             _buildMissionList(
               missions: [
-                {'title': 'Do a fun activity together', 'reward': 50, 'subtitle': 'Spend time doing something creative'},
-                {'title': 'Play a board game', 'reward': 60, 'subtitle': 'Choose a game and play for 30 minutes'},
-                {'title': 'Build a Lego structure', 'reward': 70, 'subtitle': 'Use Legos to create a building or object'},
-                {'title': 'Plan a family picnic', 'reward': 80, 'subtitle': 'Prepare food and have a picnic together'},
-                {'title': 'Watch an educational video', 'reward': 90, 'subtitle': 'Learn something new from a video'},
+                {
+                  'title': 'Do a fun activity together',
+                  'reward': 50,
+                  'subtitle': 'Spend time doing something creative'
+                },
+                {
+                  'title': 'Play a board game',
+                  'reward': 60,
+                  'subtitle': 'Choose a game and play for 30 minutes'
+                },
+                {
+                  'title': 'Build a Lego structure',
+                  'reward': 70,
+                  'subtitle': 'Use Legos to create a building or object'
+                },
+                {
+                  'title': 'Plan a family picnic',
+                  'reward': 80,
+                  'subtitle': 'Prepare food and have a picnic together'
+                },
+                {
+                  'title': 'Watch an educational video',
+                  'reward': 90,
+                  'subtitle': 'Learn something new from a video'
+                },
               ],
               missionCompleted: _isMissionCompleted4,
               imageIndexStart: 15,
@@ -127,53 +229,112 @@ class _MissionScreenState extends State<MissionScreen> {
     required int imageIndexStart,
   }) {
     return ListView.builder(
-      padding: EdgeInsets.all(10),
+      padding: const EdgeInsets.all(10),
       itemCount: missions.length,
       itemBuilder: (context, index) {
         final mission = missions[index];
         final currentIndex = imageIndexStart + index;
         return Card(
-          elevation: 4,
-          margin: EdgeInsets.symmetric(vertical: 10),
+          elevation: 6,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          margin: const EdgeInsets.symmetric(vertical: 10),
           child: Padding(
             padding: const EdgeInsets.all(16.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                ListTile(
-                  leading: Icon(
-                    missionCompleted[index] && _images[currentIndex] != null
-                        ? Icons.check_circle
-                        : Icons.check_circle_outline,
-                    color: missionCompleted[index] && _images[currentIndex] != null
-                        ? Colors.green
-                        : Colors.grey,
+                Row(
+                  children: [
+                    Icon(
+                      missionCompleted[index] && _images[currentIndex] != null
+                          ? Icons.verified
+                          : Icons.circle_outlined,
+                      color: missionCompleted[index] &&
+                              _images[currentIndex] != null
+                          ? Colors.green
+                          : Colors.grey,
+                      size: 30,
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: Text(
+                        mission['title'],
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18,
+                        ),
+                      ),
+                    ),
+                    Text(
+                      '+${mission['reward']} pts',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.teal[700],
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  mission['subtitle'],
+                  style: const TextStyle(
+                    color: Colors.black54,
+                    fontSize: 16,
                   ),
-                  title: Text(mission['title']),
-                  subtitle: Text(mission['subtitle']),
-                  trailing: Text('Reward: ${mission['reward']} points'),
                 ),
-                SizedBox(height: 10),
-                ElevatedButton(
-                  onPressed: !missionCompleted[index]
-                      ? () {
-                          setState(() {
-                            totalPoints += (mission['reward'] as int);
-
-                            missionCompleted[index] = true;
-                          });
-                        }
-                      : null, // Disable button if mission is completed
-                  child: Text(missionCompleted[index]
-                      ? 'Mission Completed'
-                      : 'Complete Mission'),
-                ),
-                ElevatedButton(
-                  onPressed: () => _pickImageForMission(currentIndex),
-                  child: Text('Submit Photo'),
+                const SizedBox(height: 15),
+                Row(
+                  children: [
+                    ElevatedButton.icon(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.teal[300],
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                      onPressed: !missionCompleted[index]
+                          ? () {
+                              setState(() {
+                                totalPoints += (mission['reward'] as int);
+                                missionCompleted[index] = true;
+                              });
+                            }
+                          : null,
+                      icon: const Icon(Icons.done),
+                      label: Text(
+                        missionCompleted[index] ? 'Completed' : 'Complete',
+                        style: const TextStyle(fontSize: 16),
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    ElevatedButton.icon(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.blue[300],
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                      onPressed: () => _pickImageForMission(currentIndex),
+                      icon: const Icon(Icons.camera_alt),
+                      label: const Text('Submit Photo'),
+                    ),
+                  ],
                 ),
                 if (_images[currentIndex] != null)
-                  Image.file(File(_images[currentIndex]!.path)),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 10),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(10),
+                      child: Image.file(
+                        File(_images[currentIndex]!.path),
+                        height: 150,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  ),
               ],
             ),
           ),

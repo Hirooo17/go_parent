@@ -203,61 +203,59 @@ class _SignupState extends State<Signup> {
                                     crossAxisAlignment:
                                         CrossAxisAlignment.center,
                                     children: [
-                                         Text(
-                                          "Now Let's Make you a",
-                                          style: TextStyle(
-                                            fontSize: 24,
-                                            fontWeight: FontWeight.bold,
-                                            fontFamily: 'CodeNewRoman',
-                                          ),
+                                      Text(
+                                        "Now Let's Make you a",
+                                        style: TextStyle(
+                                          fontSize: 24,
+                                          fontWeight: FontWeight.bold,
+                                          fontFamily: 'CodeNewRoman',
                                         ),
-                                        Text(
-                                          "GoParent Member.",
-                                          style: TextStyle(
-                                            fontSize: 24,
-                                            fontWeight: FontWeight.bold,
-                                            fontFamily: 'CodeNewRoman',
-                                          ),
+                                      ),
+                                      Text(
+                                        "GoParent Member.",
+                                        style: TextStyle(
+                                          fontSize: 24,
+                                          fontWeight: FontWeight.bold,
+                                          fontFamily: 'CodeNewRoman',
                                         ),
+                                      ),
                                       SizedBox(height: 60),
-                                  
-                                        
-                                         Align(
-                                          alignment: Alignment.centerLeft,
-                                           child: Text(
-                                              "We've sent a code to",
+                                      Align(
+                                        alignment: Alignment.centerLeft,
+                                        child: Text(
+                                          "We've sent a code to",
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.normal,
+                                          ),
+                                        ),
+                                      ),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            emailController.text,
+                                            style: TextStyle(
+                                              fontSize: 16,
+                                              fontFamily: 'CodeNewRoman',
+                                            ),
+                                          ),
+                                          GestureDetector(
+                                            onTap: previousForm,
+                                            child: Text(
+                                              "Edit",
                                               style: TextStyle(
+                                                decoration:
+                                                    TextDecoration.underline,
                                                 fontSize: 16,
-                                                fontWeight: FontWeight.normal,
+                                                fontFamily: 'CodeNewRoman',
+                                                color: Colors.black45,
                                               ),
                                             ),
-                                         ),
-                                       
-                                          Row(
-                                          mainAxisAlignment: MainAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                emailController.text,
-                                                style: TextStyle(
-                                                  fontSize: 16,
-                                                  fontFamily: 'CodeNewRoman',
-                                                ),
-                                              ),
-                                              GestureDetector(
-                                                onTap: previousForm,
-                                                child: Text(
-                                                  "Edit",
-                                                  style: TextStyle(
-                                                    decoration:
-                                                        TextDecoration.underline,
-                                                    fontSize: 16,
-                                                    fontFamily: 'CodeNewRoman',
-                                                    color: Colors.black45,
-                                                  ),
-                                                ),
-                                              )
-                                            ],
-                                          ),
+                                          )
+                                        ],
+                                      ),
                                       SizedBox(height: 20),
                                     ],
                                   ),
@@ -303,11 +301,11 @@ class _SignupState extends State<Signup> {
                                       SizedBox(height: 10),
                                       Align(
                                         alignment: Alignment.topRight,
-                                        child: Container
-                                        (
+                                        child: Container(
                                           height: 20,
                                           width: 60,
-                                          child: VerificationCountdown(),),
+                                          child: VerificationCountdown(),
+                                        ),
                                       ),
                                       SizedBox(height: 60),
                                     ],
@@ -400,24 +398,26 @@ class _SignupState extends State<Signup> {
                                     onPressed: () {
                                       //implement
                                     },
-                                    child: Text('SIGN IN', style: TextStyle(fontSize: 18),),
+                                    child: Text(
+                                      'SIGN IN',
+                                      style: TextStyle(fontSize: 18),
+                                    ),
                                   ),
                                   SizedBox(height: 90),
-
-                                Row(
-                                  
-                                  children: [ 
-                                    SizedBox(width: 60),
-                                    Container(
-                                      width: 380,
-                                      child: Text("We are dedicated to protecting your privacy. \nThe data you provide will be used exclusively to enable the app to perform its intended functions and will not be shared or used for any other purpose.\n\n-GoParent Team", style:TextStyle(fontSize: 14, fontStyle: FontStyle.italic))),
-                                 
-                                 
-                                  ],
-                                ),
-                               
+                                  Row(
+                                    children: [
+                                      SizedBox(width: 60),
+                                      Container(
+                                          width: 380,
+                                          child: Text(
+                                              "We are dedicated to protecting your privacy. \nThe data you provide will be used exclusively to enable the app to perform its intended functions and will not be shared or used for any other purpose.\n\n-GoParent Team",
+                                              style: TextStyle(
+                                                  fontSize: 14,
+                                                  fontStyle:
+                                                      FontStyle.italic))),
+                                    ],
+                                  ),
                                 ],
-
                               ),
                             ),
                           ),
@@ -456,7 +456,10 @@ class _SignupState extends State<Signup> {
                         SizedBox(width: 5),
                         GestureDetector(
                           onTap: () {
-                            Navigator.pushNamed(context, LoginPage.id);
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => LoginPage()));
                           },
                           child: Text(
                             "Log In",
