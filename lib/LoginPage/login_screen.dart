@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:go_parent/LoginPage/SignupPage/signup_screen.dart';
+import 'package:go_parent/LoginPage/login_brain.dart';
+import 'package:go_parent/SignupPage/signup_screen.dart';
 import 'package:go_parent/Screen/home_screen.dart';
 import 'package:go_parent/Widgets/RoundedButton.dart';
 import 'package:go_parent/Widgets/snackbar.dart';
 import 'package:go_parent/Widgets/text_field.dart';
-import 'package:go_parent/authentication/auth.dart';
+import 'package:go_parent/SignupPage/signup_screen.dart';
+//import 'package:go_parent/authentication/auth.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -19,67 +21,32 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   bool isLoading = false;
+  final screenSize = 700;
+
+  late LoginBrain loginBrain;
 
   @override
   void dispose() {
     super.dispose();
     emailController.dispose();
     passwordController.dispose();
-    usernameController.dispose();
   }
 
-// email and password auth part
-  void loginUser() async {
-    setState(() {
-      isLoading = true;
-    });
-    // login user using authmethod
-    String res = await AuthMethod().loginUser(
-        email: emailController.text, password: passwordController.text);
-
-    if (res == "success") {
-      setState(() {
-        isLoading = false;
-      });
-      // navigate to the home screen
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(
-          builder: (context) => Homescreen(
-            username: usernameController.text,
-          ),
-        ),
-      );
-    } else {
-      setState(() {
-        isLoading = false;
-      });
-      // show error
-      showSnackBar(context, res);
-    }
-  }
-
-  void byPass() {
-    // Navigate without setting state
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-          builder: (context) => Homescreen(
-                username: usernameController.text,
-              )),
-    );
+  void pass(){
+    //pass
   }
 
   @override
   Widget build(BuildContext context) {
-    double height = MediaQuery.of(context).size.height;
+    double _height = MediaQuery.of(context).size.height;
+    double _width = MediaQuery.of(context).size.width;
     double keyboardHeight = MediaQuery.of(context).viewInsets.bottom;
 
     return Scaffold(
       backgroundColor: Colors.white,
-      resizeToAvoidBottomInset: true, // Let the screen adjust when keyboard shows
+      resizeToAvoidBottomInset: true,
       body: SafeArea(
         child: SingleChildScrollView(
-          // Ensure it scrolls when the keyboard shows
           child: Padding(
             padding: EdgeInsets.only(bottom: keyboardHeight),
             child: Column(
@@ -87,69 +54,102 @@ class _LoginPageState extends State<LoginPage> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 SizedBox(
-                  width: double.infinity,
-                  height: height / 2.7,
-                  child: Image.asset('assets/images/login.jpg'),
+                  width: MediaQuery.of(context).size.width > 600
+                      ? MediaQuery.of(context).size.width * 0.4
+                      : MediaQuery.of(context).size.width * 0.9,
+                  height:
+                      MediaQuery.of(context).size.height / 2.5,
+                  child: Image.asset(
+                    'assets/images/login.jpg',
+                    fit: BoxFit.cover,
+                  ),
                 ),
-                TextFieldInput(
-                    icon: Icons.person,
-                    textEditingController: usernameController,
-                    hintText: 'Enter your Username',
-                    textInputType: TextInputType.text),
-                TextFieldInput(
-                    icon: Icons.person,
-                    textEditingController: emailController,
-                    hintText: 'Enter your email',
-                    textInputType: TextInputType.text),
-                TextFieldInput(
-                  icon: Icons.lock,
-                  textEditingController: passwordController,
-                  hintText: 'Enter your password',
-                  textInputType: TextInputType.text,
-                  isPass: true,
+                SizedBox(height: 20,),
+                SizedBox(
+                    width: 700,
+                    child: TextFieldInput(
+                        icon: Icons.email,
+                        textEditingController: emailController,
+                        hintText: 'Enter your email',
+                        textInputType: TextInputType.emailAddress
+                    )
                 ),
-
-                // Forgot Password Link
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 35),
-                  child: Align(
-                    alignment: Alignment.centerRight,
+                SizedBox(height: 10,),
+                SizedBox(
+                    width: 700,
+                    child: TextFieldInput(
+                        icon: Icons.lock,
+                        textEditingController: passwordController,
+                        hintText: 'Enter your password',
+                        textInputType: TextInputType.text,
+                        isPass: true,
+                    ),
+                ),
+                SizedBox(height: 20,),
+                Material(
+                  elevation: 5.0,
+                  color: Color(0xFF009688),
+                  borderRadius: BorderRadius.circular(30.0),
+                  child: MaterialButton(
+                    onPressed: pass,
+                    minWidth: screenSize * .4,
+                    height: 50.0,
                     child: Text(
-                      "Forgot Password",
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16,
-                          color: Colors.blue),
+                      "Continue",
+                      style: const TextStyle(
+                        fontSize: 20,
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                 ),
+                SizedBox(height: 10,),
 
-                // LOGIN Button
-                RoundedButton(
-                    title: "LOGIN",
-                    color: Colors.lightBlueAccent,
-                    onPressed: byPass),
 
-                SizedBox(height: height / 15), // Add space before sign up
-
-                // Sign Up option
+                //working on it
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text("Don't Have an account?"),
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.push(context,
-                            MaterialPageRoute(builder: (context) => Signup()));
-                      },
-                      child: Text(
-                        "Sign Up",
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 16),
+                    SizedBox(width: 600,),
+                    Align(
+                      //alignment: Alignment.centerLeft,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 35),
+                          child: Text(
+                            "Forgot Password",
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16,
+                                color: Colors.teal),
+                          ),
+
+                      ),
+                    ),
+
+                    SizedBox(width: 350,),
+                    Align(
+                      //alignment: Alignment.centerRight,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text("Don't Have an account? "),
+                          GestureDetector(
+                            onTap: () {
+                              Navigator.pushNamed(context, 'signup_screen');
+                            },
+                            child: Text(
+                              "Sign Up",
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16,
+                                  color: Colors.teal,
+                                  ),
+                            ),
+                          )
+                        ],
                       ),
                     )
-                  ],
-                )
+                ],)
               ],
             ),
           ),

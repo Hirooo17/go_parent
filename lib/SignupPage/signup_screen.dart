@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_parent/Database/Helpers/baby_helper.dart';
@@ -9,7 +8,7 @@ import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:email_otp/email_otp.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:go_parent/LoginPage/login_screen.dart';
-import 'package:go_parent/LoginPage/SignupPage/signup_brain.dart';
+import 'package:go_parent/SignupPage/signup_brain.dart';
 import 'package:go_parent/Widgets/text_field.dart';
 import 'package:go_parent/Widgets/floating_label_textfield.dart';
 import 'package:go_parent/Database/sqlite.dart';
@@ -29,9 +28,6 @@ class _SignupState extends State<Signup> {
   final TextEditingController confirmPasswordController =
       TextEditingController();
   final TextEditingController userNameController = TextEditingController();
-  final TextEditingController userContactNumController =
-      TextEditingController();
-  final TextEditingController userGenderController = TextEditingController();
   final TextEditingController babyNameController = TextEditingController();
   final TextEditingController babyGenderController = TextEditingController();
   final TextEditingController dobController = TextEditingController();
@@ -142,7 +138,20 @@ class _SignupState extends State<Signup> {
         context: context,
       );
       if (isSignupSuccessful) {
-        Navigator.pushNamed(context, 'login_screen');
+        Alert(
+          context: context,
+          type: AlertType.success,
+          title: 'Registration Successful!',
+          desc: 'You have registered successfully, redirecting to login page...',
+          buttons: [
+            DialogButton(
+              child: Text('OK'),
+              onPressed: () {
+                Navigator.pushReplacementNamed(context, 'login_screen');
+              },
+            ),
+          ],
+        ).show();
       }
     }
   }
@@ -178,6 +187,7 @@ class _SignupState extends State<Signup> {
         appEmail: "teamgoparent@goparent.com",
         appName: "GoParent",
         otpLength: 6,
+        emailTheme: EmailTheme.v6,
         otpType: OTPType.numeric);
 
     try {
@@ -743,10 +753,7 @@ class _SignupState extends State<Signup> {
                         SizedBox(width: 5),
                         GestureDetector(
                           onTap: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => LoginPage()));
+                            Navigator.pushNamed(context, 'login_screen');
                           },
                           child: Text(
                             "Log In",

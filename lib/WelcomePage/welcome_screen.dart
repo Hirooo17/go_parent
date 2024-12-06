@@ -4,7 +4,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:go_parent/LoginPage/login_screen.dart';
-import 'package:go_parent/LoginPage/SignupPage/signup_screen.dart';
+import 'package:go_parent/SignupPage/signup_screen.dart';
 import 'package:lottie/lottie.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
