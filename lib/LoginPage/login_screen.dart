@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_parent/LoginPage/login_brain.dart';
-import 'package:go_parent/SignupPage/signup_screen.dart';
 import 'package:go_parent/Screen/home_screen.dart';
-import 'package:go_parent/Widgets/RoundedButton.dart';
 import 'package:go_parent/Widgets/snackbar.dart';
 import 'package:go_parent/Widgets/text_field.dart';
-import 'package:go_parent/SignupPage/signup_screen.dart';
 //import 'package:go_parent/authentication/auth.dart';
 
 class LoginPage extends StatefulWidget {
@@ -32,7 +29,7 @@ class _LoginPageState extends State<LoginPage> {
     passwordController.dispose();
   }
 
-  void pass(){
+  void pass() {
     //pass
   }
 
@@ -50,42 +47,45 @@ class _LoginPageState extends State<LoginPage> {
           child: Padding(
             padding: EdgeInsets.only(bottom: keyboardHeight),
             child: Column(
-
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
+                SizedBox(height: 50,),
                 SizedBox(
                   width: MediaQuery.of(context).size.width > 600
                       ? MediaQuery.of(context).size.width * 0.4
                       : MediaQuery.of(context).size.width * 0.9,
-                  height:
-                      MediaQuery.of(context).size.height / 2.5,
+                  height: MediaQuery.of(context).size.height / 2.5,
                   child: Image.asset(
                     'assets/images/login.jpg',
                     fit: BoxFit.cover,
                   ),
                 ),
-                SizedBox(height: 20,),
+                SizedBox(
+                  height: 30,
+                ),
                 SizedBox(
                     width: 700,
                     child: TextFieldInput(
                         icon: Icons.email,
                         textEditingController: emailController,
                         hintText: 'Enter your email',
-                        textInputType: TextInputType.emailAddress
-                    )
-                ),
-                SizedBox(height: 10,),
+                        textInputType: TextInputType.emailAddress)),
                 SizedBox(
-                    width: 700,
-                    child: TextFieldInput(
-                        icon: Icons.lock,
-                        textEditingController: passwordController,
-                        hintText: 'Enter your password',
-                        textInputType: TextInputType.text,
-                        isPass: true,
-                    ),
+                  height: 10,
                 ),
-                SizedBox(height: 20,),
+                SizedBox(
+                  width: 700,
+                  child: TextFieldInput(
+                    icon: Icons.lock,
+                    textEditingController: passwordController,
+                    hintText: 'Enter your password',
+                    textInputType: TextInputType.text,
+                    isPass: true,
+                  ),
+                ),
+                SizedBox(
+                  height: 30,
+                ),
                 Material(
                   elevation: 5.0,
                   color: Color(0xFF009688),
@@ -95,7 +95,7 @@ class _LoginPageState extends State<LoginPage> {
                     minWidth: screenSize * .4,
                     height: 50.0,
                     child: Text(
-                      "Continue",
+                      "LOG IN",
                       style: const TextStyle(
                         fontSize: 20,
                         color: Colors.white,
@@ -104,52 +104,46 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                   ),
                 ),
-                SizedBox(height: 10,),
-
-
-                //working on it
+                SizedBox(
+                  height: 250,
+                ),
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    SizedBox(width: 600,),
-                    Align(
-                      //alignment: Alignment.centerLeft,
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 35),
-                          child: Text(
-                            "Forgot Password",
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16,
-                                color: Colors.teal),
-                          ),
-
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 35),
+                      child: Text(
+                        "Forgot Password",
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 14,
+                            color: Colors.teal),
                       ),
                     ),
-
-                    SizedBox(width: 350,),
-                    Align(
-                      //alignment: Alignment.centerRight,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text("Don't Have an account? "),
-                          GestureDetector(
-                            onTap: () {
-                              Navigator.pushNamed(context, 'signup_screen');
-                            },
-                            child: Text(
-                              "Sign Up",
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 16,
-                                  color: Colors.teal,
-                                  ),
+                    SizedBox(width: 250,),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text("Don't Have an account? "),
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.pushNamed(context, 'signup_screen');
+                          },
+                          child: Text(
+                            "Sign Up",
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 14,
+                              color: Colors.teal,
                             ),
-                          )
-                        ],
-                      ),
+                          ),
+                        ),
+                        SizedBox(width: 40,),
+                      ],
                     )
-                ],)
+                  ],
+                ),
+                SizedBox(height: 30,),
               ],
             ),
           ),
