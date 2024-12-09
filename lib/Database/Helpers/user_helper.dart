@@ -29,6 +29,21 @@ class UserHelper {
     return null;
   }
 
+
+  Future<UserModel?> getUserByEmail(String email) async {
+    final List<Map<String, dynamic>> result = await db.query(
+      'userdb',
+      where: 'email = ?',
+      whereArgs: [email],
+    );
+
+    if (result.isNotEmpty) {
+      return UserModel.fromMap(result.first);
+    }
+    return null;
+  }
+
+
   /// Retrieve all users
   Future<List<UserModel>> getAllUsers() async {
     final List<Map<String, dynamic>> result = await db.query('userdb');

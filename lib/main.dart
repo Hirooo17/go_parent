@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_parent/Database/firebase_options.dart';
 import 'package:go_parent/LoginPage/login_screen.dart';
+import 'package:go_parent/LoginPage/password_recovery_screen.dart';
 import 'package:go_parent/SignupPage/signup_screen.dart';
 import 'package:go_parent/Screen/home_screen.dart';
 import 'package:go_parent/Screen/profile_screen.dart';
@@ -67,6 +68,7 @@ class MyApp extends StatelessWidget {
       // ),
       initialRoute: 'welcome_screen',
       routes: {
+        //PasswordRecoveryScreen.id: (context) => PasswordRecovery(),
         SplashScreen.id: (context) => SplashScreen(),
         WelcomeScreen.id: (context) => WelcomeScreen(),
         LoginPage.id: (context) => LoginPage(),

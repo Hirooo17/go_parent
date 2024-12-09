@@ -30,7 +30,7 @@ class SignupBrain {
   }
 
   bool passwordChecker(TextEditingController password,
-      TextEditingController confirmPassword, BuildContext context) {
+    TextEditingController confirmPassword, BuildContext context) {
     String pass = password.text.trim();
     String confirmpw = confirmPassword.text.trim();
 
@@ -99,6 +99,7 @@ class SignupBrain {
       return false;
     }
 
+
     final existingUsers = await userHelper.getAllUsers();
     if (existingUsers.any((user) => user.email == email)) {
       _showAlert(
@@ -141,6 +142,7 @@ class SignupBrain {
       return false;
     }
   }
+
 
   String _hashPassword(String password) {
     final bytes = utf8.encode(password);

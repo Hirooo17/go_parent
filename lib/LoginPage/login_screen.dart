@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:go_parent/Database/Helpers/user_helper.dart';
+import 'package:go_parent/Database/sqlite.dart';
 import 'package:go_parent/LoginPage/login_brain.dart';
 import 'package:go_parent/Screen/home_screen.dart';
 import 'package:go_parent/Widgets/snackbar.dart';
 import 'package:go_parent/Widgets/text_field.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 //import 'package:go_parent/authentication/auth.dart';
 
 class LoginPage extends StatefulWidget {
@@ -29,9 +32,25 @@ class _LoginPageState extends State<LoginPage> {
     passwordController.dispose();
   }
 
-  void pass() {
-    //pass
+
+    void initState() {
+    super.initState();
+
+    WidgetsFlutterBinding.ensureInitialized();
+    _initializeLoginBrain();
   }
+
+
+    Future<void> _initializeLoginBrain() async {
+    sqfliteFfiInit();
+    databaseFactory = databaseFactoryFfi;
+
+    final dbService = DatabaseService.instance;
+    final db = await dbService.database;
+    final userHelper = UserHelper(db);
+    loginBrain = LoginBrain(userHelper);
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -91,7 +110,7 @@ class _LoginPageState extends State<LoginPage> {
                   color: Color(0xFF009688),
                   borderRadius: BorderRadius.circular(30.0),
                   child: MaterialButton(
-                    onPressed: pass,
+                    onPressed:()=>  loginBrain.loginUser(emailController, passwordController, context),
                     minWidth: screenSize * .4,
                     height: 50.0,
                     child: Text(
@@ -112,13 +131,19 @@ class _LoginPageState extends State<LoginPage> {
                   children: [
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 35),
-                      child: Text(
-                        "Forgot Password",
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 14,
-                            color: Colors.teal),
-                      ),
+                      child: GestureDetector(
+                          onTap: () {
+                            Navigator.pushNamed(context, 'password_recovery_screen');
+                          },
+                          child: Text(
+                            "Forgot Password",
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 14,
+                              color: Colors.teal,
+                            ),
+                          ),
+                        ),
                     ),
                     SizedBox(width: 250,),
                     Row(
@@ -138,7 +163,6 @@ class _LoginPageState extends State<LoginPage> {
                             ),
                           ),
                         ),
-                        SizedBox(width: 40,),
                       ],
                     )
                   ],
