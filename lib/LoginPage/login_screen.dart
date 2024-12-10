@@ -32,7 +32,7 @@ class _LoginPageState extends State<LoginPage> {
     passwordController.dispose();
   }
 
-
+    @override
     void initState() {
     super.initState();
 
@@ -110,7 +110,10 @@ class _LoginPageState extends State<LoginPage> {
                   color: Color(0xFF009688),
                   borderRadius: BorderRadius.circular(30.0),
                   child: MaterialButton(
-                    onPressed:()=>  loginBrain.loginUser(emailController, passwordController, context),
+                    onPressed: () async {
+                      if(await loginBrain.loginUser(emailController, passwordController, context)) {
+                      Navigator.pushNamed(context, 'signup_screen');
+                    }},
                     minWidth: screenSize * .4,
                     height: 50.0,
                     child: Text(

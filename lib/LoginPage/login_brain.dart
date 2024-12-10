@@ -1,3 +1,6 @@
+import 'dart:convert';
+
+import 'package:crypto/crypto.dart';
 import 'package:flutter/material.dart';
 import 'package:go_parent/Database/Helpers/user_helper.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
@@ -7,16 +10,39 @@ class LoginBrain {
 
   LoginBrain(this.userHelper);
 
-  Future<void> loginUser(TextEditingController email, TextEditingController password, BuildContext context) async {
+      String _hashPassword(String password) {
+      final bytes = utf8.encode(password);
+      final hash = sha256.convert(bytes);
+      return hash.toString();
+    }
+
+  Future<bool> loginUser(TextEditingController email, TextEditingController password, BuildContext context) async {
     String emailtxt = email.text.trim();
     String passwordtxt = password.text.trim();
-
     final user = await userHelper.getUserByEmail(emailtxt);
-    
+
     if (user != null) {
-      if (user.password == passwordtxt) {
-        print("login success");
+      String hashedinput = _hashPassword(passwordtxt);
+
+      if (user.password == hashedinput) {
+        await Alert(
+          context: context,
+          type: AlertType.success,
+          title: "Login Successful",
+          desc: "Welcome to Goparent!, redirecting you to homescreen...",
+          buttons: [
+            DialogButton(
+              child: Text(
+                "OK",
+                style: TextStyle(color: Colors.white, fontSize: 20),
+              ),
+              onPressed: () => Navigator.pop(context),
+              width: 120,
+            )
+          ],
+        ).show();
         Navigator.pushReplacementNamed(context, "home_screen");
+        return true;
       } else {
         await Alert(
           context: context,
@@ -53,5 +79,6 @@ class LoginBrain {
         ],
       ).show();
     }
+    return false;
   }
 }

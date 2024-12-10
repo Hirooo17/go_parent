@@ -12,6 +12,7 @@ import 'package:go_parent/LoginPage/password_recovery_screen.dart';
 import 'package:go_parent/SignupPage/signup_screen.dart';
 import 'package:go_parent/Screen/home_screen.dart';
 import 'package:go_parent/Screen/profile_screen.dart';
+import 'package:go_parent/Screen/home_screen.dart';
 import 'package:go_parent/Widgets/side_menu.dart';
 import 'package:go_parent/WelcomePage/welcome_screen.dart';
 import 'package:bitsdojo_window/bitsdojo_window.dart';
@@ -69,10 +70,11 @@ class MyApp extends StatelessWidget {
       initialRoute: 'welcome_screen',
       routes: {
         //PasswordRecoveryScreen.id: (context) => PasswordRecovery(),
-        SplashScreen.id: (context) => SplashScreen(),
-        WelcomeScreen.id: (context) => WelcomeScreen(),
-        LoginPage.id: (context) => LoginPage(),
-        Signup.id: (context) => Signup(),
+        SplashScreen.id: (context) => SplashScreen(), // splash_screen
+        WelcomeScreen.id: (context) => WelcomeScreen(), // welcome_screen
+        LoginPage.id: (context) => LoginPage(), //id = "login_screen"
+        Signup.id: (context) => Signup(), //id = "signup_screen""
+        // HomePage.id (context) => HomePage(), // home_screen
       },
     );
   }

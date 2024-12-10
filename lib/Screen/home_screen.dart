@@ -1,4 +1,4 @@
-import 'package:firebase_auth/firebase_auth.dart';
+// import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:go_parent/Screen/mission_screen.dart';
@@ -7,46 +7,45 @@ import 'package:go_parent/Screen/prototypeMissionGraph.dart';
 import 'package:go_parent/Widgets/side_menu.dart';
 
 class Homescreen extends StatefulWidget {
-    final String username;
+  final String username;
+  static String id = 'home_screen';
 
-
-  
   const Homescreen({
     super.key,
     required this.username
   });
-  static String id = 'home_screen';
- 
+
+
 
   @override
   State<Homescreen> createState() => _HomescreenState();
 }
 
 class _HomescreenState extends State<Homescreen> {
-  
-  final FirebaseAuth _auth = FirebaseAuth.instance;
-  User? loggedInUser;
-  
+
+  // final FirebaseAuth _auth = FirebaseAuth.instance;
+  // User? loggedInUser;
+
 
   @override
   void initState() {
     super.initState();
-    getCurrentUser();
+    // getCurrentUser();
   }
 
-  void getCurrentUser() async {
-    try {
-      final user = _auth.currentUser;
-      if (user != null) {
-        setState(() {
-          loggedInUser = user;
-        });
-        print('Logged in user: ${loggedInUser!.email}');
-      }
-    } catch (e) {
-      print('Error getting current user: $e');
-    }
-  }
+  // void getCurrentUser() async {
+  //   try {
+  //     final user = _auth.currentUser;
+  //     if (user != null) {
+  //       setState(() {
+  //         loggedInUser = user;
+  //       });
+  //       print('Logged in user: ${loggedInUser!.email}');
+  //     }
+  //   } catch (e) {
+  //     print('Error getting current user: $e');
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
