@@ -1,5 +1,5 @@
 import 'package:sqflite/sqflite.dart';
-import 'package:go_parent/Database/Models/baby_model.dart';
+import 'package:go_parent/services/database/local/models/baby_model.dart';
 
 class BabyHelper {
   final Database db;

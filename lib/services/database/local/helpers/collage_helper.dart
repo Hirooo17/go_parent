@@ -1,5 +1,5 @@
 import 'package:sqflite/sqflite.dart';
-import 'package:go_parent/Database/Models/collage_model.dart';
+import 'package:go_parent/services/database/local/models/collage_model.dart';
 
 class CollageHelper {
   final Database db;

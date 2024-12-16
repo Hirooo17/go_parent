@@ -7,7 +7,7 @@ class PasswordRecovery extends StatefulWidget {
 
   @override
   _PasswordRecoveryState createState() => _PasswordRecoveryState();
-}
+  }
 
 class _PasswordRecoveryState extends State<PasswordRecovery> {
   final TextEditingController _emailController = TextEditingController();
@@ -43,7 +43,6 @@ class _PasswordRecoveryState extends State<PasswordRecovery> {
               ElevatedButton(
                 onPressed: () async {
                   if (_formKey.currentState!.validate()) {
-                    // Handle email submission
                     await EmailOTP.sendOTP(
                       email: _emailController.text,
                     );

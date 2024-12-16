@@ -1,5 +1,5 @@
 import 'package:sqflite/sqflite.dart';
-import 'package:go_parent/Database/Models/user_model.dart';
+import 'package:go_parent/services/database/local/models/user_model.dart';
 
 class UserHelper {
   final Database db;

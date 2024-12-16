@@ -1,11 +1,11 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'package:flutter/material.dart';
-import 'package:go_parent/LoginPage/login_screen.dart';
+import 'package:go_parent/screens/login_page/login_screen.dart';
 import 'package:go_parent/Screen/childcare.dart';
 import 'package:go_parent/Screen/view%20profile/viewprofile.dart';
-import 'package:go_parent/Widgets/button.dart';
-import 'package:go_parent/authentication/auth.dart';
+import 'package:go_parent/widgets/button.dart';
+import 'package:go_parent/services/authentication/auth.dart';
 
 class Logout extends StatefulWidget {
   const Logout({super.key});
@@ -31,7 +31,7 @@ class _LogoutState extends State<Logout> {
           children: [
             Text(
               'SCREEN UNDER MAINTENANCE, THIS IS A PROFILE SCREEN',
-              style: TextStyle(fontSize: 24), 
+              style: TextStyle(fontSize: 24),
               textAlign: TextAlign.center,
             ),
             SizedBox(height: 20),

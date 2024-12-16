@@ -6,17 +6,17 @@
 //import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:go_parent/Database/firebase_options.dart';
-import 'package:go_parent/LoginPage/login_screen.dart';
-import 'package:go_parent/LoginPage/password_recovery_screen.dart';
-import 'package:go_parent/SignupPage/signup_screen.dart';
+import 'package:go_parent/services/database/firebase_options.dart';
+import 'package:go_parent/screens/login_page/login_screen.dart';
+import 'package:go_parent/screens/login_page/password_recovery_screen.dart';
+import 'package:go_parent/screens/signup_page/signup_screen.dart';
 import 'package:go_parent/Screen/home_screen.dart';
 import 'package:go_parent/Screen/profile_screen.dart';
 import 'package:go_parent/Screen/home_screen.dart';
-import 'package:go_parent/Widgets/side_menu.dart';
-import 'package:go_parent/WelcomePage/welcome_screen.dart';
+import 'package:go_parent/widgets/side_menu.dart';
+import 'package:go_parent/screens/welcome_page/welcome_screen.dart';
 import 'package:bitsdojo_window/bitsdojo_window.dart';
-import 'WelcomePage/splash_screen.dart';
+import 'screens/welcome_page/splash_screen.dart';
 
 void main() async {
   // Ensure Flutter binding is initialized first
@@ -67,14 +67,15 @@ class MyApp extends StatelessWidget {
       //     }
       //   },
       // ),
-      initialRoute: 'welcome_screen',
+      initialRoute: 'login_screen',
       routes: {
         //PasswordRecoveryScreen.id: (context) => PasswordRecovery(),
         SplashScreen.id: (context) => SplashScreen(), // splash_screen
         WelcomeScreen.id: (context) => WelcomeScreen(), // welcome_screen
         LoginPage.id: (context) => LoginPage(), //id = "login_screen"
         Signup.id: (context) => Signup(), //id = "signup_screen""
-        // HomePage.id (context) => HomePage(), // home_screen
+        Homescreen.id: (context) => Homescreen(username: 'some_username'),// home_screen
+        PasswordRecovery.id: (context) => PasswordRecovery(), //password_recovery_screen
       },
     );
   }

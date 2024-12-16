@@ -1,5 +1,5 @@
 import 'package:sqflite/sqflite.dart';
-import 'package:go_parent/Database/Models/logs_model.dart';
+import 'package:go_parent/services/database/local/models/logs_model.dart';
 
 class LogsHelper {
   final Database db;

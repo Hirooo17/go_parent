@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:go_parent/Database/Helpers/user_helper.dart';
-import 'package:go_parent/Database/sqlite.dart';
-import 'package:go_parent/LoginPage/login_brain.dart';
+import 'package:go_parent/services/database/local/helpers/user_helper.dart';
+import 'package:go_parent/services/database/local/sqlite.dart';
+import 'package:go_parent/screens/login_page/login_brain.dart';
 import 'package:go_parent/Screen/home_screen.dart';
-import 'package:go_parent/Widgets/snackbar.dart';
-import 'package:go_parent/Widgets/text_field.dart';
+import 'package:go_parent/utilities/constants.dart';
+import 'package:go_parent/widgets/snackbar.dart';
+import 'package:go_parent/widgets/text_field.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 //import 'package:go_parent/authentication/auth.dart';
 
@@ -17,13 +19,14 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  final TextEditingController usernameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-  bool isLoading = false;
+  final TextEditingController emailRecoveryController = TextEditingController();
   final screenSize = 700;
-
   late LoginBrain loginBrain;
+  bool isLoading = false;
+  bool? cbValue = false;
+
 
   @override
   void dispose() {
@@ -32,16 +35,16 @@ class _LoginPageState extends State<LoginPage> {
     passwordController.dispose();
   }
 
+
     @override
     void initState() {
     super.initState();
-
     WidgetsFlutterBinding.ensureInitialized();
     _initializeLoginBrain();
   }
 
 
-    Future<void> _initializeLoginBrain() async {
+  Future<void> _initializeLoginBrain() async {
     sqfliteFfiInit();
     databaseFactory = databaseFactoryFfi;
 
@@ -49,6 +52,48 @@ class _LoginPageState extends State<LoginPage> {
     final db = await dbService.database;
     final userHelper = UserHelper(db);
     loginBrain = LoginBrain(userHelper);
+}
+
+
+  void handleLogin(BuildContext context, TextEditingController emailController, TextEditingController passwordController) async {
+    bool loginSuccess = await loginBrain.loginUser(emailController.text, passwordController.text);
+
+    if (loginSuccess) {
+      await Alert(
+        context: context,
+        type: AlertType.success,
+        title: "Login Successful",
+        desc: "Welcome to Goparent!, redirecting you to homescreen...",
+        buttons: [
+          DialogButton(
+            child: Text(
+              "OK",
+              style: TextStyle(color: Colors.white, fontSize: 20),
+            ),
+            onPressed: () => Navigator.pop(context),
+            width: 120,
+          )
+        ],
+      ).show();
+      Navigator.pushReplacementNamed(context, 'home_screen');
+    } else {
+      await Alert(
+        context: context,
+        type: AlertType.error,
+        title: "Login Failed",
+        desc: "Invalid username or password. Please try again.",
+        buttons: [
+          DialogButton(
+            child: Text(
+              "OK",
+              style: TextStyle(color: Colors.white, fontSize: 20),
+            ),
+            onPressed: () => Navigator.pop(context),
+            width: 120,
+          )
+        ],
+      ).show();
+    }
   }
 
 
@@ -103,17 +148,36 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                 ),
                 SizedBox(
-                  height: 30,
+                  height: 20,
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 30),
+                  child: Align(
+                    alignment: Alignment.centerRight,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Checkbox(
+                          value: cbValue,
+                          onChanged: (bool? newValue) {
+                            setState(() {
+                              cbValue = newValue;
+                            });
+                          },),
+                        Text(
+                          "Remember Me",
+                          style: kh3LabelTextStyle,
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
                 Material(
                   elevation: 5.0,
                   color: Color(0xFF009688),
                   borderRadius: BorderRadius.circular(30.0),
                   child: MaterialButton(
-                    onPressed: () async {
-                      if(await loginBrain.loginUser(emailController, passwordController, context)) {
-                      Navigator.pushNamed(context, 'signup_screen');
-                    }},
+                    onPressed: ()=> handleLogin(context, emailController, passwordController),
                     minWidth: screenSize * .4,
                     height: 50.0,
                     child: Text(
@@ -136,17 +200,41 @@ class _LoginPageState extends State<LoginPage> {
                       padding: const EdgeInsets.symmetric(horizontal: 35),
                       child: GestureDetector(
                           onTap: () {
-                            Navigator.pushNamed(context, 'password_recovery_screen');
+                            Alert(
+                              context: context,
+                              title: "Recover Your Account",
+                              content: Column(
+                                children: <Widget>[
+                                  Text(
+                                    "Please enter your email. We will generate a password for you to log in and send it to your email.",
+                                    style: TextStyle(fontSize: 16),
+                                  ),
+                                  TextField(
+                                    controller: emailRecoveryController,
+                                    decoration: InputDecoration(
+                                      icon: Icon(Icons.email),
+                                      labelText: 'Email',
+                                      hintText: 'Enter your email',
+                                    ),
+                                    keyboardType: TextInputType.emailAddress,
+                                  ),
+                                ],
+                              ),
+                              buttons: [
+                                DialogButton(
+                                  onPressed: () {
+                                    String emailRecovery = emailRecoveryController.text; // Get the user input
+                                    loginBrain.recoverUserAccount(emailRecovery);
+                                  },
+                                  child: Text(
+                                    "Recover Password", // Appropriate name for the button
+                                    style: TextStyle(color: Colors.white, fontSize: 20),
+                                  ),
+                                ),
+                              ],
+                            ).show();
                           },
-                          child: Text(
-                            "Forgot Password",
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 14,
-                              color: Colors.teal,
-                            ),
-                          ),
-                        ),
+                      ),
                     ),
                     SizedBox(width: 250,),
                     Row(

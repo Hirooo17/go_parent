@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:go_parent/LoginPage/login_screen.dart';
+import 'package:go_parent/screens/login_page/login_screen.dart';
 import 'package:go_parent/Screen/settings.dart';
-import 'package:go_parent/Widgets/button.dart';
-import 'package:go_parent/authentication/auth.dart';
+import 'package:go_parent/widgets/button.dart';
+import 'package:go_parent/services/authentication/auth.dart';
 
 class SideMenu extends StatelessWidget {
   AuthMethod get _authMethod => AuthMethod();

@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 import 'package:go_parent/Screen/mission_screen.dart';
 import 'package:go_parent/Screen/profile_screen.dart';
 import 'package:go_parent/Screen/prototypeMissionGraph.dart';
-import 'package:go_parent/Widgets/side_menu.dart';
+import 'package:go_parent/widgets/side_menu.dart';
 
 class Homescreen extends StatefulWidget {
   final String username;

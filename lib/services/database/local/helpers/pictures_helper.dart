@@ -1,5 +1,5 @@
 import 'package:sqflite/sqflite.dart';
-import 'package:go_parent/Database/Models/pictures_model.dart';
+import 'package:go_parent/services/database/local/models/pictures_model.dart';
 
 class PictureHelper {
   final Database db;
