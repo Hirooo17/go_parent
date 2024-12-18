@@ -81,6 +81,17 @@ class UserHelper {
     return result.isNotEmpty;
   }
 
+
+    Future<int> updateUserPassword(String email, String newPassword) async {
+    return await db.update(
+      'userdb',
+      {'password': newPassword},
+      where: 'email = ?',
+      whereArgs: [email],
+    );
+  }
+
+
   /// Get total score for a user
   Future<int> getTotalScore(int userId) async {
     final List<Map<String, dynamic>> result = await db.query(

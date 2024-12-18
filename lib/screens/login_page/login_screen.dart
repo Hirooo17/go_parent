@@ -21,12 +21,12 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-  final TextEditingController emailRecoveryController = TextEditingController();
+  final TextEditingController accountRecoveryController =
+      TextEditingController();
   final screenSize = 700;
   late LoginBrain loginBrain;
   bool isLoading = false;
   bool? cbValue = false;
-
 
   @override
   void dispose() {
@@ -35,14 +35,12 @@ class _LoginPageState extends State<LoginPage> {
     passwordController.dispose();
   }
 
-
-    @override
-    void initState() {
+  @override
+  void initState() {
     super.initState();
     WidgetsFlutterBinding.ensureInitialized();
     _initializeLoginBrain();
   }
-
 
   Future<void> _initializeLoginBrain() async {
     sqfliteFfiInit();
@@ -52,11 +50,12 @@ class _LoginPageState extends State<LoginPage> {
     final db = await dbService.database;
     final userHelper = UserHelper(db);
     loginBrain = LoginBrain(userHelper);
-}
+  }
 
-
-  void handleLogin(BuildContext context, TextEditingController emailController, TextEditingController passwordController) async {
-    bool loginSuccess = await loginBrain.loginUser(emailController.text, passwordController.text);
+  void handleLogin(BuildContext context, TextEditingController emailController,
+      TextEditingController passwordController) async {
+    bool loginSuccess = await loginBrain.loginUser(
+        emailController.text, passwordController.text);
 
     if (loginSuccess) {
       await Alert(
@@ -96,7 +95,6 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
-
   @override
   Widget build(BuildContext context) {
     double _height = MediaQuery.of(context).size.height;
@@ -113,7 +111,9 @@ class _LoginPageState extends State<LoginPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                SizedBox(height: 50,),
+                SizedBox(
+                  height: 50,
+                ),
                 SizedBox(
                   width: MediaQuery.of(context).size.width > 600
                       ? MediaQuery.of(context).size.width * 0.4
@@ -163,7 +163,8 @@ class _LoginPageState extends State<LoginPage> {
                             setState(() {
                               cbValue = newValue;
                             });
-                          },),
+                          },
+                        ),
                         Text(
                           "Remember Me",
                           style: kh3LabelTextStyle,
@@ -177,7 +178,8 @@ class _LoginPageState extends State<LoginPage> {
                   color: Color(0xFF009688),
                   borderRadius: BorderRadius.circular(30.0),
                   child: MaterialButton(
-                    onPressed: ()=> handleLogin(context, emailController, passwordController),
+                    onPressed: () => handleLogin(
+                        context, emailController, passwordController),
                     minWidth: screenSize * .4,
                     height: 50.0,
                     child: Text(
@@ -199,44 +201,81 @@ class _LoginPageState extends State<LoginPage> {
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 35),
                       child: GestureDetector(
-                          onTap: () {
-                            Alert(
-                              context: context,
-                              title: "Recover Your Account",
-                              content: Column(
-                                children: <Widget>[
-                                  Text(
-                                    "Please enter your email. We will generate a password for you to log in and send it to your email.",
-                                    style: TextStyle(fontSize: 16),
+                        onTap: () {
+                          Alert(
+                            context: context,
+                            title: "Recover Your Account",
+                            content: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  "Please enter your email. We will generate a new password for you to log in and send it to your email.",
+                                  style: TextStyle(fontSize: 16),
+                                ),
+                                SizedBox(height: 10),
+                                TextField(
+                                  controller: accountRecoveryController,
+                                  decoration: InputDecoration(
+                                    icon: Icon(Icons.email),
+                                    labelText: 'Email',
+                                    hintText: 'Enter your email',
+                                    border: OutlineInputBorder(),
                                   ),
-                                  TextField(
-                                    controller: emailRecoveryController,
-                                    decoration: InputDecoration(
-                                      icon: Icon(Icons.email),
-                                      labelText: 'Email',
-                                      hintText: 'Enter your email',
-                                    ),
-                                    keyboardType: TextInputType.emailAddress,
-                                  ),
-                                ],
-                              ),
-                              buttons: [
-                                DialogButton(
-                                  onPressed: () {
-                                    String emailRecovery = emailRecoveryController.text; // Get the user input
-                                    loginBrain.recoverUserAccount(emailRecovery);
-                                  },
-                                  child: Text(
-                                    "Recover Password", // Appropriate name for the button
-                                    style: TextStyle(color: Colors.white, fontSize: 20),
-                                  ),
+                                  keyboardType: TextInputType.emailAddress,
                                 ),
                               ],
-                            ).show();
-                          },
+                            ),
+                            buttons: [
+                              DialogButton(
+                                onPressed: () async {
+                                  String emailRecovery =
+                                      accountRecoveryController.text.trim();
+
+                                  if (emailRecovery.isEmpty) {
+                                    // Show a snackbar or other feedback to the user
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                          content: Text(
+                                              "Please enter a valid email address.")),
+                                    );
+                                    return;
+                                  }
+
+                                  // Call the account recovery function
+                                  bool success = await loginBrain
+                                      .recoverUserAccount(emailRecovery);
+
+                                  if (success) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                          content: Text(
+                                              "Password recovery email sent successfully.")),
+                                    );
+                                  } else {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                          content: Text(
+                                              "Failed to recover account. Please check your email.")),
+                                    );
+                                  }
+
+                                  // Close the dialog
+                                  Navigator.of(context).pop();
+                                },
+                                child: Text(
+                                  "Recover Password",
+                                  style: TextStyle(
+                                      color: Colors.white, fontSize: 20),
+                                ),
+                              ),
+                            ],
+                          ).show();
+                        },
                       ),
                     ),
-                    SizedBox(width: 250,),
+                    SizedBox(
+                      width: 250,
+                    ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -258,7 +297,9 @@ class _LoginPageState extends State<LoginPage> {
                     )
                   ],
                 ),
-                SizedBox(height: 30,),
+                SizedBox(
+                  height: 30,
+                ),
               ],
             ),
           ),
