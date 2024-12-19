@@ -4,6 +4,8 @@ import 'package:crypto/crypto.dart';
 import 'dart:math';
 import 'package:go_parent/services/database/local/helpers/user_helper.dart';
 import 'package:flutter_email_sender/flutter_email_sender.dart';
+import 'package:mailer/mailer.dart';
+import 'package:mailer/smtp_server.dart';
 
 class LoginBrain {
   final UserHelper userHelper;
@@ -21,39 +23,34 @@ class LoginBrain {
 
   Future<bool> recoverUserAccount(String email) async {
     try {
-      // Ensure email is trimmed
-      email = email.trim();
+      if (!await userHelper.userExists(email)) {
+      print('Email not found: $email');
+      return false;
+    }
 
-      // Check if the user exists
-      final user = await userHelper.getUserByEmail(email);
-      if (user == null) {
-        return false; // No user found
-      }
-
-      // Generate a new password and hash it
       String newPassword = _generatePassword();
-      String hashedPassword = _hashPassword(newPassword);
+      String hashedPassword = kHashPassword(newPassword);
 
-      // Update the user's password
-      int rowsUpdated = await userHelper.updateUserPassword(email, hashedPassword);
-      if (rowsUpdated == 0) {
-        return false; // Password update failed
-      }
+    bool isPassUpdated = await userHelper.updateUserPassword(email, hashedPassword);
+    if (!isPassUpdated) {
+      print('Failed to update password for email: $email');
+      return false;
+    }
 
-      // Create the email using FlutterEmailSender
-      final Email recoveryEmail = Email(
-        body: 'Your new password is: $newPassword\nPlease change it after logging in.',
-        subject: 'Account Recovery',
-        recipients: [email], // The user's email
-        isHTML: false, // Set to true if you want to send HTML content
-      );
+      final smtpServer = gmail(kAppUsername, kAppPassword);
 
-      // Send the recovery email
-      await FlutterEmailSender.send(recoveryEmail);
+      final message = Message()
+        ..from = Address(kAppUsername, 'GoParentApp')
+        ..recipients.add(email)
+        ..subject = 'Account Recovery'
+        ..text = 'Your new password is: $newPassword\nPlease change it after logging in.';
 
-      return true; // Account recovery successful
+      await send(message, smtpServer);
+
+      print('Test email sent to: $email');
+      return true;
     } catch (e) {
-      print("Error during account recovery: $e");
+      print("Error during email sending: $e");
       return false;
     }
   }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:go_parent/services/database/local/helpers/user_helper.dart';
 import 'package:go_parent/services/database/local/sqlite.dart';
 import 'package:go_parent/screens/login_page/login_brain.dart';
@@ -229,9 +230,7 @@ class _LoginPageState extends State<LoginPage> {
                                 onPressed: () async {
                                   String emailRecovery =
                                       accountRecoveryController.text.trim();
-
-                                  if (emailRecovery.isEmpty) {
-                                    // Show a snackbar or other feedback to the user
+                                  if (emailRecovery.isEmpty || !emailRecovery.isEmail) {
                                     ScaffoldMessenger.of(context).showSnackBar(
                                       SnackBar(
                                           content: Text(
@@ -239,11 +238,8 @@ class _LoginPageState extends State<LoginPage> {
                                     );
                                     return;
                                   }
-
-                                  // Call the account recovery function
                                   bool success = await loginBrain
                                       .recoverUserAccount(emailRecovery);
-
                                   if (success) {
                                     ScaffoldMessenger.of(context).showSnackBar(
                                       SnackBar(
@@ -254,11 +250,9 @@ class _LoginPageState extends State<LoginPage> {
                                     ScaffoldMessenger.of(context).showSnackBar(
                                       SnackBar(
                                           content: Text(
-                                              "Failed to recover account. Please check your email.")),
+                                              "Something Went Wrong, Failed to recover account. Please Try Again")),
                                     );
                                   }
-
-                                  // Close the dialog
                                   Navigator.of(context).pop();
                                 },
                                 child: Text(

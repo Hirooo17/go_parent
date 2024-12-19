@@ -22,7 +22,6 @@ class UserHelper {
       where: 'userId = ?',
       whereArgs: [userId],
     );
-
     if (result.isNotEmpty) {
       return UserModel.fromMap(result.first);
     }
@@ -82,13 +81,28 @@ class UserHelper {
   }
 
 
-    Future<int> updateUserPassword(String email, String newPassword) async {
-    return await db.update(
-      'userdb',
-      {'password': newPassword},
-      where: 'email = ?',
-      whereArgs: [email],
-    );
+  Future<bool> updateUserPassword(String email, String hashedPassword) async {
+    try {
+      print('Attempting to update password for email: $email');
+
+      final rowsUpdated = await db.update(
+        'userdb',
+        {'password': hashedPassword},
+        where: 'email = ?', // Ensure case insensitivity
+        whereArgs: [email],
+      );
+
+      if (rowsUpdated > 0) {
+        print('Password updated successfully for email: $email');
+        return true;
+      } else {
+        print('No user found with the given email: $email');
+        return false; // Email doesn't exist in the database
+      }
+    } catch (e) {
+      print('Error while updating password: $e');
+      return false;
+    }
   }
 
 

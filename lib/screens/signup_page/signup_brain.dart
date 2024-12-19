@@ -3,6 +3,7 @@ import 'package:go_parent/services/database/local/helpers/baby_helper.dart';
 import 'package:go_parent/services/database/local/models/user_model.dart';
 import 'package:go_parent/services/database/local/helpers/user_helper.dart';
 import 'package:go_parent/services/database/local/models/baby_model.dart';
+import 'package:go_parent/utilities/constants.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:crypto/crypto.dart';
 import 'dart:convert';
@@ -110,7 +111,7 @@ class SignupBrain {
       return false;
     }
 
-    String hashedPassword = _hashPassword(password);
+    String hashedPassword = kHashPassword(password);
 
     final newUser = UserModel(
       username: username,
@@ -143,12 +144,6 @@ class SignupBrain {
     }
   }
 
-
-  String _hashPassword(String password) {
-    final bytes = utf8.encode(password);
-    final hash = sha256.convert(bytes);
-    return hash.toString();
-  }
 
   void _showAlert({
     required BuildContext context,
