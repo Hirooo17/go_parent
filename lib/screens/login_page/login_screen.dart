@@ -97,8 +97,6 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    double _height = MediaQuery.of(context).size.height;
-    double _width = MediaQuery.of(context).size.width;
     double keyboardHeight = MediaQuery.of(context).viewInsets.bottom;
 
     return Scaffold(
@@ -150,28 +148,22 @@ class _LoginPageState extends State<LoginPage> {
                 SizedBox(
                   height: 20,
                 ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 30),
-                  child: Align(
-                    alignment: Alignment.centerRight,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        Checkbox(
-                          value: cbValue,
-                          onChanged: (bool? newValue) {
-                            setState(() {
-                              cbValue = newValue;
-                            });
-                          },
-                        ),
-                        Text(
-                          "Remember Me",
-                          style: kh3LabelTextStyle,
-                        ),
-                      ],
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Checkbox(
+                      value: cbValue,
+                      onChanged: (bool? newValue) {
+                        setState(() {
+                          cbValue = newValue;
+                        });
+                      },
                     ),
-                  ),
+                    Text(
+                      "Remember Me",
+                      style: kh3LabelTextStyle,
+                    ),
+                  ],
                 ),
                 Material(
                   elevation: 5.0,
@@ -201,6 +193,13 @@ class _LoginPageState extends State<LoginPage> {
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 35),
                       child: GestureDetector(
+                        child: Text(
+                          "Forgot Password",
+                          style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16,
+                                color: Colors.teal),
+                        ),
                         onTap: () {
                           Alert(
                             context: context,

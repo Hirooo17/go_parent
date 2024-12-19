@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 
+// const double kheight = MediaQuery.of(context).size.height;
+// const double kwidth = MediaQuery.of(context).size.width;
+
 const kh1LabelTextStyle = TextStyle(
   fontSize: 32, // Approximate size for <h1>
   fontWeight: FontWeight.bold,

@@ -9,7 +9,6 @@ class LoginBrain {
   final UserHelper userHelper;
   LoginBrain(this.userHelper);
 
-
   Future<bool> loginUser(String email, String password) async {
     String hashedInput = _hashPassword(password);
     final user = await userHelper.getUserByEmail(email.trim());
@@ -60,8 +59,6 @@ class LoginBrain {
   }
 
 
-
-
   String _hashPassword(String password) {
     final bytes = utf8.encode(password);
     final hash = sha256.convert(bytes);
@@ -76,5 +73,4 @@ class LoginBrain {
     return List.generate(length, (index) => chars[random.nextInt(chars.length)])
         .join();
   }
-
 }
