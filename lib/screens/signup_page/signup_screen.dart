@@ -7,7 +7,6 @@ import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:email_otp/email_otp.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
-import 'package:go_parent/screens/login_page/login_screen.dart';
 import 'package:go_parent/screens/signup_page/signup_brain.dart';
 import 'package:go_parent/widgets/text_field.dart';
 import 'package:go_parent/widgets/floating_label_textfield.dart';
