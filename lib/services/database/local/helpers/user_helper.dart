@@ -69,7 +69,6 @@ class UserHelper {
     );
   }
 
-  /// Check if a user exists by email (for login or sign-up validation)
   Future<bool> userExists(String email) async {
     final List<Map<String, dynamic>> result = await db.query(
       'userdb',
@@ -88,7 +87,7 @@ class UserHelper {
       final rowsUpdated = await db.update(
         'userdb',
         {'password': hashedPassword},
-        where: 'email = ?', // Ensure case insensitivity
+        where: 'email = ?',
         whereArgs: [email],
       );
 

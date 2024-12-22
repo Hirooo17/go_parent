@@ -1,4 +1,3 @@
-// import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:go_parent/Screen/mission_screen.dart';
@@ -16,36 +15,17 @@ class Homescreen extends StatefulWidget {
   });
 
 
-
   @override
   State<Homescreen> createState() => _HomescreenState();
 }
 
 class _HomescreenState extends State<Homescreen> {
 
-  // final FirebaseAuth _auth = FirebaseAuth.instance;
-  // User? loggedInUser;
-
 
   @override
   void initState() {
     super.initState();
-    // getCurrentUser();
   }
-
-  // void getCurrentUser() async {
-  //   try {
-  //     final user = _auth.currentUser;
-  //     if (user != null) {
-  //       setState(() {
-  //         loggedInUser = user;
-  //       });
-  //       print('Logged in user: ${loggedInUser!.email}');
-  //     }
-  //   } catch (e) {
-  //     print('Error getting current user: $e');
-  //   }
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -86,7 +66,6 @@ class _HomescreenState extends State<Homescreen> {
   }
 }
 
-// Screen Navigator
 class NavigationController extends GetxController {
   final Rx<int> selectedIndex = 0.obs;
 
@@ -100,15 +79,13 @@ class NavigationController extends GetxController {
   ];
 }
 
-// Dashboard widget for Missions
 class MissionDashboard extends StatelessWidget {
   const MissionDashboard({super.key});
 
   @override
   Widget build(BuildContext context) {
-    // Example dummy mission data for the dashboard
-    int currentScore = 120; // This would be dynamically fetched
-    int completedMissions = 5; // This would also be fetched from the mission screen
+    int currentScore = 120;
+    int completedMissions = 5;
 
     return Padding(
       padding: const EdgeInsets.all(16.0),
@@ -165,7 +142,7 @@ class MissionDashboard extends StatelessWidget {
               ),
               const SizedBox(height: 8),
               LinearProgressIndicator(
-                value: completedMissions / 10, // Assume 10 total missions
+                value: completedMissions / 10,
                 backgroundColor: Colors.green[100],
                 valueColor: AlwaysStoppedAnimation<Color>(Colors.green),
               ),

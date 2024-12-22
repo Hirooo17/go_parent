@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:go_parent/services/database/local/helpers/user_helper.dart';
 import 'package:go_parent/services/database/local/sqlite.dart';
 import 'package:go_parent/screens/login_page/login_brain.dart';
-import 'package:go_parent/Screen/home_screen.dart';
+import 'package:go_parent/screens/home_page/home_screen.dart';
 import 'package:go_parent/utilities/constants.dart';
 import 'package:go_parent/widgets/snackbar.dart';
 import 'package:go_parent/widgets/text_field.dart';
