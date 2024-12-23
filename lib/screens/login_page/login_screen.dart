@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:go_parent/services/database/local/helpers/user_helper.dart';
 import 'package:go_parent/services/database/local/sqlite.dart';
 import 'package:go_parent/screens/login_page/login_brain.dart';
-import 'package:go_parent/Screen/home_screen.dart';
+import 'package:go_parent/screens/home_page/home_screen.dart';
 import 'package:go_parent/utilities/constants.dart';
 import 'package:go_parent/widgets/snackbar.dart';
 import 'package:go_parent/widgets/text_field.dart';
@@ -21,12 +22,12 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-  final TextEditingController emailRecoveryController = TextEditingController();
+  final TextEditingController accountRecoveryController =
+      TextEditingController();
   final screenSize = 700;
   late LoginBrain loginBrain;
   bool isLoading = false;
   bool? cbValue = false;
-
 
   @override
   void dispose() {
@@ -35,14 +36,12 @@ class _LoginPageState extends State<LoginPage> {
     passwordController.dispose();
   }
 
-
-    @override
-    void initState() {
+  @override
+  void initState() {
     super.initState();
     WidgetsFlutterBinding.ensureInitialized();
     _initializeLoginBrain();
   }
-
 
   Future<void> _initializeLoginBrain() async {
     sqfliteFfiInit();
@@ -52,11 +51,12 @@ class _LoginPageState extends State<LoginPage> {
     final db = await dbService.database;
     final userHelper = UserHelper(db);
     loginBrain = LoginBrain(userHelper);
-}
+  }
 
-
-  void handleLogin(BuildContext context, TextEditingController emailController, TextEditingController passwordController) async {
-    bool loginSuccess = await loginBrain.loginUser(emailController.text, passwordController.text);
+  void handleLogin(BuildContext context, TextEditingController emailController,
+      TextEditingController passwordController) async {
+    bool loginSuccess = await loginBrain.loginUser(
+        emailController.text, passwordController.text);
 
     if (loginSuccess) {
       await Alert(
@@ -96,11 +96,8 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
-
   @override
   Widget build(BuildContext context) {
-    double _height = MediaQuery.of(context).size.height;
-    double _width = MediaQuery.of(context).size.width;
     double keyboardHeight = MediaQuery.of(context).viewInsets.bottom;
 
     return Scaffold(
@@ -113,7 +110,9 @@ class _LoginPageState extends State<LoginPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                SizedBox(height: 50,),
+                SizedBox(
+                  height: 50,
+                ),
                 SizedBox(
                   width: MediaQuery.of(context).size.width > 600
                       ? MediaQuery.of(context).size.width * 0.4
@@ -150,34 +149,30 @@ class _LoginPageState extends State<LoginPage> {
                 SizedBox(
                   height: 20,
                 ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 30),
-                  child: Align(
-                    alignment: Alignment.centerRight,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        Checkbox(
-                          value: cbValue,
-                          onChanged: (bool? newValue) {
-                            setState(() {
-                              cbValue = newValue;
-                            });
-                          },),
-                        Text(
-                          "Remember Me",
-                          style: kh3LabelTextStyle,
-                        ),
-                      ],
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Checkbox(
+                      value: cbValue,
+                      onChanged: (bool? newValue) {
+                        setState(() {
+                          cbValue = newValue;
+                        });
+                      },
                     ),
-                  ),
+                    Text(
+                      "Remember Me",
+                      style: kh3LabelTextStyle,
+                    ),
+                  ],
                 ),
                 Material(
                   elevation: 5.0,
                   color: Color(0xFF009688),
                   borderRadius: BorderRadius.circular(30.0),
                   child: MaterialButton(
-                    onPressed: ()=> handleLogin(context, emailController, passwordController),
+                    onPressed: () => handleLogin(
+                        context, emailController, passwordController),
                     minWidth: screenSize * .4,
                     height: 50.0,
                     child: Text(
@@ -199,44 +194,81 @@ class _LoginPageState extends State<LoginPage> {
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 35),
                       child: GestureDetector(
-                          onTap: () {
-                            Alert(
-                              context: context,
-                              title: "Recover Your Account",
-                              content: Column(
-                                children: <Widget>[
-                                  Text(
-                                    "Please enter your email. We will generate a password for you to log in and send it to your email.",
-                                    style: TextStyle(fontSize: 16),
+                        child: Text(
+                          "Forgot Password",
+                          style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16,
+                                color: Colors.teal),
+                        ),
+                        onTap: () {
+                          Alert(
+                            context: context,
+                            title: "Recover Your Account",
+                            content: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  "Please enter your email. We will generate a new password for you to log in and send it to your email.",
+                                  style: TextStyle(fontSize: 16),
+                                ),
+                                SizedBox(height: 10),
+                                TextField(
+                                  controller: accountRecoveryController,
+                                  decoration: InputDecoration(
+                                    icon: Icon(Icons.email),
+                                    labelText: 'Email',
+                                    hintText: 'Enter your email',
+                                    border: OutlineInputBorder(),
                                   ),
-                                  TextField(
-                                    controller: emailRecoveryController,
-                                    decoration: InputDecoration(
-                                      icon: Icon(Icons.email),
-                                      labelText: 'Email',
-                                      hintText: 'Enter your email',
-                                    ),
-                                    keyboardType: TextInputType.emailAddress,
-                                  ),
-                                ],
-                              ),
-                              buttons: [
-                                DialogButton(
-                                  onPressed: () {
-                                    String emailRecovery = emailRecoveryController.text; // Get the user input
-                                    loginBrain.recoverUserAccount(emailRecovery);
-                                  },
-                                  child: Text(
-                                    "Recover Password", // Appropriate name for the button
-                                    style: TextStyle(color: Colors.white, fontSize: 20),
-                                  ),
+                                  keyboardType: TextInputType.emailAddress,
                                 ),
                               ],
-                            ).show();
-                          },
+                            ),
+                            buttons: [
+                              DialogButton(
+                                onPressed: () async {
+                                  String emailRecovery =
+                                      accountRecoveryController.text.trim();
+                                  if (emailRecovery.isEmpty || !emailRecovery.isEmail) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                          content: Text(
+                                              "Please enter a valid email address.")),
+                                    );
+                                    return;
+                                  }
+                                  bool success = await loginBrain
+                                      .recoverUserAccount(emailRecovery);
+                                  if (success) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                          content: Text(
+                                              "Password recovery email sent successfully.")),
+                                    );
+                                  } else {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                          content: Text(
+                                              "Something Went Wrong, Failed to recover account. Please Try Again")),
+                                    );
+                                  }
+                                  Navigator.of(context).pop();
+                                },
+                                child: Text(
+                                  "Recover Password",
+                                  style: TextStyle(
+                                      color: Colors.white, fontSize: 20),
+                                ),
+                              ),
+                            ],
+                          ).show();
+                        },
                       ),
                     ),
-                    SizedBox(width: 250,),
+                    SizedBox(
+                      width: 250,
+                    ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -258,7 +290,9 @@ class _LoginPageState extends State<LoginPage> {
                     )
                   ],
                 ),
-                SizedBox(height: 30,),
+                SizedBox(
+                  height: 30,
+                ),
               ],
             ),
           ),

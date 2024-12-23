@@ -5,7 +5,7 @@ import 'package:go_parent/screens/login_page/login_screen.dart';
 import 'package:go_parent/Screen/childcare.dart';
 import 'package:go_parent/Screen/view%20profile/viewprofile.dart';
 import 'package:go_parent/widgets/button.dart';
-import 'package:go_parent/services/authentication/auth.dart';
+// import 'package:go_parent/services/authentication/auth.dart';
 
 class Logout extends StatefulWidget {
   const Logout({super.key});
@@ -16,7 +16,7 @@ class Logout extends StatefulWidget {
 }
 
 class _LogoutState extends State<Logout> {
-  final AuthMethod _authMethod = AuthMethod(); // Instantiate AuthMethod
+  // final AuthMethod _authMethod = AuthMethod(); // Instantiate AuthMethod
 
   @override
   Widget build(BuildContext context) {
