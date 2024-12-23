@@ -1,5 +1,5 @@
 import 'package:sqflite/sqflite.dart';
-import 'package:go_parent/Database/Models/user_model.dart';
+import 'package:go_parent/services/database/local/models/user_model.dart';
 
 class UserHelper {
   final Database db;
@@ -28,6 +28,21 @@ class UserHelper {
     }
     return null;
   }
+
+
+  Future<UserModel?> getUserByEmail(String email) async {
+    final List<Map<String, dynamic>> result = await db.query(
+      'userdb',
+      where: 'email = ?',
+      whereArgs: [email],
+    );
+
+    if (result.isNotEmpty) {
+      return UserModel.fromMap(result.first);
+    }
+    return null;
+  }
+
 
   /// Retrieve all users
   Future<List<UserModel>> getAllUsers() async {

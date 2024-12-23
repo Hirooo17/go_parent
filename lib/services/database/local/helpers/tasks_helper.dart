@@ -1,5 +1,5 @@
 import 'package:sqflite/sqflite.dart';
-import 'package:go_parent/Database/Models/tasks_model.dart';
+import 'package:go_parent/services/database/local/models/tasks_model.dart';
 
 class TaskHelper {
   final Database db;

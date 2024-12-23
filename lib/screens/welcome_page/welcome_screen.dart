@@ -1,10 +1,8 @@
 // ignore_for_file: sort_child_properties_last
-
 import 'dart:async';
-
 import 'package:flutter/material.dart';
-import 'package:go_parent/LoginPage/login_screen.dart';
-import 'package:go_parent/LoginPage/SignupPage/signup_screen.dart';
+import 'package:go_parent/screens/login_page/login_screen.dart';
+import 'package:go_parent/screens/signup_page/signup_screen.dart';
 import 'package:lottie/lottie.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 

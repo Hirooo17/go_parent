@@ -1,5 +1,5 @@
 import 'package:sqflite/sqflite.dart';
-import 'package:go_parent/Database/Models/rewards_model.dart';
+import 'package:go_parent/services/database/local/models/rewards_model.dart';
 
 class RewardsHelper {
   final Database db;

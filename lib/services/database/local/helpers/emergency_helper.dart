@@ -1,5 +1,5 @@
 import 'package:sqflite/sqflite.dart';
-import 'package:go_parent/Database/Models/emergency_model.dart';
+import 'package:go_parent/services/database/local/models/emergency_model.dart';
 
 class EmergencySupportHelper {
   final Database db;

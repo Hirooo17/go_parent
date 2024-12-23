@@ -1,5 +1,5 @@
 import 'package:sqflite/sqflite.dart';
-import 'package:go_parent/Database/Models/missions_model.dart';
+import 'package:go_parent/services/database/local/models/missions_model.dart';
 
 class MissionHelper {
   final Database db;
