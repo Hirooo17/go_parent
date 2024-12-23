@@ -27,7 +27,7 @@ class _LoginPageState extends State<LoginPage> {
     passwordController.dispose();
     usernameController.dispose();
   }
-
+//firebase
 // email and password auth part
   void loginUser() async {
     setState(() {
@@ -68,6 +68,8 @@ class _LoginPageState extends State<LoginPage> {
               )),
     );
   }
+
+  //firebase
 
   @override
   Widget build(BuildContext context) {
