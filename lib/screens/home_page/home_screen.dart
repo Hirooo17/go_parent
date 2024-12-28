@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:go_parent/Screen/mission_screen.dart';
+import 'package:go_parent/screens/mission_page/mission_screen.dart';
 import 'package:go_parent/Screen/profile_screen.dart';
 import 'package:go_parent/Screen/prototypeMissionGraph.dart';
 import 'package:go_parent/widgets/side_menu.dart';
@@ -14,13 +14,11 @@ class Homescreen extends StatefulWidget {
     required this.username
   });
 
-
   @override
   State<Homescreen> createState() => _HomescreenState();
 }
 
 class _HomescreenState extends State<Homescreen> {
-
 
   @override
   void initState() {
@@ -32,7 +30,6 @@ class _HomescreenState extends State<Homescreen> {
     final cont = Get.put(NavigationController());
 
     return Scaffold(
-      // Bottom Navigation Bar
       bottomNavigationBar: Obx(
         () => NavigationBar(
             height: 80,
@@ -49,13 +46,8 @@ class _HomescreenState extends State<Homescreen> {
             ]),
       ),
 
-      // AppBar
       appBar: AppBar(title: Text("Home")),
-
-      // Drawer
       drawer: SideMenu(username: widget.username),
-
-      // Body
       body: Obx(() {
         return IndexedStack(
           index: cont.selectedIndex.value, // Maintain the selected index

@@ -14,6 +14,7 @@ import 'package:go_parent/widgets/side_menu.dart';
 import 'package:go_parent/screens/welcome_page/welcome_screen.dart';
 import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'screens/welcome_page/splash_screen.dart';
+import 'screens/mission_page/mission_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -49,12 +50,14 @@ class MyApp extends StatelessWidget {
 
       initialRoute: 'home_screen',
       routes: {
+        // GalleryScreen.id: (context) => GalleryScreen(),
         SplashScreen.id: (context) => SplashScreen(), // splash_screen
         WelcomeScreen.id: (context) => WelcomeScreen(), // welcome_screen
         LoginPage.id: (context) => LoginPage(), //id = "login_screen"
         Signup.id: (context) => Signup(), //id = "signup_screen""
         Homescreen.id: (context) => Homescreen(username: 'some_username'),// home_screen
         PasswordRecovery.id: (context) => PasswordRecovery(), //password_recovery_screen
+        MissionScreen.id: (context) => MissionScreen(), //mission_screen
       },
     );
   }
