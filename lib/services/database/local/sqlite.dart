@@ -20,7 +20,7 @@ class DatabaseService {
   }
 
   Future<Database> _initDatabase() async {
-    String path = join(await getDatabasesPath(), 'goparent.db');
+    String path = join(await getDatabasesPath(), 'goparent_v2.db');
     return await openDatabase(
       path,
       version: 1,
@@ -49,6 +49,8 @@ class DatabaseService {
         babyAge INTEGER NOT NULL,
         babyGender TEXT NOT NULL,
         babyName TEXT NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         FOREIGN KEY (userId) REFERENCES userdb(userId)
       )
     ''');
@@ -60,83 +62,101 @@ class DatabaseService {
         title TEXT NOT NULL,
         category TEXT NOT NULL,
         content TEXT NOT NULL,
-        level TEXT NOT NULL,
-        taskId INTEGER,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        FOREIGN KEY (taskId) REFERENCES tasksdb(taskId)
+        isCompleted BOOLEAN DEFAULT 0,
+        minAge INTEGER NOT NULL,
+        maxAge INTEGER NOT NULL,
       )
     ''');
 
-    // tasksdb
+    // pictures
     await db.execute('''
-      CREATE TABLE tasksdb (
-        taskId INTEGER PRIMARY KEY AUTOINCREMENT,
+      CREATE TABLE picturesdb (
+        pictureId INTEGER PRIMARY KEY AUTOINCREMENT,
         missionId INTEGER NOT NULL,
-        content TEXT NOT NULL,
-        isCompleted INTEGER DEFAULT 0,
+        photoContent TEXT NOT NULL,
+        isCollage BOOLEAN DEFAULT 0,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         FOREIGN KEY (missionId) REFERENCES missionsdb(missionId)
       )
     ''');
 
-    // picturesdb
-    await db.execute('''
-      CREATE TABLE picturesdb (
-        pictureId INTEGER PRIMARY KEY AUTOINCREMENT,
-        taskId INTEGER NOT NULL,
-        photoContent TEXT NOT NULL,
-        isCollage INTEGER DEFAULT 0,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        FOREIGN KEY (taskId) REFERENCES tasksdb(taskId)
-      )
-    ''');
-
-    // collagedb
+    // collage
     await db.execute('''
       CREATE TABLE collagedb (
         collageId INTEGER PRIMARY KEY AUTOINCREMENT,
-        pictureId INTEGER NOT NULL,
         title TEXT NOT NULL,
-        collageData TEXT NOT NULL,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        FOREIGN KEY (pictureId) REFERENCES picturesdb(pictureId)
-      )
-    ''');
-
-    // logsdb (Low Priority)
-    await db.execute('''
-      CREATE TABLE logsdb (
-        logId INTEGER PRIMARY KEY AUTOINCREMENT,
-        userId INTEGER NOT NULL,
-        action TEXT NOT NULL,
-        targetId INTEGER,
-        timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        FOREIGN KEY (userId) REFERENCES userdb(userId)
-      )
-    ''');
-
-    // rewardsdb (Low Priority)
-    await db.execute('''
-      CREATE TABLE rewardsdb (
-        rewardId INTEGER PRIMARY KEY AUTOINCREMENT,
-        rewardName TEXT NOT NULL,
-        description TEXT NOT NULL,
-        pointsRequired INTEGER NOT NULL,
-        isAvailable INTEGER DEFAULT 1,
+        collageData TEXT,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       )
     ''');
 
-    // emergency_supportdb (Low Priority)
+    // collage_pictures
     await db.execute('''
-      CREATE TABLE emergency_supportdb (
-        supportId INTEGER PRIMARY KEY AUTOINCREMENT,
-        contactName TEXT NOT NULL,
-        phoneNumber TEXT NOT NULL,
-        category TEXT NOT NULL
+      CREATE TABLE collage_pictures (
+        collageId INTEGER NOT NULL,
+        pictureId INTEGER NOT NULL,
+        FOREIGN KEY (collageId) REFERENCES collagesdb(collageId),
+        FOREIGN KEY (pictureId) REFERENCES picturesdb(pictureId),
+        PRIMARY KEY (collageId, pictureId)
       )
     ''');
+
+    // rewards ../Type of reward (e.g., "collage_style", "badge")
+    await db.execute('''
+      CREATE TABLE rewardsdb (
+        rewardId INTEGER PRIMARY KEY AUTOINCREMENT,
+        pointsRequired INTEGER NOT NULL,
+        rewardType TEXT NOT NULL,
+        rewardData TEXT NOT NULL
+      )
+    ''');
+
+     // user rewards tracker
+    await db.execute('''
+      CREATE TABLE user_rewards (
+        userId INTEGER NOT NULL,
+        rewardId INTEGER NOT NULL,
+        isUnlocked BOOLEAN DEFAULT 0, -- Whether the reward is unlocked
+        FOREIGN KEY (userId) REFERENCES userdb(userId),
+        FOREIGN KEY (rewardId) REFERENCES rewardsdb(rewardId),
+        PRIMARY KEY (userId, rewardId)
+      )
+    ''');
+
+//../commented for now--focus on core functionalities
+//     // logs ../unsure about the schema of this.
+//     await db.execute('''
+//       CREATE TABLE logsdb (
+//         logId INTEGER PRIMARY KEY AUTOINCREMENT,
+//         userId INTEGER NOT NULL,
+//         action TEXT NOT NULL,
+//         targetId INTEGER,
+//         timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+//         FOREIGN KEY (userId) REFERENCES userdb(userId)
+//       )
+
+//       CREATE TABLE logsdb (
+//   logId INTEGER PRIMARY KEY AUTOINCREMENT,
+//   userId INTEGER NOT NULL, -- References the user performing the action
+//   actionType TEXT NOT NULL, -- Standardized action type (e.g., "create", "delete")
+//   targetType TEXT, -- Type of entity affected (e.g., "mission", "picture", "collage")
+//   targetId INTEGER, -- ID of the affected entity
+//   metadata TEXT, -- Optional JSON data for additional details
+//   timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Time of the action
+//   FOREIGN KEY (userId) REFERENCES userdb(userId)
+// );
+//     ''');
+
+    // // emergency_supportdb (Low Priority)
+    // await db.execute('''
+    //   CREATE TABLE emergency_supportdb (
+    //     supportId INTEGER PRIMARY KEY AUTOINCREMENT,
+    //     contactName TEXT NOT NULL,
+    //     phoneNumber TEXT NOT NULL,
+    //     category TEXT NOT NULL
+    //   )
+    // ''');
   }
 
 //wafansdanfasdfmdsa

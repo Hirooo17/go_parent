@@ -3,6 +3,7 @@ import 'package:go_parent/Screen/prototypeMissionGraph.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:go_parent/services/database/local/sqlite.dart';
 import 'dart:io';
+import 'widgets/tab_controller.dart';
 
 class MissionScreen extends StatefulWidget {
   const MissionScreen({super.key});
@@ -13,11 +14,6 @@ class MissionScreen extends StatefulWidget {
 }
 
 class _MissionScreenState extends State<MissionScreen> {
-  final List<bool> _isMissionCompleted = List.generate(5, (index) => false);
-  final List<bool> _isMissionCompleted2 = List.generate(5, (index) => false);
-  final List<bool> _isMissionCompleted3 = List.generate(5, (index) => false);
-  final List<bool> _isMissionCompleted4 = List.generate(5, (index) => false);
-
   double progress = 0;
   int totalPoints = 0;
 
@@ -41,202 +37,13 @@ class _MissionScreenState extends State<MissionScreen> {
         Text("data"),
 
         Expanded(
-          child: DefaultTabController(
-            length: 4,
-            child: Scaffold(
-              backgroundColor: Colors.grey[200],
-              appBar: AppBar(
-                elevation: 8,
-                backgroundColor: Colors.teal,
-                title: Column(
-                  children: [
-
-
-                    // Inside the AppBar or as a separate button on MissionScreen
-                    // ElevatedButton(
-                    //   onPressed: () {
-                    //     Navigator.push(
-                    //       context,
-                    //       MaterialPageRoute(
-                    //         builder: (context) => MissionProgressGraph(
-                    //           missionPoints: [
-                    //             50,
-                    //             90,
-                    //             130,
-                    //             160,
-                    //             200
-                    //           ], // Example points list
-                    //         ),
-                    //       ),
-                    //     );
-                    //   },
-                    //   child: const Text('View Progress Graph'),
-                    // ),
-
-
-                    const Text(
-                      "Parent Missions",
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 24,
-                        color: Colors.white,
-                      ),
-                    ),
-
-
-                    // Text(
-                    //   'Total Points: $totalPoints',
-                    //   style: const TextStyle(fontSize: 14, color: Colors.white70),
-                    // ),
-
-
-                  ],),
-
-                  bottom: const TabBar(
-                    indicatorColor: Colors.white,
-                    tabs: [
-                      Tab(text: "Daily Routines"),
-                      Tab(text: "Learning Activities"),
-                      Tab(text: "Outdoor Play"),
-                      Tab(text: "Sample"),
-                    ],
-                  ),
-                  automaticallyImplyLeading: false,
-                  ),
-                  body: TabBarView(
-                    children: [
-                      _buildMissionList(
-                        missions: [
-                          {
-                            'title': 'Read with your child',
-                            'reward': 50,
-                            'subtitle': 'Spend 20 minutes reading together'
-                          },
-                          {
-                            'title': 'Help your child clean their room',
-                            'reward': 40,
-                            'subtitle': 'Organize toys and clothes'
-                          },
-                          // {
-                          //   'title': 'Teach your child basic hygiene',
-                          //   'reward': 30,
-                          //   'subtitle': 'Explain handwashing and brushing teeth'
-                          // },
-                          // {
-                          //   'title': 'Prepare a healthy meal together',
-                          //   'reward': 70,
-                          //   'subtitle': 'Cook a nutritious meal with your child'
-                          // },
-                          // {
-                          //   'title': 'Do laundry together',
-                          //   'reward': 60,
-                          //   'subtitle': 'Show how to sort and fold clothes'
-                          // },
-                        ],
-                        missionCompleted: _isMissionCompleted,
-                        imageIndexStart: 0,
-                      ),
-                      _buildMissionList(
-                        missions: [
-                          {
-                            'title': 'Solve a puzzle with your child',
-                            'reward': 80,
-                            'subtitle': 'Complete a puzzle together'
-                          },
-                          {
-                            'title': 'Draw and color a picture',
-                            'reward': 50,
-                            'subtitle': 'Create art with your child'
-                          },
-                          {
-                            'title': 'Teach your child numbers 1-10',
-                            'reward': 60,
-                            'subtitle': 'Help them recognize numbers'
-                          },
-                          {
-                            'title': 'Do a science experiment',
-                            'reward': 90,
-                            'subtitle': 'Perform a safe experiment together'
-                          },
-                          {
-                            'title': 'Teach your child new words',
-                            'reward': 70,
-                            'subtitle': 'Expand vocabulary by learning words'
-                          },
-                        ],
-                        missionCompleted: _isMissionCompleted2,
-                        imageIndexStart: 5,
-                      ),
-                      _buildMissionList(
-                        missions: [
-                          {
-                            'title': 'Play catch outside',
-                            'reward': 50,
-                            'subtitle': 'Throw and catch a ball for 30 minutes'
-                          },
-                          {
-                            'title': 'Go for a walk in the park',
-                            'reward': 75,
-                            'subtitle': 'Spend 30 minutes walking'
-                          },
-                          {
-                            'title': 'Fly a kite together',
-                            'reward': 60,
-                            'subtitle': 'Fly a kite outdoors'
-                          },
-                          {
-                            'title': 'Ride a bike with your child',
-                            'reward': 80,
-                            'subtitle': 'Spend 40 minutes riding bikes'
-                          },
-                          {
-                            'title': 'Play a sport together',
-                            'reward': 90,
-                            'subtitle': 'Play soccer or basketball'
-                          },
-                        ],
-                        missionCompleted: _isMissionCompleted3,
-                        imageIndexStart: 10,
-                      ),
-                      _buildMissionList(
-                      missions: [
-                        {
-                          'title': 'Do a fun activity together',
-                          'reward': 50,
-                          'subtitle': 'Spend time doing something creative'
-                        },
-                        {
-                          'title': 'Play a board game',
-                          'reward': 60,
-                          'subtitle': 'Choose a game and play for 30 minutes'
-                        },
-                        {
-                          'title': 'Build a Lego structure',
-                          'reward': 70,
-                          'subtitle': 'Use Legos to create a building or object'
-                        },
-                        {
-                          'title': 'Plan a family picnic',
-                          'reward': 80,
-                          'subtitle': 'Prepare food and have a picnic together'
-                        },
-                        {
-                          'title': 'Watch an educational video',
-                          'reward': 90,
-                          'subtitle': 'Learn something new from a video'
-                        },
-                      ],
-                      missionCompleted: _isMissionCompleted4,
-                      imageIndexStart: 15,
-                    ),
-                  ],
-                ),
-              ),
-            ),
-        ),
+          child: TabControllerWidget()
+          ),
       ],
     );
     }
+
+
 
   Widget _buildMissionList({
     required List<Map<String, dynamic>> missions,
