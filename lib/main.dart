@@ -2,6 +2,7 @@
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_parent/services/database/firebase_options.dart';
@@ -10,14 +11,26 @@ import 'package:go_parent/screens/login_page/password_recovery_screen.dart';
 import 'package:go_parent/screens/signup_page/signup_screen.dart';
 import 'package:go_parent/Screen/profile_screen.dart';
 import 'package:go_parent/screens/home_page/home_screen.dart';
+import 'package:go_parent/services/database/local/sqlite.dart';
 import 'package:go_parent/widgets/side_menu.dart';
 import 'package:go_parent/screens/welcome_page/welcome_screen.dart';
 import 'package:bitsdojo_window/bitsdojo_window.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'screens/welcome_page/splash_screen.dart';
 import 'screens/mission_page/mission_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+
+  // Initialize sqflite for desktop platforms
+  if (kIsWeb == false && (defaultTargetPlatform == TargetPlatform.windows || defaultTargetPlatform == TargetPlatform.linux || defaultTargetPlatform == TargetPlatform.macOS)) {
+    sqfliteFfiInit();
+    databaseFactory = databaseFactoryFfi; // Set the database factory to ffi
+  }
+
+  // Initialize the database
+  await DatabaseService.instance.database;
 
   SystemChrome.setSystemUIOverlayStyle(
       SystemUiOverlayStyle(statusBarColor: Colors.black));
@@ -51,7 +64,6 @@ class MyApp extends StatelessWidget {
       initialRoute: 'home_screen',
       routes: {
         // GalleryScreen.id: (context) => GalleryScreen(),
-        SplashScreen.id: (context) => SplashScreen(), // splash_screen
         WelcomeScreen.id: (context) => WelcomeScreen(), // welcome_screen
         LoginPage.id: (context) => LoginPage(), //id = "login_screen"
         Signup.id: (context) => Signup(), //id = "signup_screen""

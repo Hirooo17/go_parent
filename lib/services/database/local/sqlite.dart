@@ -64,7 +64,7 @@ class DatabaseService {
         content TEXT NOT NULL,
         isCompleted BOOLEAN DEFAULT 0,
         minAge INTEGER NOT NULL,
-        maxAge INTEGER NOT NULL,
+        maxAge INTEGER NOT NULL
       )
     ''');
 
@@ -180,5 +180,15 @@ Future<void> dropTable(String tableName) async {
   } catch (e) {
     print("Error dropping table '$tableName': $e");
     }
+  }
+
+  Future<List<Map<String, dynamic>>> getUserBabies(int userId) async {
+    final db = await database;
+    return await db.query('babydb', where: 'userId = ?', whereArgs: [userId]);
+  }
+
+  Future<List<Map<String, dynamic>>> getMissionsForAge(int minAge, int maxAge) async {
+    final db = await database;
+    return await db.query('missionsdb', where: 'minAge <= ? AND maxAge >= ?', whereArgs: [minAge, maxAge]);
   }
 }

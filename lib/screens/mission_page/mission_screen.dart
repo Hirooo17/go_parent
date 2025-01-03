@@ -18,6 +18,38 @@ class _MissionScreenState extends State<MissionScreen> {
   int totalPoints = 0;
 
   List<XFile?> _images = List.generate(20, (index) => null);
+  List<bool> _missionCompleted = [];
+
+  List<Map<String, dynamic>> _babies = [];
+  Map<String, dynamic>? _selectedBaby;
+  List<Map<String, dynamic>> _missions = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUserBabies();
+  }
+
+  Future<void> _loadUserBabies() async {
+    // Assuming userId is available
+    int userId = 1; // Replace with actual userId
+    _babies = await DatabaseService.instance.getUserBabies(userId);
+    if (_babies.isNotEmpty) {
+      setState(() {
+        _selectedBaby = _babies.first;
+        _loadMissionsForSelectedBaby();
+      });
+    }
+  }
+
+  Future<void> _loadMissionsForSelectedBaby() async {
+    if (_selectedBaby != null) {
+      int babyAge = _selectedBaby!['babyAge'];
+      _missions = await DatabaseService.instance.getMissionsForAge(babyAge, babyAge);
+      _missionCompleted = List.generate(_missions.length, (index) => _missions[index]['isCompleted']);
+      setState(() {});
+    }
+  }
 
   Future<void> _pickImageForMission(int missionIndex) async {
     final picker = ImagePicker();
@@ -29,139 +61,43 @@ class _MissionScreenState extends State<MissionScreen> {
     }
   }
 
+  void _completeMission(int missionIndex) {
+    setState(() {
+      _missionCompleted[missionIndex] = true;
+      _missions[missionIndex]['isCompleted'] = true;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-
+        if (_selectedBaby != null)
+          DropdownButton<Map<String, dynamic>>(
+            value: _selectedBaby,
+            items: _babies.map((baby) {
+              return DropdownMenuItem<Map<String, dynamic>>(
+                value: baby,
+                child: Text(baby['babyName']),
+              );
+            }).toList(),
+            onChanged: (value) {
+              setState(() {
+                _selectedBaby = value;
+                _loadMissionsForSelectedBaby();
+              });
+            },
+          ),
         Text("data"),
-
         Expanded(
-          child: TabControllerWidget()
+          child: TabControllerWidget(
+            missions: _missions,
+            images: _images,
+            onImagePicked: _pickImageForMission,
+            onComplete: _completeMission,
           ),
+        ),
       ],
-    );
-    }
-
-
-
-  Widget _buildMissionList({
-    required List<Map<String, dynamic>> missions,
-    required List<bool> missionCompleted,
-    required int imageIndexStart,
-  }) {
-    return ListView.builder(
-      padding: const EdgeInsets.all(10),
-      itemCount: missions.length,
-      itemBuilder: (context, index) {
-        final mission = missions[index];
-        final currentIndex = imageIndexStart + index;
-        return Card(
-          elevation: 6,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20),
-          ),
-          margin: const EdgeInsets.symmetric(vertical: 10),
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Icon(
-                      missionCompleted[index] && _images[currentIndex] != null
-                          ? Icons.verified
-                          : Icons.circle_outlined,
-                      color: missionCompleted[index] &&
-                              _images[currentIndex] != null
-                          ? Colors.green
-                          : Colors.grey,
-                      size: 30,
-                    ),
-                    const SizedBox(width: 10),
-                    Expanded(
-                      child: Text(
-                        mission['title'],
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 18,
-                        ),
-                      ),
-                    ),
-                    Text(
-                      '+${mission['reward']} pts',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w500,
-                        color: Colors.teal[700],
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  mission['subtitle'],
-                  style: const TextStyle(
-                    color: Colors.black54,
-                    fontSize: 16,
-                  ),
-                ),
-                const SizedBox(height: 15),
-                Row(
-                  children: [
-                    ElevatedButton.icon(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.teal[300],
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                      ),
-                      onPressed: !missionCompleted[index]
-                          ? () {
-                              setState(() {
-                                totalPoints += (mission['reward'] as int);
-                                missionCompleted[index] = true;
-                              });
-                            }
-                          : null,
-                      icon: const Icon(Icons.done),
-                      label: Text(
-                        missionCompleted[index] ? 'Completed' : 'Complete',
-                        style: const TextStyle(fontSize: 16),
-                      ),
-                    ),
-                    const SizedBox(width: 10),
-                    ElevatedButton.icon(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.blue[300],
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                      ),
-                      onPressed: () => _pickImageForMission(currentIndex),
-                      icon: const Icon(Icons.camera_alt),
-                      label: const Text('Submit Photo'),
-                    ),
-                  ],
-                ),
-                if (_images[currentIndex] != null)
-                  Padding(
-                    padding: const EdgeInsets.only(top: 10),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(10),
-                      child: Image.file(
-                        File(_images[currentIndex]!.path),
-                        height: 150,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                  ),
-              ],
-            ),
-          ),
-        );
-      },
     );
   }
 }
