@@ -64,7 +64,9 @@ class DatabaseService {
         content TEXT NOT NULL,
         isCompleted BOOLEAN DEFAULT 0,
         minAge INTEGER NOT NULL,
-        maxAge INTEGER NOT NULL
+        maxAge INTEGER NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       )
     ''');
 

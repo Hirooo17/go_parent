@@ -3,8 +3,9 @@ class MissionModel {
   final String title;
   final String category;
   final String content;
-  final String level;
-  final int? taskId;
+  final bool isCompleted;
+  final int minAge;
+  final int maxAge;
   final DateTime createdAt;
   final DateTime updatedAt;
 
@@ -13,8 +14,9 @@ class MissionModel {
     required this.title,
     required this.category,
     required this.content,
-    required this.level,
-    this.taskId,
+    required this.isCompleted,
+    required this.minAge,
+    required this.maxAge,
     required this.createdAt,
     required this.updatedAt,
   });
@@ -25,8 +27,9 @@ class MissionModel {
       title: map['title'],
       category: map['category'],
       content: map['content'],
-      level: map['level'],
-      taskId: map['taskId'],
+      isCompleted: map['isCompleted'] == 0,
+      minAge: map['minAge'],
+      maxAge: map['maxAge'],
       createdAt: DateTime.parse(map['created_at']),
       updatedAt: DateTime.parse(map['updated_at']),
     );
@@ -38,8 +41,9 @@ class MissionModel {
       'title': title,
       'category': category,
       'content': content,
-      'level': level,
-      'taskId': taskId,
+      'isCompleted': isCompleted ? 0 : 1,
+      'minAge': minAge,
+      'maxAge': maxAge,
       'created_at': createdAt.toIso8601String(),
       'updated_at': updatedAt.toIso8601String(),
     };

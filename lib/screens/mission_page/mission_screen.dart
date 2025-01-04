@@ -91,10 +91,6 @@ class _MissionScreenState extends State<MissionScreen> {
         Text("data"),
         Expanded(
           child: TabControllerWidget(
-            missions: _missions,
-            images: _images,
-            onImagePicked: _pickImageForMission,
-            onComplete: _completeMission,
           ),
         ),
       ],

@@ -6,10 +6,9 @@ class MissionHelper {
 
   MissionHelper(this.db);
 
-  /// Insert a new mission into the database
   Future<int> insertMission(MissionModel mission) async {
     return await db.insert(
-      'missions',
+      'missionsdb',
       mission.toMap(),
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
@@ -18,7 +17,7 @@ class MissionHelper {
   /// Retrieve a mission by ID
   Future<MissionModel?> getMissionById(int missionId) async {
     final List<Map<String, dynamic>> result = await db.query(
-      'missions',
+      'missionsdb',
       where: 'missionId = ?',
       whereArgs: [missionId],
     );
@@ -31,7 +30,7 @@ class MissionHelper {
 
   /// Retrieve all missions
   Future<List<MissionModel>> getAllMissions() async {
-    final List<Map<String, dynamic>> result = await db.query('missions');
+    final List<Map<String, dynamic>> result = await db.query('missionsdb');
 
     return result.map((map) => MissionModel.fromMap(map)).toList();
   }
@@ -39,7 +38,7 @@ class MissionHelper {
   /// Retrieve missions by category (e.g., 'Learning', 'Playtime')
   Future<List<MissionModel>> getMissionsByCategory(String category) async {
     final List<Map<String, dynamic>> result = await db.query(
-      'missions',
+      'missionsdb',
       where: 'category = ?',
       whereArgs: [category],
     );
@@ -47,31 +46,32 @@ class MissionHelper {
     return result.map((map) => MissionModel.fromMap(map)).toList();
   }
 
-  /// Retrieve missions by level (e.g., age-based curation)
-  Future<List<MissionModel>> getMissionsByLevel(String level) async {
+  /// Retrieve missions by age range
+  Future<List<MissionModel>> getMissionsByAge(int minAge, int maxAge) async {
     final List<Map<String, dynamic>> result = await db.query(
-      'missions',
-      where: 'level = ?',
-      whereArgs: [level],
+      'missionsdb',
+      where: 'minAge <= ? AND maxAge >= ?',
+      whereArgs: [minAge, maxAge],
     );
 
     return result.map((map) => MissionModel.fromMap(map)).toList();
   }
 
-  /// Update mission details
-  Future<int> updateMission(MissionModel mission) async {
-    return await db.update(
-      'missions',
-      mission.toMap(),
-      where: 'missionId = ?',
-      whereArgs: [mission.missionId],
+  /// Retrieve missions by completion status
+  Future<List<MissionModel>> getMissionsByCompletion(bool isCompleted) async {
+    final List<Map<String, dynamic>> result = await db.query(
+      'missionsdb',
+      where: 'isCompleted = ?',
+      whereArgs: [isCompleted ? 1 : 0],
     );
+
+    return result.map((map) => MissionModel.fromMap(map)).toList();
   }
 
   /// Delete a mission by ID
   Future<int> deleteMission(int missionId) async {
     return await db.delete(
-      'missions',
+      'missionsdb',
       where: 'missionId = ?',
       whereArgs: [missionId],
     );
@@ -80,7 +80,7 @@ class MissionHelper {
   /// Count the number of missions by category
   Future<int> countMissionsByCategory(String category) async {
     final result = await db.rawQuery(
-      'SELECT COUNT(*) as count FROM missions WHERE category = ?',
+      'SELECT COUNT(*) as count FROM missionsdb WHERE category = ?',
       [category],
     );
 
@@ -90,7 +90,7 @@ class MissionHelper {
   /// Check if a mission exists by title
   Future<bool> missionExists(String title) async {
     final List<Map<String, dynamic>> result = await db.query(
-      'missions',
+      'missionsdb',
       where: 'title = ?',
       whereArgs: [title],
     );
