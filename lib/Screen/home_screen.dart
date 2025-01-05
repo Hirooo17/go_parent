@@ -1,19 +1,23 @@
 // import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:go_parent/Beta%20Testing%20Folder/note_screen.dart';
+import 'package:go_parent/Screen/dashboard.dart';
 import 'package:go_parent/Screen/mission_screen.dart';
 import 'package:go_parent/Screen/profile_screen.dart';
 import 'package:go_parent/Screen/prototypeMissionGraph.dart';
+import 'package:go_parent/Screen/view%20profile/viewprofile.dart';
 import 'package:go_parent/widgets/side_menu.dart';
 
 class Homescreen extends StatefulWidget {
-  final String username;
-  static String id = 'home_screen';
-
+   final String username;
+  final int userId;
+  
   const Homescreen({
-    super.key,
-    required this.username
-  });
+    Key? key,
+    required this.username,
+    required this.userId,
+  }) : super(key: key);
 
 
 
@@ -22,6 +26,8 @@ class Homescreen extends StatefulWidget {
 }
 
 class _HomescreenState extends State<Homescreen> {
+
+
 
   // final FirebaseAuth _auth = FirebaseAuth.instance;
   // User? loggedInUser;
@@ -49,7 +55,12 @@ class _HomescreenState extends State<Homescreen> {
 
   @override
   Widget build(BuildContext context) {
-    final cont = Get.put(NavigationController());
+final cont = Get.put(NavigationController(
+      username: widget.username,
+      userId: widget.userId,
+    ));
+
+  
 
     return Scaffold(
       // Bottom Navigation Bar
@@ -89,15 +100,26 @@ class _HomescreenState extends State<Homescreen> {
 // Screen Navigator
 class NavigationController extends GetxController {
   final Rx<int> selectedIndex = 0.obs;
+  final String username;
+  final int userId;
 
-  final screens = [
-    const Logout(),
-    MissionScreen(), // This will display the mission screen
-    MissionProgressGraph( missionPoints: [50, 90, 130, 160, 200],), // Dashboard widget for mission data
-    Container(
-      color: Colors.red,
-    )
-  ];
+  NavigationController({required this.username, required this.userId});
+
+  late final List<Widget> screens;
+
+  @override
+  void onInit() {
+    super.onInit();
+    screens = [
+      DashboardScreen(username: username, userId: userId),
+      MissionScreen(),
+      NotesScreen(username: username, userId: userId),
+      profileviewer(),
+    ];
+  }
+}
+
+class ProfileScreen {
 }
 
 // Dashboard widget for Missions

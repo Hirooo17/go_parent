@@ -137,7 +137,29 @@ class DatabaseService {
         category TEXT NOT NULL
       )
     ''');
+
+    
+//notes
+  await db.execute('''
+    CREATE TABLE notesdb (
+    noteId INTEGER PRIMARY KEY AUTOINCREMENT,
+    userId INTEGER NOT NULL,
+    title TEXT NOT NULL,
+    content TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (userId) REFERENCES userdb(userId)
+);
+  ''');
+
+
   }
+
+  Future<void> _listTabless(Database db) async {
+    final List<Map<String, dynamic>> result = await db.rawQuery('SELECT name FROM sqlite_master WHERE type="table";');
+    print(result);  // This will print the list of tables in the database
+  }
+}
 
 //wafansdanfasdfmdsa
 
@@ -161,4 +183,3 @@ Future<void> dropTable(String tableName) async {
     print("Error dropping table '$tableName': $e");
     }
   }
-}

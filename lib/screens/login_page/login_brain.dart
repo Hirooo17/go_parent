@@ -36,6 +36,16 @@ class LoginBrain {
     return false;
   }
 
+  Future<bool> loginUserTest(String email, String password,) async {
+    
+    final user = await userHelper.getUserByEmail(email.trim());
+
+    if (user != null && user.password == password) {
+      return true;
+    }
+    return false;
+  }
+
 
 Future<bool> recoverUserAccount(String email) async {
     final user = await userHelper.getUserByEmail(email.trim());
@@ -51,15 +61,34 @@ Future<bool> recoverUserAccount(String email) async {
       return false;
     }
 
-    await emailService.sendEmail(
-      to: email,
-      subject: "Account Recovery",
-      body: "Your new password is: $newPassword\nPlease change it after logging in.",
-    );
+      // Send recovery email
+    try {
+      final Email recoveryEmail = Email(
+        body: "Your new password is: $newPassword\nPlease change it after logging in.",
+        subject: "Account Recovery",
+        recipients: [email],
+        isHTML: false,
+      );
 
-    return true;
+      await FlutterEmailSender.send(recoveryEmail);
+      return true;
+    } catch (e) {
+      print("Failed to send recovery email: $e");
+      return false;
+    }
   }
-
+// In LoginBrain class
+Future<Map<String, dynamic>?> getUserDetails(String email) async {
+  final user = await userHelper.getUserByEmail(email.trim());
+  if (user != null) {
+    return {
+      'userId': user.userId,
+      'username': user.username,
+    };
+  }
+  return null;
+}
+    
 
 
 }

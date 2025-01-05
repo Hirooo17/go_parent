@@ -142,7 +142,8 @@ class _SignupState extends State<Signup> {
           context: context,
           type: AlertType.success,
           title: 'Registration Successful!',
-          desc: 'You have registered successfully, redirecting to login page...',
+          desc:
+              'You have registered successfully, redirecting to login page...',
           buttons: [
             DialogButton(
               child: Text('OK'),
