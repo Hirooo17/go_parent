@@ -4,6 +4,7 @@
 //import 'package:firebase_core/firebase_core.dart';
 //import 'package:firebase_auth/firebase_auth.dart';
 //import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -21,12 +22,13 @@ import 'screens/welcome_page/splash_screen.dart';
 import 'screens/mission_page/mission_screen.dart';
 
 void main() async {
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+ );
+
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Initialize Firebase with platform-specific options
-  // await Firebase.initializeApp(
-  //   options: DefaultFirebaseOptions.currentPlatform,
-  // );
+  //Initialize Firebase with platform-specific options
 
   SystemChrome.setSystemUIOverlayStyle(
       SystemUiOverlayStyle(statusBarColor: Colors.black));
