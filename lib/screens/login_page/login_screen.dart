@@ -1,6 +1,7 @@
 // ignore_for_file: sort_child_properties_last, use_build_context_synchronously
 
 import 'package:flutter/material.dart';
+import 'package:go_parent/Screen/dashboard.dart';
 import 'package:go_parent/services/database/local/helpers/user_helper.dart';
 import 'package:go_parent/services/database/local/sqlite.dart';
 import 'package:go_parent/screens/login_page/login_brain.dart';
@@ -55,31 +56,30 @@ class _LoginPageState extends State<LoginPage1> {
 }
 
 
-  void handleLogin(BuildContext context, TextEditingController emailController, TextEditingController passwordController) async {
-    bool loginSuccess = await loginBrain.loginUser(emailController.text, passwordController.text);
+ void handleLogin(BuildContext context, TextEditingController emailController, TextEditingController passwordController) async {
+  bool loginSuccess = await loginBrain.loginUser(emailController.text, passwordController.text);
 
-    if (loginSuccess) {
-      final db = await DatabaseService.instance.database;
-      final userHelper = UserHelper(db);
-      final user = await userHelper.getUserByEmail(emailController.text);
+  if (loginSuccess) {
+    final db = await DatabaseService.instance.database;
+    final userHelper = UserHelper(db);
+    final user = await userHelper.getUserByEmail(emailController.text);
 
-      if (user != null) {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) => Homescreen(
-              username: user.username,
-              userId: user.userId!,
-            ),
+    if (user != null && user.userId != null) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => DashboardScreen(
+            username: user.username,
+            userId: user.userId!, // Safe as we've validated `user.userId` is not null
           ),
-        );
-      }
+        ),
+      );
     } else {
       await Alert(
         context: context,
         type: AlertType.error,
-        title: "Login Failed",
-        desc: "Invalid username or password. Please try again.",
+        title: "Error",
+        desc: "Failed to retrieve user details. Please try again.",
         buttons: [
           DialogButton(
             child: Text(
@@ -92,7 +92,25 @@ class _LoginPageState extends State<LoginPage1> {
         ],
       ).show();
     }
+  } else {
+    await Alert(
+      context: context,
+      type: AlertType.error,
+      title: "Login Failed",
+      desc: "Invalid username or password. Please try again.",
+      buttons: [
+        DialogButton(
+          child: Text(
+            "OK",
+            style: TextStyle(color: Colors.white, fontSize: 20),
+          ),
+          onPressed: () => Navigator.pop(context),
+          width: 120,
+        )
+      ],
+    ).show();
   }
+}
 
   @override
   Widget build(BuildContext context) {

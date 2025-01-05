@@ -29,6 +29,8 @@ dependencies:
   sqflite_common_ffi: ^2.3.4
   crypto: ^3.0.6
   fl_chart: ^0.69.2
+  flutter_email_sender: ^6.0.3
+  mailer: ^6.3.0
   
 dev_dependencies:
   flutter_test:

@@ -147,3 +147,4 @@ Future<void> dropTable(String tableName) async {
     print("Error dropping table '$tableName': $e");
     }
   }
+}

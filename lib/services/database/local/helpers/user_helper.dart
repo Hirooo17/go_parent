@@ -62,7 +62,7 @@ class UserHelper {
   }
 
   /// Update a user's password
-  Future<bool> updateUserPassword(String email, String newPassword) async {
+  Future<bool> updateUserPasswordSimple(String email, String newPassword) async {
     final int count = await db.update(
       'userdb',
       {'password': newPassword},

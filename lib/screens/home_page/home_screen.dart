@@ -1,7 +1,7 @@
 // import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:go_parent/Screen/mission_screen.dart';
+
 import 'package:go_parent/Screen/profile_screen.dart';
 import 'package:go_parent/Screen/prototypeMissionGraph.dart';
 import 'package:go_parent/widgets/side_menu.dart';
@@ -9,10 +9,13 @@ import 'package:go_parent/widgets/side_menu.dart';
 class Homescreen extends StatefulWidget {
   final String username;
   static String id = 'home_screen';
+  final int userId;
 
   const Homescreen({
     super.key,
-    required this.username
+    required this.username,
+    required this.userId,
+
   });
 
 
@@ -91,8 +94,8 @@ class NavigationController extends GetxController {
   final Rx<int> selectedIndex = 0.obs;
 
   final screens = [
-    const Logout(),
-    MissionScreen(), // This will display the mission screen
+     Logout(),
+    // This will display the mission screen
     MissionProgressGraph( missionPoints: [50, 90, 130, 160, 200],), // Dashboard widget for mission data
     Container(
       color: Colors.red,
