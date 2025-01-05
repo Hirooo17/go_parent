@@ -22,16 +22,17 @@ class MissionModel {
   });
 
   factory MissionModel.fromMap(Map<String, dynamic> map) {
+    print("Parsing MissionModel from map: $map");
     return MissionModel(
       missionId: map['missionId'],
-      title: map['title'],
-      category: map['category'],
-      content: map['content'],
+      title: map['title'] ?? '',
+      category: map['category'] ?? '',
+      content: map['content'] ?? '',
       isCompleted: map['isCompleted'] == 0,
-      minAge: map['minAge'],
-      maxAge: map['maxAge'],
-      createdAt: DateTime.parse(map['created_at']),
-      updatedAt: DateTime.parse(map['updated_at']),
+      minAge: map['minAge'] ?? 0,
+      maxAge: map['maxAge'] ?? 0,
+      createdAt: map['created_at'] != null ? DateTime.parse(map['created_at']) : DateTime.now(),
+      updatedAt: map['updated_at'] != null ? DateTime.parse(map['updated_at']) : DateTime.now(),
     );
   }
 

@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:go_parent/Screen/prototypeMissionGraph.dart';
+import 'package:go_parent/services/database/local/helpers/missions_helper.dart';
+import 'package:go_parent/services/database/local/models/missions_model.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:go_parent/services/database/local/sqlite.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'dart:io';
 import 'widgets/tab_controller.dart';
+import 'package:go_parent/screens/mission_page/mission_brain.dart';
 
 class MissionScreen extends StatefulWidget {
   const MissionScreen({super.key});
@@ -24,11 +28,53 @@ class _MissionScreenState extends State<MissionScreen> {
   Map<String, dynamic>? _selectedBaby;
   List<Map<String, dynamic>> _missions = [];
 
+
+  late MissionBrain _missionBrain;
+  bool _isLoading = true;
+
   @override
   void initState() {
     super.initState();
     _loadUserBabies();
+    _initializeMissionBrain();
   }
+
+
+
+
+
+    Future<void> _initializeMissionBrain() async {
+    // Initialize database
+    final db = await openDatabase('goparent_v2.db');
+    final missionHelper = MissionHelper(db);
+
+    // Create MissionBrain
+    _missionBrain = MissionBrain(missionHelper);
+
+    // Load missions
+    await _loadMissions();
+  }
+
+  Future<void> _loadMissions() async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      await _missionBrain.loadAllMissions();
+      print("Missions loaded successfully");
+    } catch (e) {
+      print("Error loading missions: $e");
+    }
+
+    setState(() {
+      _isLoading = false;
+    });
+  }
+
+
+
+
 
   Future<void> _loadUserBabies() async {
     // Assuming userId is available
@@ -88,12 +134,96 @@ class _MissionScreenState extends State<MissionScreen> {
               });
             },
           ),
+
+
+
         Text("data"),
         Expanded(
-          child: TabControllerWidget(
+          child: DefaultTabController(
+            length: 1,
+            child: Scaffold(
+              backgroundColor: Colors.grey[200],
+              appBar: AppBar(
+                elevation: 8,
+                backgroundColor: Colors.teal,
+                title: const Text('Go Missions'),
+                bottom: const TabBar(
+                  tabs: [
+                    Tab(text: 'Missions'),
+                  ],
+                ),
+              ),
+              body: _isLoading
+                ? Center(child: CircularProgressIndicator())
+                : TabBarView(
+                    children: [
+                      Column(
+                        children: [
+                          MissionList(missions: _missionBrain.missions),
+                        ],
+                      ),
+                    ],
+                  ),
+            ),
           ),
+
+
+
+
         ),
       ],
+    );
+  }
+}
+
+
+
+
+
+
+class MissionList extends StatelessWidget {
+  final List<MissionModel> missions;
+
+  const MissionList({
+    Key? key,
+    required this.missions,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    // Add this debug print
+    print("Building MissionList with ${missions.length} missions");
+
+    if (missions.isEmpty) {
+      return const Center(
+        child: Text('No missions available'),
+      );
+    }
+
+    return Expanded( // Wrap ListView with Expanded
+      child: ListView.builder(
+        itemCount: missions.length,
+        itemBuilder: (context, index) {
+          // Add null checks
+          final mission = missions[index];
+          if (mission == null) {
+            print("Null mission at index $index");
+            return const SizedBox.shrink();
+          }
+
+          return Card(
+            margin: const EdgeInsets.all(8.0),
+            child: ListTile(
+              title: Text(mission.title),
+              subtitle: Text(mission.content),
+              trailing: Icon(
+                mission.isCompleted ? Icons.check_circle : Icons.circle_outlined,
+                color: mission.isCompleted ? Colors.green : Colors.grey,
+              ),
+            ),
+          );
+        },
+      ),
     );
   }
 }

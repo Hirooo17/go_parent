@@ -28,12 +28,6 @@ class MissionHelper {
     return null;
   }
 
-  /// Retrieve all missions
-  Future<List<MissionModel>> getAllMissions() async {
-    final List<Map<String, dynamic>> result = await db.query('missionsdb');
-
-    return result.map((map) => MissionModel.fromMap(map)).toList();
-  }
 
   /// Retrieve missions by category (e.g., 'Learning', 'Playtime')
   Future<List<MissionModel>> getMissionsByCategory(String category) async {
@@ -45,6 +39,34 @@ class MissionHelper {
 
     return result.map((map) => MissionModel.fromMap(map)).toList();
   }
+
+
+  // /// Retrieve all missions
+  // Future<List<MissionModel>> getAllMissions() async {
+  //   final List<Map<String, dynamic>> result = await db.query('missionsdb');
+
+  //   return result.map((map) => MissionModel.fromMap(map)).toList();
+  // }
+
+
+
+  Future<List<MissionModel>> getAllMissions() async {
+    print("Starting getAllMissions query...");
+
+    final List<Map<String, dynamic>> result = await db.query('missionsdb');
+    print("Raw query result: $result");  // This will show us the raw data
+
+    final missions = result.map((map) => MissionModel.fromMap(map)).toList();
+    print("Converted to MissionModels: ${missions.length} items");
+
+    // Print details of first few missions if any exist
+    if (missions.isNotEmpty) {
+      print("First mission details: ${missions[0].toMap()}");
+    }
+
+    return missions;
+  }
+
 
   /// Retrieve missions by age range
   Future<List<MissionModel>> getMissionsByAge(int minAge, int maxAge) async {
