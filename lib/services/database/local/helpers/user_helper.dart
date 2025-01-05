@@ -23,7 +23,6 @@ class UserHelper {
       where: 'userId = ?',
       whereArgs: [userId],
     );
-
     if (result.isNotEmpty) {
       return UserModel.fromMap(result.first);
     }
@@ -83,7 +82,6 @@ class UserHelper {
     );
   }
 
-  /// Check if a user exists by email (for login or sign-up validation)
   Future<bool> userExists(String email) async {
     final List<Map<String, dynamic>> result = await db.query(
       'userdb',
@@ -93,6 +91,32 @@ class UserHelper {
 
     return result.isNotEmpty;
   }
+
+
+  Future<bool> updateUserPassword(String email, String hashedPassword) async {
+    try {
+      print('Attempting to update password for email: $email');
+
+      final rowsUpdated = await db.update(
+        'userdb',
+        {'password': hashedPassword},
+        where: 'email = ?',
+        whereArgs: [email],
+      );
+
+      if (rowsUpdated > 0) {
+        print('Password updated successfully for email: $email');
+        return true;
+      } else {
+        print('No user found with the given email: $email');
+        return false; // Email doesn't exist in the database
+      }
+    } catch (e) {
+      print('Error while updating password: $e');
+      return false;
+    }
+  }
+
 
   /// Get total score for a user
   Future<int> getTotalScore(int userId) async {

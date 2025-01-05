@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:go_parent/screens/login_page/login_screen.dart';
 import 'package:go_parent/Screen/settings.dart';
 import 'package:go_parent/widgets/button.dart';
-import 'package:go_parent/services/authentication/auth.dart';
+// import 'package:go_parent/services/authentication/auth.dart';
 
 class SideMenu extends StatelessWidget {
-  AuthMethod get _authMethod => AuthMethod();
+  // AuthMethod get _authMethod => AuthMethod();
   final String username;
 
   const SideMenu({
@@ -66,8 +66,8 @@ class SideMenu extends StatelessWidget {
             SizedBox(height:300),
             MyButtons(
               onTap: () async {
-                // Logout using Firebase auth services
-                await _authMethod.signOut();
+                // // Logout using Firebase auth services
+                // await _authMethod.signOut();
 
                 // Navigate to the login page after logout
                 Navigator.of(context).pushReplacement(
