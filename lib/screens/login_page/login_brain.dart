@@ -6,6 +6,7 @@ import 'package:go_parent/services/database/local/helpers/user_helper.dart';
 import 'package:flutter_email_sender/flutter_email_sender.dart';
 import 'package:mailer/mailer.dart';
 import 'package:mailer/smtp_server.dart';
+import 'package:go_parent/utilities/user_session.dart';
 
 class LoginBrain {
   final UserHelper userHelper;
@@ -16,10 +17,14 @@ class LoginBrain {
     final user = await userHelper.getUserByEmail(email.trim());
 
     if (user != null && user.password == hashedInput) {
+      // Login successful, store userId in UserSession
+      UserSession().setUser(user.userId); // Assuming user.userId contains the user's ID
+      print("[DEBUG] User logged in successfully: ${user.userId}");
       return true;
     }
     return false;
   }
+
 
   Future<bool> recoverUserAccount(String email) async {
     try {

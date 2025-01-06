@@ -1,21 +1,25 @@
+import 'package:go_parent/services/database/local/helpers/baby_helper.dart';
 import 'package:go_parent/services/database/local/helpers/missions_helper.dart';
 import 'package:go_parent/services/database/local/models/missions_model.dart';
 
 class MissionBrain {
   final MissionHelper missionHelper;
+  final BabyHelper babyHelper;
+
   List<MissionModel> _missions = [];
 
-  MissionBrain(this.missionHelper);
+  MissionBrain(this.missionHelper, this.babyHelper);
 
   List<MissionModel> get missions => _missions;
 
+//Missions funcions
 
   Future<void> loadAllMissions() async {
     try {
       _missions = await missionHelper.getAllMissions();
     } catch (e) {
       print('Error loading missions: $e');
-      _missions = []; // Reset to empty list on error
+      _missions = [];
     }
   }
 
@@ -28,23 +32,9 @@ class MissionBrain {
     }
   }
 
-  // Get missions by age range
-  Future<List<MissionModel>> getMissionsByAge(int minAge, int maxAge) async {
-    try {
-      return await missionHelper.getMissionsByAge(minAge, maxAge);
-    } catch (e) {
-      print('Error loading missions by age: $e');
-      return [];
-    }
-  }
 
-  // Get completed/incomplete missions
-  Future<List<MissionModel>> getMissionsByCompletion(bool isCompleted) async {
-    try {
-      return await missionHelper.getMissionsByCompletion(isCompleted);
-    } catch (e) {
-      print('Error loading missions by completion: $e');
-      return [];
-    }
-}
+  //baby functions getMissionsByBabyMonthAge
+
+
+
 }

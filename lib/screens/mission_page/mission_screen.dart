@@ -26,7 +26,7 @@ class _MissionScreenState extends State<MissionScreen> {
 
   List<Map<String, dynamic>> _babies = [];
   Map<String, dynamic>? _selectedBaby;
-  List<Map<String, dynamic>> _missions = [];
+  // List<Map<String, dynamic>> _missions = [];
 
 
   late MissionBrain _missionBrain;
@@ -83,19 +83,19 @@ class _MissionScreenState extends State<MissionScreen> {
     if (_babies.isNotEmpty) {
       setState(() {
         _selectedBaby = _babies.first;
-        _loadMissionsForSelectedBaby();
+      //  _loadMissionsForSelectedBaby();
       });
     }
   }
 
-  Future<void> _loadMissionsForSelectedBaby() async {
-    if (_selectedBaby != null) {
-      int babyAge = _selectedBaby!['babyAge'];
-      _missions = await DatabaseService.instance.getMissionsForAge(babyAge, babyAge);
-      _missionCompleted = List.generate(_missions.length, (index) => _missions[index]['isCompleted']);
-      setState(() {});
-    }
-  }
+  // Future<void> _loadMissionsForSelectedBaby() async {
+  //   if (_selectedBaby != null) {
+  //     int babyAge = _selectedBaby!['babyAge'];
+  //     _missions = await DatabaseService.instance.getMissionsForAge(babyAge, babyAge);
+  //     _missionCompleted = List.generate(_missions.length, (index) => _missions[index]['isCompleted']);
+  //     setState(() {});
+  //   }
+  // }
 
   Future<void> _pickImageForMission(int missionIndex) async {
     final picker = ImagePicker();
