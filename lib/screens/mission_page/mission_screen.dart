@@ -187,6 +187,7 @@ class MissionList extends StatelessWidget {
   const MissionList({
     Key? key,
     required this.missions,
+
   }) : super(key: key);
 
   @override
@@ -200,11 +201,11 @@ class MissionList extends StatelessWidget {
       );
     }
 
-    return Expanded( // Wrap ListView with Expanded
+    return Expanded(
+
       child: ListView.builder(
         itemCount: missions.length,
         itemBuilder: (context, index) {
-          // Add null checks
           final mission = missions[index];
           if (mission == null) {
             print("Null mission at index $index");
@@ -212,18 +213,55 @@ class MissionList extends StatelessWidget {
           }
 
           return Card(
-            margin: const EdgeInsets.all(8.0),
-            child: ListTile(
-              title: Text(mission.title),
-              subtitle: Text(mission.content),
-              trailing: Icon(
-                mission.isCompleted ? Icons.check_circle : Icons.circle_outlined,
-                color: mission.isCompleted ? Colors.green : Colors.grey,
+            elevation: 6,
+            shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20), ),
+            margin: const EdgeInsets.all(10.0),
+
+            child: Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+
+                  ListTile(
+                    title: Text(mission.title ,
+                          style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18,
+                        ),
+                      ),
+                    subtitle: Text(mission.content,
+                    style: const TextStyle(
+                    color: Colors.black87,
+                    fontSize: 16,), ),
+                    trailing: Icon(
+                      mission.isCompleted ? Icons.circle_outlined : Icons.check_circle ,
+                      color: mission.isCompleted ? Colors.green : Colors.grey,
+                    ),
+                  ),
+
+                  const SizedBox(width: 10),
+                    ElevatedButton.icon(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.teal,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                      onPressed: () => print("pressedllolol"),
+                      icon: const Icon(Icons.camera_alt, color: Colors.white,),
+                      label: const Text('Submit Photo',  style: TextStyle(color: Colors.white),),
+                    ),
+
+                ],
               ),
             ),
           );
         },
       ),
     );
+
+
   }
 }
