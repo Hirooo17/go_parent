@@ -16,7 +16,14 @@ import '../services/database/local/helpers/user_helper.dart';
 class Logout extends StatefulWidget {
  
   static String id = 'profile_screen';
-  
+   final String username;
+  final int userId;
+
+  const Logout({
+    super.key,
+    required this.username,
+    required this.userId,
+  });
 
   
 
@@ -103,7 +110,10 @@ class _LogoutState extends State<Logout> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => BetaScreen(),
+                        builder: (context) => NotesScreen(
+                          userId: widget.userId,
+                          username: widget.username,
+                        ),
                       ),
                     );
                   }),

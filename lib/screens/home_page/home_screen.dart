@@ -1,9 +1,9 @@
-// import 'package:firebase_auth/firebase_auth.dart';
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:go_parent/Beta%20Testing%20Folder/note_screen.dart';
 import 'package:go_parent/Screen/dashboard.dart';
-
 import 'package:go_parent/Screen/profile_screen.dart';
 import 'package:go_parent/Screen/prototypeMissionGraph.dart';
 import 'package:go_parent/Screen/view%20profile/viewprofile.dart';
@@ -19,40 +19,17 @@ class Homescreen extends StatefulWidget {
     super.key,
     required this.username,
     required this.userId,
-
   });
-
-
 
   @override
   State<Homescreen> createState() => _HomescreenState();
 }
 
 class _HomescreenState extends State<Homescreen> {
-
-  // final FirebaseAuth _auth = FirebaseAuth.instance;
-  // User? loggedInUser;
-
-
   @override
   void initState() {
     super.initState();
-    // getCurrentUser();
   }
-
-  // void getCurrentUser() async {
-  //   try {
-  //     final user = _auth.currentUser;
-  //     if (user != null) {
-  //       setState(() {
-  //         loggedInUser = user;
-  //       });
-  //       print('Logged in user: ${loggedInUser!.email}');
-  //     }
-  //   } catch (e) {
-  //     print('Error getting current user: $e');
-  //   }
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -66,18 +43,17 @@ class _HomescreenState extends State<Homescreen> {
             elevation: 0,
             selectedIndex: cont.selectedIndex.value,
             onDestinationSelected: (index) => cont.selectedIndex.value = index,
-            destinations: [
+            destinations: const [
               NavigationDestination(icon: Icon(Icons.home), label: "Home"),
-              NavigationDestination(
-                  icon: Icon(Icons.task_rounded), label: "Missions"),
-              NavigationDestination(icon: Icon(Icons.settings), label: "Settings"),
-              NavigationDestination(
-                  icon: Icon(Icons.person_2_rounded), label: "Profile"),
+              NavigationDestination(icon: Icon(Icons.task_rounded), label: "Missions"),
+              NavigationDestination(icon: Icon(Icons.person_2_rounded), label: "Profile"),
+              
             ]),
+            
       ),
 
       // AppBar
-      appBar: AppBar(title: Text("Home")),
+      appBar: AppBar(title: const Text("Home")),
 
       // Drawer
       drawer: SideMenu(username: widget.username),
@@ -85,8 +61,8 @@ class _HomescreenState extends State<Homescreen> {
       // Body
       body: Obx(() {
         return IndexedStack(
-          index: cont.selectedIndex.value, // Maintain the selected index
-          children: cont.screens, // The screens to display
+          index: cont.selectedIndex.value,
+          children: cont.screens,
         );
       }),
     );
@@ -107,13 +83,20 @@ class NavigationController extends GetxController {
   void onInit() {
     super.onInit();
     screens = [
-      DashboardScreen(username: username, userId: userId),
-      MissionScreen(),
-      NotesScreen(username: username, userId: userId),
+      Logout(username: username, userId: userId),
+      MissionDashboard(),
       profileviewer(),
     ];
   }
 }
+
+
+
+
+
+
+
+
 
 // Dashboard widget for Missions
 class MissionDashboard extends StatelessWidget {
@@ -122,8 +105,8 @@ class MissionDashboard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Example dummy mission data for the dashboard
-    int currentScore = 120; // This would be dynamically fetched
-    int completedMissions = 5; // This would also be fetched from the mission screen
+    int currentScore = 120;
+    int completedMissions = 5;
 
     return Padding(
       padding: const EdgeInsets.all(16.0),
@@ -153,7 +136,7 @@ class MissionDashboard extends StatelessWidget {
                   ),
                   Text(
                     '$currentScore',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                 ],
               ),
@@ -167,22 +150,22 @@ class MissionDashboard extends StatelessWidget {
                   ),
                   Text(
                     '$completedMissions',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                 ],
               ),
               const SizedBox(height: 16),
-              Divider(),
+              const Divider(),
               const SizedBox(height: 16),
-              Text(
+              const Text(
                 'Mission Progress:',
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 8),
               LinearProgressIndicator(
-                value: completedMissions / 10, // Assume 10 total missions
+                value: completedMissions / 10,
                 backgroundColor: Colors.green[100],
-                valueColor: AlwaysStoppedAnimation<Color>(Colors.green),
+                valueColor: const AlwaysStoppedAnimation<Color>(Colors.green),
               ),
             ],
           ),
@@ -190,4 +173,4 @@ class MissionDashboard extends StatelessWidget {
       ),
     );
   }
-}
+} 

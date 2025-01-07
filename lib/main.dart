@@ -4,6 +4,8 @@
 //import 'package:firebase_core/firebase_core.dart';
 //import 'package:firebase_auth/firebase_auth.dart';
 //import 'package:firebase_core/firebase_core.dart';
+import 'dart:math';
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -20,15 +22,18 @@ import 'package:go_parent/screens/welcome_page/welcome_screen.dart';
 import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'screens/welcome_page/splash_screen.dart';
 import 'screens/mission_page/mission_screen.dart';
+import 'services/database/local/sqlite.dart';
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await DatabaseService.initialize();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
  );
 
-  WidgetsFlutterBinding.ensureInitialized();
+  
 
-  //Initialize Firebase with platform-specific options
+  
 
   SystemChrome.setSystemUIOverlayStyle(
       SystemUiOverlayStyle(statusBarColor: Colors.black));
@@ -67,7 +72,7 @@ class MyApp extends StatelessWidget {
         // GalleryScreen.id: (context) => GalleryScreen(),
         SplashScreen.id: (context) => SplashScreen(), // splash_screen
         WelcomeScreen.id: (context) => WelcomeScreen(), // welcome_screen
-        
+        LoginPage1.id: (context) => LoginPage1(), // login_screen
         Signup.id: (context) => Signup(), //id = "signup_screen""
        // home_screen
         PasswordRecovery.id: (context) => PasswordRecovery(), //password_recovery_screen

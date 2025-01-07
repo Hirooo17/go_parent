@@ -38,6 +38,9 @@ class _NotesScreenState extends State<NotesScreen> {
   }
 
   Future<void> _loadNotes() async {
+    
+
+
     final userNotes = await noteHelper.getNotesByUserId(widget.userId);
     setState(() {
       notes = userNotes;
