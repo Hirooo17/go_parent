@@ -37,6 +37,9 @@ class BabyHelper {
       whereArgs: [userId],
     );
 
+
+    
+
     return result.map((map) => BabyModel.fromMap(map)).toList();
   }
 
@@ -86,4 +89,17 @@ class BabyHelper {
 
     return result.isNotEmpty;
   }
+
+  /// Retrieve the name of a baby linked to a specific user by userId
+Future<List<String>> getBabyNameByUserId(int userId) async {
+  final List<Map<String, dynamic>> result = await db.query(
+    'babydb',
+    columns: ['babyName'], // Only fetch the babyName column
+    where: 'userId = ?',
+    whereArgs: [userId],
+  );
+
+  // Extract the babyName from the result and return as a list of strings
+  return result.map((map) => map['babyName'] as String).toList();
+}
 }

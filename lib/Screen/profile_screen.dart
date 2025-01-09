@@ -5,6 +5,7 @@ import 'package:go_parent/Beta%20Testing%20Folder/note_screen.dart';
 import 'package:go_parent/screens/login_page/login_screen.dart';
 import 'package:go_parent/Screen/childcare.dart';
 import 'package:go_parent/Screen/view%20profile/viewprofile.dart';
+import 'package:go_parent/services/database/local/helpers/baby_helper.dart';
 import 'package:go_parent/widgets/button.dart';
 import 'package:go_parent/services/authentication/auth.dart';
 import 'package:go_parent/services/database/local/models/user_model.dart';
@@ -17,7 +18,8 @@ class Logout extends StatefulWidget {
  
   static String id = 'profile_screen';
    final String username;
-  final int userId;
+    final int userId;
+  
 
   const Logout({
     super.key,
@@ -32,6 +34,7 @@ class Logout extends StatefulWidget {
 }
 
 class _LogoutState extends State<Logout> {
+  
   // Instantiate AuthMethod
   late UserHelper _userHelper;
   UserModel? _user;
