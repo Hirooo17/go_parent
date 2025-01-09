@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_parent/Screen/prototypeMissionGraph.dart';
+import 'package:go_parent/services/database/local/helpers/baby_helper.dart';
 import 'package:go_parent/services/database/local/helpers/missions_helper.dart';
 import 'package:go_parent/services/database/local/models/missions_model.dart';
 import 'package:image_picker/image_picker.dart';
@@ -47,9 +48,10 @@ class _MissionScreenState extends State<MissionScreen> {
     // Initialize database
     final db = await openDatabase('goparent_v2.db');
     final missionHelper = MissionHelper(db);
+    final babyHelper = BabyHelper(db);
 
     // Create MissionBrain
-    _missionBrain = MissionBrain(missionHelper);
+    _missionBrain = MissionBrain(missionHelper, babyHelper);
 
     // Load missions
     await _loadMissions();
@@ -97,22 +99,27 @@ class _MissionScreenState extends State<MissionScreen> {
   //   }
   // }
 
-  Future<void> _pickImageForMission(int missionIndex) async {
-    final picker = ImagePicker();
-    final pickedFile = await picker.pickImage(source: ImageSource.camera);
-    if (pickedFile != null) {
-      setState(() {
-        _images[missionIndex] = pickedFile;
-      });
-    }
-  }
 
-  void _completeMission(int missionIndex) {
-    setState(() {
-      _missionCompleted[missionIndex] = true;
-      _missions[missionIndex]['isCompleted'] = true;
-    });
-  }
+///
+///
+//
+
+  // Future<void> _pickImageForMission(int missionIndex) async {
+  //   final picker = ImagePicker();
+  //   final pickedFile = await picker.pickImage(source: ImageSource.camera);
+  //   if (pickedFile != null) {
+  //     setState(() {
+  //       _images[missionIndex] = pickedFile;
+  //     });
+  //   }
+  // }
+
+  // void _completeMission(int missionIndex) {
+  //   setState(() {
+  //     _missionCompleted[missionIndex] = true;
+  //     _missions[missionIndex]['isCompleted'] = true;
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -130,7 +137,7 @@ class _MissionScreenState extends State<MissionScreen> {
             onChanged: (value) {
               setState(() {
                 _selectedBaby = value;
-                _loadMissionsForSelectedBaby();
+               // _loadMissionsForSelectedBaby();
               });
             },
           ),

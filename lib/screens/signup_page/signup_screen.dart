@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_parent/services/database/local/helpers/baby_helper.dart';
@@ -12,6 +13,10 @@ import 'package:go_parent/widgets/text_field.dart';
 import 'package:go_parent/widgets/floating_label_textfield.dart';
 import 'package:go_parent/services/database/local/sqlite.dart';
 import 'package:go_parent/services/database/local/helpers/user_helper.dart';
+import 'package:go_parent/utilities/constants.dart';
+import 'package:mailer/mailer.dart';
+import 'package:mailer/smtp_server.dart';
+import 'dart:math';
 
 class Signup extends StatefulWidget {
   const Signup({super.key});
@@ -41,9 +46,10 @@ class _SignupState extends State<Signup> {
     6,
     (index) => TextEditingController(),
   );
-  String get compiledOTP => otpControllers.map((c) => c.text).join();
   final PageController _pageController = PageController();
   int currentSlide = 0;
+
+  String otp = '';
 
   late SignupBrain signupBrain;
 
@@ -98,34 +104,36 @@ class _SignupState extends State<Signup> {
     });
   }
 
-  Future<bool> verifyOTP() async {
-    String enteredOTP = otpValues.join();
-    bool isValid = await EmailOTP.verifyOTP(
-      otp: enteredOTP,
-    );
-    if (!isValid) {
-      Alert(
-        context: context,
-        type: AlertType.error,
-        title: "Invalid OTP",
-        desc: "Please enter the correct OTP code.",
-        buttons: [
-          DialogButton(
-            child: Text(
-              "OK",
-              style: TextStyle(color: Colors.white, fontSize: 20),
-            ),
-            onPressed: () => Navigator.pop(context),
-            width: 120,
-          )
-        ],
-      ).show();
-    }
-    return isValid;
+Future<bool> verifyOTP(String generatedOTP) async {
+  String enteredOTP = otpValues.join();
+
+  // Check if the entered OTP matches the generated OTP
+  bool isValid = enteredOTP == generatedOTP;
+
+  if (!isValid) {
+    Alert(
+      context: context,
+      type: AlertType.error,
+      title: "Invalid OTP",
+      desc: "The OTP you entered is incorrect. Please try again.",
+      buttons: [
+        DialogButton(
+          child: Text(
+            "OK",
+            style: TextStyle(color: Colors.white, fontSize: 20),
+          ),
+          onPressed: () => Navigator.pop(context),
+          width: 120,
+        )
+      ],
+    ).show();
   }
 
+  return isValid;
+}
+
   Future<void> _registerUser() async {
-    bool isOTPValid = await verifyOTP();
+    bool isOTPValid = await verifyOTP(otp);
     if (isOTPValid) {
       final isSignupSuccessful = await signupBrain.signupUser(
         usernameController: userNameController,
@@ -141,7 +149,8 @@ class _SignupState extends State<Signup> {
           context: context,
           type: AlertType.success,
           title: 'Registration Successful!',
-          desc: 'You have registered successfully, redirecting to login page...',
+          desc:
+              'You have registered successfully, redirecting to login page...',
           buttons: [
             DialogButton(
               child: Text('OK'),
@@ -182,70 +191,33 @@ class _SignupState extends State<Signup> {
       return;
     }
 
-    EmailOTP.config(
-        appEmail: "teamgoparent@goparent.com",
-        appName: "GoParent",
-        otpLength: 6,
-        emailTheme: EmailTheme.v6,
-        otpType: OTPType.numeric);
 
-    try {
-      bool otpSent = await EmailOTP.sendOTP(email: emailController.text);
+  // Attempt to send OTP
+  try {
+     await _sendNewVerificationCode(); // Assuming it returns true/false.
 
-      if (otpSent) {
-        Alert(
-          context: context,
-          type: AlertType.success,
-          title: "Email OTP Sent!",
-          desc: "OTP has been sent to your email.",
-          buttons: [
-            DialogButton(
-              onPressed: () {
-                Navigator.pop(context);
-                nextForm();
-              },
-              child: const Text(
-                "OK",
-                style: TextStyle(color: Colors.white, fontSize: 20),
-              ),
-            )
-          ],
-        ).show();
-      } else {
-        Alert(
-          context: context,
-          type: AlertType.error,
-          title: "Error",
-          desc: "Failed to send OTP. Please try again.",
-          buttons: [
-            DialogButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text(
-                "OK",
-                style: TextStyle(color: Colors.white, fontSize: 20),
-              ),
-            )
-          ],
-        ).show();
-      }
-    } catch (e) {
-      Alert(
-        context: context,
-        type: AlertType.error,
-        title: "Error",
-        desc: "An unexpected error occurred. Please try again.",
-        buttons: [
-          DialogButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text(
-              "OK",
-              style: TextStyle(color: Colors.white, fontSize: 20),
-            ),
-          )
-        ],
-      ).show();
-    }
+
+  } catch (e) {
+    // Handle unexpected errors
+    print('Error in formOneHandler: $e');
+    Alert(
+      context: context,
+      type: AlertType.error,
+      title: "Error",
+      desc: "An unexpected error occurred. Please try again.",
+      buttons: [
+        DialogButton(
+          onPressed: () => Navigator.pop(context),
+          child: const Text(
+            "OK",
+            style: TextStyle(color: Colors.white, fontSize: 20),
+          ),
+        )
+      ],
+    ).show();
   }
+}
+
 
   void showErrorDialog(String message) {
     showDialog(
@@ -267,70 +239,76 @@ class _SignupState extends State<Signup> {
     );
   }
 
-  void _sendNewVerificationCode() async {
-    EmailOTP.config(
-        appEmail: "teamgoparent@goparent.com",
-        appName: "GoParent",
-        otpLength: 6,
-        otpType: OTPType.numeric);
+  String _generateOTP() {
+  final random = Random();
+  return List.generate(6, (_) => random.nextInt(10)).join(); // Generate 6 digits.
+}
 
-    try {
-      bool otpSent = await EmailOTP.sendOTP(email: emailController.text);
+  Future<void> _sendNewVerificationCode() async {
+  final smtpServer = gmail(kAppUsername, kAppPassword);
 
-      if (otpSent) {
-        Alert(
-          context: context,
-          type: AlertType.success,
-          title: "Email OTP Sent!",
-          desc: "OTP has been sent to your email.",
-          buttons: [
-            DialogButton(
-              onPressed: () {
-                Navigator.pop(context);
-                nextForm();
-              },
-              child: const Text(
-                "OK",
-                style: TextStyle(color: Colors.white, fontSize: 20),
-              ),
-            )
-          ],
-        ).show();
-      } else {
-        Alert(
-          context: context,
-          type: AlertType.error,
-          title: "Error",
-          desc: "Failed to send OTP. Please try again.",
-          buttons: [
-            DialogButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text(
-                "OK",
-                style: TextStyle(color: Colors.white, fontSize: 20),
-              ),
-            )
-          ],
-        ).show();
-      }
-    } catch (e) {
-      Alert(
-        context: context,
-        type: AlertType.error,
-        title: "Error",
-        desc: "An unexpected error occurred. Please try again.",
-        buttons: [
-          DialogButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text(
-              "OK",
-              style: TextStyle(color: Colors.white, fontSize: 20),
-            ),
-          )
-        ],
-      ).show();
-    }
+  // Generate OTP
+  otp = _generateOTP();
+
+  final message = Message()
+    ..from = Address(kAppUsername, 'GoParentApp')
+    ..recipients.add(emailController.text)
+    ..subject = 'GO PARENT OTP'
+    ..text = '''
+Hello,
+
+Your One-Time Password (OTP) for GoParentApp is: $otp
+
+Please use this code to proceed. This OTP is valid for a limited time.
+
+Thank you,
+GoParentApp Team
+''';
+
+  try {
+    await send(message, smtpServer);
+    print('OTP email sent to: ${emailController.text}');
+    print('Generated OTP: $otp'); // Log OTP for debugging (remove in production).
+
+    Alert(
+      context: context,
+      type: AlertType.success,
+      title: "Email OTP Sent!",
+      desc: "OTP has been sent to your email.",
+      buttons: [
+        DialogButton(
+          onPressed: () {
+            Navigator.pop(context);
+            nextForm(); // Ensure `nextForm` is synchronous or await it if async.
+          },
+          child: const Text(
+            "OK",
+            style: TextStyle(color: Colors.white, fontSize: 20),
+          ),
+        )
+      ],
+    ).show();
+  } catch (e) {
+    print('Error sending email: $e');
+
+    Alert(
+      context: context,
+      type: AlertType.error,
+      title: "Error",
+      desc: "Failed to send OTP. Please try again.",
+      buttons: [
+        DialogButton(
+          onPressed: () => Navigator.pop(context),
+          child: const Text(
+            "OK",
+            style: TextStyle(color: Colors.white, fontSize: 20),
+          ),
+        )
+      ],
+    ).show();
   }
+}
+
 
   void previousForm() {
     if (currentSlide > 0) {

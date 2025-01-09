@@ -3,7 +3,6 @@ import 'package:go_parent/utilities/constants.dart';
 import 'package:crypto/crypto.dart';
 import 'dart:math';
 import 'package:go_parent/services/database/local/helpers/user_helper.dart';
-import 'package:flutter_email_sender/flutter_email_sender.dart';
 import 'package:mailer/mailer.dart';
 import 'package:mailer/smtp_server.dart';
 import 'package:go_parent/utilities/user_session.dart';
@@ -62,7 +61,7 @@ class LoginBrain {
 
 
   String _hashPassword(String password) {
-    final bytes = utf8.encode(password);
+  final bytes = utf8.encode(password);
     final hash = sha256.convert(bytes);
     return hash.toString();
   }
