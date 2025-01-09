@@ -171,11 +171,9 @@ class DatabaseService {
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         FOREIGN KEY (userId) REFERENCES userdb(userId) ON DELETE CASCADE
       )
-    ''');
-  
-    
-    
+    '''); 
   }
+  
 
   Future<void> listTables() async {
     final db = await DatabaseService.instance.database;
@@ -186,6 +184,7 @@ class DatabaseService {
       print(table['name']);
     }
   }
+  
 
   Future<void> dropTable(String tableName) async {
     final db = await DatabaseService.instance.database;
@@ -206,6 +205,4 @@ class DatabaseService {
       _database = null;
     }
   }
-
-  
 }

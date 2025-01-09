@@ -1,34 +1,45 @@
-import 'package:flutter/material.dart';
+// import 'package:flutter/material.dart';
+// import 'package:image_picker/image_picker.dart';
+// import 'dart:io';
+// import 'package:go_parent/services/database/local/helpers/missions_helper.dart';
+// import 'package:go_parent/services/database/local/models/missions_model.dart';
+// import 'package:go_parent/screens/mission_page/widgets/mission_list.dart';
 
-class TabControllerWidget extends StatelessWidget {
-  const TabControllerWidget({super.key});
+// class TabControllerWidget extends StatefulWidget {
 
-  @override
-  Widget build(BuildContext context) {
-    return DefaultTabController(
-      length: 4,
-      child: Scaffold(
-        backgroundColor: Colors.grey[200],
-        appBar: AppBar(
-          elevation: 8,
-          backgroundColor: Colors.teal,
-          title: const Text('Go Missions'),
-          bottom: const TabBar(
-            tabs: [
-              Tab(text: 'Mission1'),
-              Tab(text: 'Missions2'),
-              Tab(text: 'Missions3'),
-            ],
-          ),
-        ),
-        body: const TabBarView(
-          children: [
-            Text('All Missions'),
-            Text('Completed Missions'),
-            Text('Incomplete Missions'),
-          ],
-        ),
-      ),
-    );
-  }
-}
+//   @override
+//   _TabControllerWidgetState createState() => _TabControllerWidgetState();
+// }
+
+// class _TabControllerWidgetState extends State<TabControllerWidget> {
+//   @override
+//   void initState() {
+//     super.initState();
+//   }
+// @override
+//   Widget build(BuildContext context) {
+//     return DefaultTabController(
+//       length: 1,
+//       child: Scaffold(
+//         backgroundColor: Colors.grey[200],
+//         appBar: AppBar(
+//           elevation: 8,
+//           backgroundColor: Colors.teal,
+//           title: const Text('Go Missions'),
+//           bottom: const TabBar(
+//             tabs: [
+//               Tab(text: 'Missions'),
+//             ],
+//           ),
+//         ),
+//         body: TabBarView(
+//           children: [
+
+//             MissionList(),
+
+//           ],
+//         ),
+//       ),
+//     );
+//   }
+// }

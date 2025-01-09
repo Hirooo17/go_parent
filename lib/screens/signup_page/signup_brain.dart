@@ -5,8 +5,6 @@ import 'package:go_parent/services/database/local/helpers/user_helper.dart';
 import 'package:go_parent/services/database/local/models/baby_model.dart';
 import 'package:go_parent/utilities/constants.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
-import 'package:crypto/crypto.dart';
-import 'dart:convert';
 
 class SignupBrain {
   final UserHelper userHelper;
