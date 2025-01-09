@@ -32,6 +32,8 @@ void main() async {
   // Initialize the database
   await DatabaseService.instance.database;
 
+  print("Database initialized");
+
   SystemChrome.setSystemUIOverlayStyle(
       SystemUiOverlayStyle(statusBarColor: Colors.black));
 
