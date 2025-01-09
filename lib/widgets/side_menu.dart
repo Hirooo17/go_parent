@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import 'package:go_parent/screens/login_page/login_screen.dart';
 import 'package:go_parent/Screen/settings.dart';
 import 'package:go_parent/widgets/button.dart';
@@ -71,7 +72,7 @@ class SideMenu extends StatelessWidget {
                 // Navigate to the login page after logout
                 Navigator.of(context).pushReplacement(
                   MaterialPageRoute(
-                    builder: (context) => const LoginPage(),
+                    builder: (context) => const LoginPage1(),
                   ),
                 );
               },

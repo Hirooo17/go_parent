@@ -74,4 +74,63 @@ class LoginBrain {
     return List.generate(length, (index) => chars[random.nextInt(chars.length)])
         .join();
   }
+
+
+  
+
+  Future<bool> loginUserTest(String email, String password,) async {
+    
+    final user = await userHelper.getUserByEmail(email.trim());
+
+    if (user != null && user.password == password) {
+      return true;
+    }
+    return false;
+  }
+
+
+Future<bool> recoverUserAccountWithEmailSender(String email) async {
+    final user = await userHelper.getUserByEmail(email.trim());
+    if (user == null) {
+      return false;
+    }
+
+    String newPassword = _generatePassword();
+    String hashedPassword = _hashPassword(newPassword);
+
+    bool updated = await userHelper.updateUserPassword(email, hashedPassword);
+    if (!updated) {
+      return false;
+    }
+
+      // Send recovery email
+    try {
+      final Email recoveryEmail = Email(
+        body: "Your new password is: $newPassword\nPlease change it after logging in.",
+        subject: "Account Recovery",
+        recipients: [email],
+        isHTML: false,
+      );
+
+      await FlutterEmailSender.send(recoveryEmail);
+      return true;
+    } catch (e) {
+      print("Failed to send recovery email: $e");
+      return false;
+    }
+  }
+// In LoginBrain class
+Future<Map<String, dynamic>?> getUserDetails(String email) async {
+  final user = await userHelper.getUserByEmail(email.trim());
+  if (user != null) {
+    return {
+      'userId': user.userId,
+      'username': user.username,
+    };
+  }
+  return null;
+}
+    
+
+
 }

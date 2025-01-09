@@ -2,6 +2,7 @@ import 'package:sqflite/sqflite.dart';
 import 'package:go_parent/services/database/local/models/user_model.dart';
 
 class UserHelper {
+  
   final Database db;
 
   UserHelper(this.db);
@@ -58,6 +59,18 @@ class UserHelper {
       where: 'userId = ?',
       whereArgs: [user.userId],
     );
+  }
+
+  /// Update a user's password
+  Future<bool> updateUserPasswordSimple(String email, String newPassword) async {
+    final int count = await db.update(
+      'userdb',
+      {'password': newPassword},
+      where: 'email = ?',
+      whereArgs: [email],
+    );
+
+    return count > 0; // Returns true if the password was updated successfully
   }
 
   /// Delete a user by ID
@@ -132,4 +145,5 @@ class UserHelper {
       whereArgs: [userId],
     );
   }
+
 }

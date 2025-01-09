@@ -1,17 +1,24 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:go_parent/screens/mission_page/mission_screen.dart';
+import 'package:go_parent/Beta%20Testing%20Folder/note_screen.dart';
+import 'package:go_parent/Screen/dashboard.dart';
 import 'package:go_parent/Screen/profile_screen.dart';
 import 'package:go_parent/Screen/prototypeMissionGraph.dart';
+import 'package:go_parent/Screen/view%20profile/viewprofile.dart';
+import 'package:go_parent/screens/mission_page/mission_screen.dart';
 import 'package:go_parent/widgets/side_menu.dart';
 
 class Homescreen extends StatefulWidget {
   final String username;
   static String id = 'home_screen';
+  final int userId;
 
   const Homescreen({
     super.key,
-    required this.username
+    required this.username,
+    required this.userId,
   });
 
   @override
@@ -19,7 +26,6 @@ class Homescreen extends StatefulWidget {
 }
 
 class _HomescreenState extends State<Homescreen> {
-
   @override
   void initState() {
     super.initState();
@@ -27,55 +33,78 @@ class _HomescreenState extends State<Homescreen> {
 
   @override
   Widget build(BuildContext context) {
-    final cont = Get.put(NavigationController());
+    final cont = Get.put(NavigationController(username: widget.username, userId: widget.userId));
 
     return Scaffold(
+      // Bottom Navigation Bar
       bottomNavigationBar: Obx(
         () => NavigationBar(
             height: 80,
             elevation: 0,
             selectedIndex: cont.selectedIndex.value,
             onDestinationSelected: (index) => cont.selectedIndex.value = index,
-            destinations: [
+            destinations: const [
               NavigationDestination(icon: Icon(Icons.home), label: "Home"),
-              NavigationDestination(
-                  icon: Icon(Icons.task_rounded), label: "Missions"),
-              NavigationDestination(icon: Icon(Icons.settings), label: "Settings"),
-              NavigationDestination(
-                  icon: Icon(Icons.person_2_rounded), label: "Profile"),
+              NavigationDestination(icon: Icon(Icons.task_rounded), label: "Missions"),
+              NavigationDestination(icon: Icon(Icons.person_2_rounded), label: "Profile"),
+              
             ]),
+            
       ),
 
-      appBar: AppBar(title: Text("Home")),
+      // AppBar
+      appBar: AppBar(title: const Text("Home")),
+
+      // Drawer
       drawer: SideMenu(username: widget.username),
+
+      // Body
       body: Obx(() {
         return IndexedStack(
-          index: cont.selectedIndex.value, // Maintain the selected index
-          children: cont.screens, // The screens to display
+          index: cont.selectedIndex.value,
+          children: cont.screens,
         );
       }),
     );
   }
 }
 
+// Screen Navigator
 class NavigationController extends GetxController {
   final Rx<int> selectedIndex = 0.obs;
+  final String username;
+  final int userId;
 
-  final screens = [
-    const Logout(),
-    MissionScreen(), // This will display the mission screen
-    MissionProgressGraph( missionPoints: [50, 90, 130, 160, 200],), // Dashboard widget for mission data
-    Container(
-      color: Colors.red,
-    )
-  ];
+  NavigationController({required this.username, required this.userId});
+
+  late final List<Widget> screens;
+
+  @override
+  void onInit() {
+    super.onInit();
+    screens = [
+      Logout(username: username, userId: userId),
+      MissionDashboard(),
+      profileviewer(),
+    ];
+  }
 }
 
+
+
+
+
+
+
+
+
+// Dashboard widget for Missions
 class MissionDashboard extends StatelessWidget {
   const MissionDashboard({super.key});
 
   @override
   Widget build(BuildContext context) {
+    // Example dummy mission data for the dashboard
     int currentScore = 120;
     int completedMissions = 5;
 
@@ -107,7 +136,7 @@ class MissionDashboard extends StatelessWidget {
                   ),
                   Text(
                     '$currentScore',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                 ],
               ),
@@ -121,14 +150,14 @@ class MissionDashboard extends StatelessWidget {
                   ),
                   Text(
                     '$completedMissions',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                 ],
               ),
               const SizedBox(height: 16),
-              Divider(),
+              const Divider(),
               const SizedBox(height: 16),
-              Text(
+              const Text(
                 'Mission Progress:',
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
@@ -136,7 +165,7 @@ class MissionDashboard extends StatelessWidget {
               LinearProgressIndicator(
                 value: completedMissions / 10,
                 backgroundColor: Colors.green[100],
-                valueColor: AlwaysStoppedAnimation<Color>(Colors.green),
+                valueColor: const AlwaysStoppedAnimation<Color>(Colors.green),
               ),
             ],
           ),
@@ -144,4 +173,4 @@ class MissionDashboard extends StatelessWidget {
       ),
     );
   }
-}
+} 
