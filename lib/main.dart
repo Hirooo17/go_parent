@@ -61,7 +61,7 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
 
-      initialRoute: 'login_screen',
+      initialRoute: 'home_screen',
       routes: {
         // GalleryScreen.id: (context) => GalleryScreen(),
         WelcomeScreen.id: (context) => WelcomeScreen(), // welcome_screen

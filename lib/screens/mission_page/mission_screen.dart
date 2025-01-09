@@ -1,8 +1,12 @@
+import 'dart:collection';
+
 import 'package:flutter/material.dart';
 import 'package:go_parent/Screen/prototypeMissionGraph.dart';
 import 'package:go_parent/services/database/local/helpers/baby_helper.dart';
 import 'package:go_parent/services/database/local/helpers/missions_helper.dart';
+import 'package:go_parent/services/database/local/models/baby_model.dart';
 import 'package:go_parent/services/database/local/models/missions_model.dart';
+import 'package:go_parent/utilities/user_session.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:go_parent/services/database/local/sqlite.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
@@ -22,12 +26,23 @@ class _MissionScreenState extends State<MissionScreen> {
   double progress = 0;
   int totalPoints = 0;
 
-  List<XFile?> _images = List.generate(20, (index) => null);
-  List<bool> _missionCompleted = [];
-
-  List<Map<String, dynamic>> _babies = [];
   Map<String, dynamic>? _selectedBaby;
   // List<Map<String, dynamic>> _missions = [];
+
+
+
+
+    List<BabyModel> _babies = [];
+  int? _selectedBabyAge; // The selected value, null if nothing selected yet
+
+
+
+
+
+
+
+
+
 
 
   late MissionBrain _missionBrain;
@@ -41,10 +56,23 @@ class _MissionScreenState extends State<MissionScreen> {
   }
 
 
+    Future<void> _loadUserBabies() async {
+    final babies = await _missionBrain.getBabiesForUser();
+    setState(() {
+      _babies = babies;
+      _selectedBabyAge = _babies.isNotEmpty ? _babies.first.babyAge : null;
+    });
+  }
 
 
 
-    Future<void> _initializeMissionBrain() async {
+
+
+
+
+
+
+  Future<void> _initializeMissionBrain() async {
     // Initialize database
     final db = await openDatabase('goparent_v2.db');
     final missionHelper = MissionHelper(db);
@@ -78,26 +106,14 @@ class _MissionScreenState extends State<MissionScreen> {
 
 
 
-  Future<void> _loadUserBabies() async {
-    // Assuming userId is available
-    int userId = 1; // Replace with actual userId
-    _babies = await DatabaseService.instance.getUserBabies(userId);
-    if (_babies.isNotEmpty) {
-      setState(() {
-        _selectedBaby = _babies.first;
-      //  _loadMissionsForSelectedBaby();
-      });
-    }
-  }
-
-  // Future<void> _loadMissionsForSelectedBaby() async {
-  //   if (_selectedBaby != null) {
-  //     int babyAge = _selectedBaby!['babyAge'];
-  //     _missions = await DatabaseService.instance.getMissionsForAge(babyAge, babyAge);
-  //     _missionCompleted = List.generate(_missions.length, (index) => _missions[index]['isCompleted']);
-  //     setState(() {});
-  //   }
-  // }
+//   Future<void> _loadMissionsForSelectedBaby() async {
+//     if (_selectedBaby != null) {
+//       int babyAge = _selectedBaby!['babyAge'];
+//       _missions = await missionBrain.getMissionsByBabyMonthAge(babyAge, babyAge);
+//       _missionCompleted = List.generate(_missions.length, (index) => _missions[index]['isCompleted']);
+//       setState(() {});
+//     }
+//   }
 
 
 ///
@@ -125,22 +141,35 @@ class _MissionScreenState extends State<MissionScreen> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        if (_selectedBaby != null)
-          DropdownButton<Map<String, dynamic>>(
-            value: _selectedBaby,
-            items: _babies.map((baby) {
-              return DropdownMenuItem<Map<String, dynamic>>(
-                value: baby,
-                child: Text(baby['babyName']),
-              );
-            }).toList(),
-            onChanged: (value) {
-              setState(() {
-                _selectedBaby = value;
-               // _loadMissionsForSelectedBaby();
-              });
-            },
-          ),
+        // if (_selectedBaby != null)
+        //   DropdownButton<Map<String, dynamic>>(
+        //     value: _selectedBaby,
+        //     items: _babies.map((baby) {
+        //       return DropdownMenuItem<Map<String, dynamic>>(
+        //         value: baby,
+        //         child: Text(baby['babyName']),
+        //       );
+        //     }).toList(),
+        //     onChanged: (value) {
+        //       setState(() {
+        //         _selectedBaby = value;
+        //        // _loadMissionsForSelectedBaby();
+        //       });
+        //     },
+        //   ),
+
+       if (_babies.isNotEmpty)
+  BabyDropdownMenu(
+    babies: _babies,
+    onBabySelected: (BabyModel baby) {
+      setState(() {
+        _selectedBabyAge = baby.babyAge;
+      });
+      // You can add additional logic here to load missions for the selected baby
+    },
+  ),
+
+
 
 
 
@@ -182,6 +211,80 @@ class _MissionScreenState extends State<MissionScreen> {
     );
   }
 }
+
+
+
+
+
+
+
+class BabyDropdownMenu extends StatefulWidget {
+  final List<BabyModel> babies;
+  final Function(BabyModel) onBabySelected;
+
+  const BabyDropdownMenu({
+    super.key,
+    required this.babies,
+    required this.onBabySelected,
+  });
+
+  @override
+  State<BabyDropdownMenu> createState() => _BabyDropdownMenuState();
+}
+
+class _BabyDropdownMenuState extends State<BabyDropdownMenu> {
+  late BabyModel selectedBaby;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.babies.isNotEmpty) {
+      selectedBaby = widget.babies.first;
+    }
+  }
+
+  // Convert BabyModel to DropdownMenuEntry
+  List<DropdownMenuEntry<BabyModel>> _createMenuEntries() {
+    return widget.babies.map<DropdownMenuEntry<BabyModel>>((BabyModel baby) {
+      return DropdownMenuEntry<BabyModel>(
+        value: baby,
+        label: '${baby.babyName} (${baby.babyAge} months)',
+      );
+    }).toList();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (widget.babies.isEmpty) {
+      return const Text('No babies available');
+    }
+
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: DropdownMenu<BabyModel>(
+        initialSelection: widget.babies.first,
+        onSelected: (BabyModel? value) {
+          if (value != null) {
+            setState(() {
+              selectedBaby = value;
+            });
+            widget.onBabySelected(value);
+          }
+        },
+        dropdownMenuEntries: _createMenuEntries(),
+        width: MediaQuery.of(context).size.width * 0.9, // 90% of screen width
+        menuStyle: MenuStyle(
+          backgroundColor: MaterialStateProperty.all(Colors.white),
+          elevation: MaterialStateProperty.all(8),
+        ),
+        textStyle: const TextStyle(fontSize: 16),
+      ),
+    );
+  }
+}
+
+
+
 
 
 
