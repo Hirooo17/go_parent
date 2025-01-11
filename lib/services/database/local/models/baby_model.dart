@@ -13,6 +13,15 @@ class BabyModel {
     required this.babyName,
   });
 
+   BabyModel.withoutGender({
+    this.babyId,
+    required this.userId,
+    required this.babyAge,
+    required this.babyName,
+  }) : babyGender = '';
+
+  
+
   factory BabyModel.fromMap(Map<String, dynamic> map) {
     return BabyModel(
       babyId: map['babyId'],

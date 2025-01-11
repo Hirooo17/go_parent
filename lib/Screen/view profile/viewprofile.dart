@@ -1,6 +1,9 @@
 // ignore_for_file: camel_case_types
 import 'package:flutter/material.dart';
+import 'package:go_parent/Screen/view%20profile/addBabyScreen.dart';
+import 'package:go_parent/Screen/view%20profile/profile_viewer_editor.dart';
 import 'package:go_parent/services/database/local/helpers/baby_helper.dart';
+import 'package:go_parent/utilities/user_session.dart';
 import 'package:sqflite/sqflite.dart';
 
 import '../../services/database/local/models/baby_model.dart';
@@ -14,11 +17,14 @@ class profileviewer extends StatefulWidget {
 
 class _profileviewerState extends State<profileviewer> {
   BabyHelper? _babyHelper;
+  late UserSession userSession;
+  List<BabyModel> babies = [];
 
   @override
   void initState() {
     // Initialize the BabyHelper instance
     super.initState();
+    userSession = UserSession(); // Ensure it's initialized
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _showInfoDialog();
       initializeDatabase();
@@ -26,11 +32,36 @@ class _profileviewerState extends State<profileviewer> {
   }
 
   void initializeDatabase() async {
-  final database = await openDatabase('goparent.db'); // Replace with your database path
-  setState(() {
-    _babyHelper = BabyHelper(database);
-  });
-}
+    final database =
+        await openDatabase('goparent.db'); // Replace with your database path
+    setState(() {
+      _babyHelper = BabyHelper(database);
+    });
+
+    // Fetch baby data
+    await _refreshBabies();
+
+    // Fetch baby data
+    final List<BabyModel> fetchedBabies =
+        await _babyHelper!.getBabiesByUserId(userSession.userId!);
+    setState(() {
+      babies = fetchedBabies
+          .where((baby) => baby.babyName?.isNotEmpty == true)
+          .toList();
+    });
+  }
+
+  Future<void> _refreshBabies() async {
+    if (userSession.isLoggedIn()) {
+      final List<BabyModel> fetchedBabies =
+          await _babyHelper!.getBabiesByUserId(userSession.userId!);
+      setState(() {
+        babies = fetchedBabies
+            .where((baby) => baby.babyName?.isNotEmpty == true)
+            .toList();
+      });
+    }
+  }
 
   void _showInfoDialog() {
     showDialog(
@@ -75,7 +106,17 @@ class _profileviewerState extends State<profileviewer> {
           IconButton(
             icon: Icon(Icons.edit, color: Color(0xFF2E3E5C)),
             onPressed: () {
-              // Add edit profile functionality
+              Navigator.push(
+                context,
+                PageRouteBuilder(
+                  pageBuilder: (context, animation, secondaryAnimation) =>
+                      NewBabyScreen(),
+                  transitionsBuilder:
+                      (context, animation, secondaryAnimation, child) {
+                    return FadeTransition(opacity: animation, child: child);
+                  },
+                ),
+              );
             },
           ),
         ],
@@ -118,8 +159,8 @@ class _profileviewerState extends State<profileviewer> {
                         ),
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(60),
-                          child: Image.network(
-                            'https://via.placeholder.com/150',
+                          child: Image.asset(
+                            'assets/images/tristanaa.jpg',
                             fit: BoxFit.cover,
                           ),
                         ),
@@ -175,144 +216,6 @@ class _profileviewerState extends State<profileviewer> {
             SizedBox(height: 20),
 
             // Children Section
-            // Padding(
-            //   padding: EdgeInsets.symmetric(horizontal: isSmallScreen ? 16 : 32),
-            //   child: Column(
-            //     crossAxisAlignment: CrossAxisAlignment.start,
-            //     children: [
-            //       Text(
-            //        'hero',
-            //         style: TextStyle(
-            //           fontSize: 20,
-            //           fontWeight: FontWeight.bold,
-            //           color: Color(0xFF2E3E5C),
-            //         ),
-            //       ),
-            //       SizedBox(height: 16),
-            //       SingleChildScrollView(
-            //         scrollDirection: Axis.horizontal,
-            //         child: Row(
-            //           children: [
-            //             _buildChildCard(
-            //               name: 'Christopher',
-            //               age: '5 years',
-            //               imageUrl: 'https://via.placeholder.com/150',
-            //             ),
-            //             _buildChildCard(
-            //               name: 'Lucas',
-            //               age: '3 years',
-            //               imageUrl: 'https://via.placeholder.com/150',
-            //             ),
-            //             Container(
-            //               width: 120,
-            //               margin: EdgeInsets.only(right: 16),
-            //               child: ElevatedButton(
-            //                 onPressed: () {
-            //                   // Add child functionality
-            //                 },
-            //                 style: ElevatedButton.styleFrom(
-            //                   backgroundColor: Color(0xFF4B8EFF).withOpacity(0.1),
-            //                   foregroundColor: Color(0xFF4B8EFF),
-            //                   elevation: 0,
-            //                   padding: EdgeInsets.symmetric(vertical: 16),
-            //                   shape: RoundedRectangleBorder(
-            //                     borderRadius: BorderRadius.circular(12),
-            //                     side: BorderSide(color: Color(0xFF4B8EFF)),
-            //                   ),
-            //                 ),
-            //                 child: Column(
-            //                   mainAxisSize: MainAxisSize.min,
-            //                   children: [
-            //                     Icon(Icons.add_circle_outline, size: 32),
-            //                     SizedBox(height: 8),
-            //                     Text('Add Child'),
-            //                   ],
-            //                 ),
-            //               ),
-            //             ),
-            //           ],
-            //         ),
-            //       ),
-            //       SizedBox(height: 24),
-
-            //       // Family Information Cards
-            //       _buildFamilyInfoCard(
-            //         icon: Icons.home,
-            //         title: 'Family Address',
-            //         value: '123 Family Street, Happy Valley',
-            //       ),
-            //       SizedBox(height: 16),
-            //       _buildFamilyInfoCard(
-            //         icon: Icons.phone,
-            //         title: 'Emergency Contact',
-            //         value: '+1 234 567 890',
-            //       ),
-            //       SizedBox(height: 16),
-            //       _buildFamilyInfoCard(
-            //         icon: Icons.local_hospital,
-            //         title: 'Family Doctor',
-            //         value: 'Dr. Smith | Pediatric Care',
-            //       ),
-            //       SizedBox(height: 16),
-            //       _buildFamilyInfoCard(
-            //         icon: Icons.school,
-            //         title: 'School',
-            //         value: 'Sunshine Elementary',
-            //       ),
-
-            //       SizedBox(height: 24),
-            //       // Quick Actions
-            //       Container(
-            //         padding: EdgeInsets.all(16),
-            //         decoration: BoxDecoration(
-            //           color: Colors.white,
-            //           borderRadius: BorderRadius.circular(12),
-            //           boxShadow: [
-            //             BoxShadow(
-            //               color: Colors.grey.withOpacity(0.1),
-            //               spreadRadius: 1,
-            //               blurRadius: 10,
-            //             ),
-            //           ],
-            //         ),
-            //         child: Column(
-            //           crossAxisAlignment: CrossAxisAlignment.start,
-            //           children: [
-            //             Text(
-            //               'Quick Actions',
-            //               style: TextStyle(
-            //                 fontSize: 18,
-            //                 fontWeight: FontWeight.bold,
-            //                 color: Color(0xFF2E3E5C),
-            //               ),
-            //             ),
-            //             SizedBox(height: 16),
-            //             Row(
-            //               mainAxisAlignment: MainAxisAlignment.spaceAround,
-            //               children: [
-            //                 _buildQuickActionButton(
-            //                   icon: Icons.calendar_today,
-            //                   label: 'Schedule',
-            //                 ),
-            //                 _buildQuickActionButton(
-            //                   icon: Icons.medical_information,
-            //                   label: 'Health Records',
-            //                 ),
-            //                 _buildQuickActionButton(
-            //                   icon: Icons.photo_library,
-            //                   label: 'Memories',
-            //                 ),
-            //               ],
-            //             ),
-            //           ],
-            //         ),
-            //       ),
-            //     ],
-            //   ),
-            // ),
-
-            // test
-
             Padding(
               padding:
                   EdgeInsets.symmetric(horizontal: isSmallScreen ? 16 : 32),
@@ -320,7 +223,7 @@ class _profileviewerState extends State<profileviewer> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Children',
+                    'hero',
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
@@ -328,75 +231,125 @@ class _profileviewerState extends State<profileviewer> {
                     ),
                   ),
                   SizedBox(height: 16),
-                  FutureBuilder<List<String>>(
-                    future: _babyHelper?.getBabyNameByUserId(
-                        1), // Replace '1' with dynamic userId
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return Center(child: CircularProgressIndicator());
-                      } else if (snapshot.hasError) {
-                        return Text('Error: ${snapshot.error}');
-                      } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                        return Text(
-                          'No children added yet.',
-                          style: TextStyle(color: Colors.grey[600]),
-                        );
-                      }
+                  SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      children: [
+                        ...babies.map((baby) => _buildChildCard(
+                              name: baby.babyName,
+                              age: baby.babyName,
+                              imagePath: 'assets/images/tristanaa.jpg',
+                            )),
+                        Container(
+                          width: 120,
+                          margin: EdgeInsets.only(right: 16),
+                          child: ElevatedButton(
+                            onPressed: () {
+                              NewBabyScreen();
+                              // Add child functionality
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor:
+                                  Color(0xFF4B8EFF).withOpacity(0.1),
+                              foregroundColor: Color(0xFF4B8EFF),
+                              elevation: 0,
+                              padding: EdgeInsets.symmetric(vertical: 16),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                side: BorderSide(color: Color(0xFF4B8EFF)),
+                              ),
+                            ),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(Icons.add_circle_outline, size: 32),
+                                SizedBox(height: 8),
+                                Text('Add Child'),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(height: 24),
 
-                      final babyNames = snapshot.data!;
-                      return SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
-                        child: Row(
+                  // Family Information Cards
+                  _buildFamilyInfoCard(
+                    icon: Icons.home,
+                    title: 'Family Address',
+                    value: '123 Family Street, Happy Valley',
+                  ),
+                  SizedBox(height: 16),
+                  _buildFamilyInfoCard(
+                    icon: Icons.phone,
+                    title: 'Emergency Contact',
+                    value: '+1 234 567 890',
+                  ),
+                  SizedBox(height: 16),
+                  _buildFamilyInfoCard(
+                    icon: Icons.local_hospital,
+                    title: 'Family Doctor',
+                    value: 'Dr. Smith | Pediatric Care',
+                  ),
+                  SizedBox(height: 16),
+                  _buildFamilyInfoCard(
+                    icon: Icons.school,
+                    title: 'School',
+                    value: 'Sunshine Elementary',
+                  ),
+
+                  SizedBox(height: 24),
+                  // Quick Actions
+                  Container(
+                    padding: EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(12),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.1),
+                          spreadRadius: 1,
+                          blurRadius: 10,
+                        ),
+                      ],
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Quick Actions',
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: Color(0xFF2E3E5C),
+                          ),
+                        ),
+                        SizedBox(height: 16),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [
-                            ...babyNames.map((name) => _buildChildCard(
-                                  name: name,
-                                  age:
-                                      'Unknown Age', // Update if age information is needed
-                                  imageUrl:
-                                      'https://via.placeholder.com/150', // Replace with a dynamic image URL if available
-                                )),
-                            _buildAddChildCard(),
+                            _buildQuickActionButton(
+                              icon: Icons.calendar_today,
+                              label: 'Schedule',
+                            ),
+                            _buildQuickActionButton(
+                              icon: Icons.medical_information,
+                              label: 'Health Records',
+                            ),
+                            _buildQuickActionButton(
+                              icon: Icons.photo_library,
+                              label: 'Memories',
+                            ),
                           ],
                         ),
-                      );
-                    },
+                      ],
+                    ),
                   ),
                 ],
               ),
             ),
-
             SizedBox(height: 30),
-          ],
-        ),
-      ),
-    );
-  }
-
-  // TEST
-  Widget _buildAddChildCard() {
-    return Container(
-      width: 120,
-      margin: EdgeInsets.only(right: 16),
-      child: ElevatedButton(
-        onPressed: () {
-          // Navigate to Add Child screen
-        },
-        style: ElevatedButton.styleFrom(
-          backgroundColor: Color(0xFF4B8EFF).withOpacity(0.1),
-          foregroundColor: Color(0xFF4B8EFF),
-          elevation: 0,
-          padding: EdgeInsets.symmetric(vertical: 16),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-            side: BorderSide(color: Color(0xFF4B8EFF)),
-          ),
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(Icons.add_circle_outline, size: 32),
-            SizedBox(height: 8),
-            Text('Add Child'),
           ],
         ),
       ),
@@ -407,7 +360,7 @@ class _profileviewerState extends State<profileviewer> {
   Widget _buildChildCard({
     required String name,
     required String age,
-    required String imageUrl,
+    required String imagePath,
   }) {
     return Container(
       width: 120,
@@ -426,8 +379,8 @@ class _profileviewerState extends State<profileviewer> {
             ),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(40),
-              child: Image.network(
-                imageUrl,
+              child: Image.asset(
+                imagePath,
                 fit: BoxFit.cover,
               ),
             ),

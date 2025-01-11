@@ -29,31 +29,7 @@ class _LoginPageState extends State<LoginPage> {
     usernameController.dispose();
   }
 
-  // void loginUser() async {
-  //   setState(() {
-  //     isLoading = true;
-  //   });
-  //   String res = await AuthMethod().loginUser(
-  //       email: emailController.text, password: passwordController.text);
-
-  //   if (res == "success") {
-  //     setState(() {
-  //       isLoading = false;
-  //     });
-  //     Navigator.of(context).pushReplacement(
-  //       MaterialPageRoute(
-  //         builder: (context) => Homescreen(
-  //           username: usernameController.text,
-  //         ),
-  //       ),
-  //     );
-  //   } else {
-  //     setState(() {
-  //       isLoading = false;
-  //     });
-  //     showSnackBar(context, res);
-  //   }
-  // }
+  
 
   void byPass() {
     Navigator.push(

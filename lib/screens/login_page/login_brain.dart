@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'dart:convert';
 import 'package:flutter_email_sender/flutter_email_sender.dart';
 import 'package:go_parent/utilities/constants.dart';
@@ -84,6 +86,9 @@ class LoginBrain {
     final user = await userHelper.getUserByEmail(email.trim());
 
     if (user != null && user.password == password) {
+      UserSession().setUser(user.userId);
+      print("[DEBUG] User logged in successfully: ${user.userId}");
+
       return true;
     }
     return false;
