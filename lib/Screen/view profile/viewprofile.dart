@@ -1,7 +1,9 @@
 // ignore_for_file: camel_case_types
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:go_parent/Screen/view%20profile/addBabyScreen.dart';
 import 'package:go_parent/Screen/view%20profile/profile_viewer_editor.dart';
+import 'package:go_parent/Screen/view%20profile/updateBabyInfo.dart';
 import 'package:go_parent/services/database/local/helpers/baby_helper.dart';
 import 'package:go_parent/utilities/user_session.dart';
 import 'package:sqflite/sqflite.dart';
@@ -17,6 +19,7 @@ class profileviewer extends StatefulWidget {
 
 class _profileviewerState extends State<profileviewer> {
   BabyHelper? _babyHelper;
+  BabyModel? baby;
   late UserSession userSession;
   List<BabyModel> babies = [];
 
@@ -236,30 +239,64 @@ class _profileviewerState extends State<profileviewer> {
                     child: Row(
                       children: [
                         ...babies.map((baby) => _buildChildCard(
-                              name: baby.babyName,
-                              age: baby.babyName,
+                              onTap: () async {
+                                // Ensure baby is assigned properly before use
+                                final babyId = baby.babyId;
+                                if (babyId != null) {
+                                  // You can either fetch the full baby data here
+                                  final babyDetails =
+                                      await _babyHelper?.getBabyById(babyId);
+                                  if (babyDetails != null) {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => Updatebabyinfo(
+                                          babyId: babyId,
+                                          babyDetails: babyDetails,
+                                        ),
+                                      ),
+                                    );
+                                  }
+                                } else {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content:
+                                          Text('Could not find baby details'),
+                                      backgroundColor: Colors.red,
+                                    ),
+                                  );
+                                }
+                              },
+                              name: baby.babyName ?? 'Unnamed',
+                              age: baby.babyAge?.toString() ?? 'N/A',
                               imagePath: 'assets/images/tristanaa.jpg',
                             )),
                         Container(
                           width: 120,
-                          margin: EdgeInsets.only(right: 16),
+                          margin: const EdgeInsets.only(right: 16),
                           child: ElevatedButton(
                             onPressed: () {
-                              NewBabyScreen();
-                              // Add child functionality
+                              Navigator.push(
+                                // Add proper navigation
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => NewBabyScreen(),
+                                ),
+                              );
                             },
                             style: ElevatedButton.styleFrom(
                               backgroundColor:
-                                  Color(0xFF4B8EFF).withOpacity(0.1),
-                              foregroundColor: Color(0xFF4B8EFF),
+                                  const Color(0xFF4B8EFF).withOpacity(0.1),
+                              foregroundColor: const Color(0xFF4B8EFF),
                               elevation: 0,
-                              padding: EdgeInsets.symmetric(vertical: 16),
+                              padding: const EdgeInsets.symmetric(vertical: 16),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(12),
-                                side: BorderSide(color: Color(0xFF4B8EFF)),
+                                side:
+                                    const BorderSide(color: Color(0xFF4B8EFF)),
                               ),
                             ),
-                            child: Column(
+                            child: const Column(
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 Icon(Icons.add_circle_outline, size: 32),
@@ -358,49 +395,57 @@ class _profileviewerState extends State<profileviewer> {
 
 // ORIGGGGGGGGG
   Widget _buildChildCard({
+    required void Function() onTap,
     required String name,
     required String age,
     required String imagePath,
   }) {
-    return Container(
-      width: 120,
-      margin: EdgeInsets.only(right: 16),
-      child: Column(
-        children: [
-          Container(
-            width: 80,
-            height: 80,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              border: Border.all(
-                color: Color(0xFF9CC4FF),
-                width: 2,
+    return GestureDetector(
+      // Add this to make it tappable
+      onTap: onTap,
+      child: Container(
+        width: 120,
+        margin: const EdgeInsets.only(right: 16),
+        child: Column(
+          children: [
+            Container(
+              width: 80,
+              height: 80,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border: Border.all(
+                  color: const Color(0xFF9CC4FF),
+                  width: 2,
+                ),
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(40),
+                child: Image.asset(
+                  imagePath,
+                  fit: BoxFit.cover,
+                  errorBuilder: (context, error, stackTrace) {
+                    return const Icon(Icons.child_care, size: 40);
+                  },
+                ),
               ),
             ),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(40),
-              child: Image.asset(
-                imagePath,
-                fit: BoxFit.cover,
+            const SizedBox(height: 8),
+            Text(
+              name,
+              style: const TextStyle(
+                fontWeight: FontWeight.bold,
+                color: Color(0xFF2E3E5C),
               ),
             ),
-          ),
-          SizedBox(height: 8),
-          Text(
-            name,
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              color: Color(0xFF2E3E5C),
+            Text(
+              age,
+              style: TextStyle(
+                color: Colors.grey[600],
+                fontSize: 12,
+              ),
             ),
-          ),
-          Text(
-            age,
-            style: TextStyle(
-              color: Colors.grey[600],
-              fontSize: 12,
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
